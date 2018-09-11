@@ -10,20 +10,15 @@
 #### 1、mysql/MariaDB 安装
 > MariaDB 5.5 版本对应 Mysql 5.5 版本，MariaDB 10.0 版本对应 Mysql 5.6 版本
 
-```bash
-$ wget mysql-5.1.73-linux-x86_64-glibc23.tar.gz
-$ wget http://mirrors.ustc.edu.cn/mariadb/mariadb-10.2.14/bintar-linux-glibc_214-x86_64/mariadb-10.2.14-linux-glibc_214-x86_64.tar.gz
-```
-
 ##### 1、下载
 ```bash
-$ wget mysql-5.1.73-linux-x86_64-glibc23.tar.gz
+$ wget https://cdn.mysql.com//Downloads/MySQL-5.6/mysql-5.6.41-linux-glibc2.12-x86_64.tar.gz
 $ wget http://mirrors.ustc.edu.cn/mariadb/mariadb-10.2.14/bintar-linux-glibc_214-x86_64/mariadb-10.2.14-linux-glibc_214-x86_64.tar.gz
 ```
 
 ##### 2、解压
 ```bash
-$ tar zxvf mysql-5.1.73-linux-x86_64-glibc23.tar.gz
+$ tar zxvf mysql-5.6.41-linux-glibc2.12-x86_64.tar.gz
 ```
 
 ##### 3、创建 mysql 账号
@@ -33,7 +28,7 @@ $ useradd -s /sbin/nologin mysql
 
 ##### 4、将解压完的目录移动到 /usr/local/mysql
 ```bash
-$ mv mysql-5.1.73-linux-x86_64-glibc23 /usr/local/mysql
+$ mv mysql-5.6.41-linux-glibc2.12-x86_64 /usr/local/mysql
 $ mv mariadb-10.2.14-linux-glibc_214-x86_64 /usr/local/mariadb
 ```
 
