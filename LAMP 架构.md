@@ -8,6 +8,8 @@
 3. 用户请求一张图片，文件等，Apache 就会从服务器上的某个目录下拿到图片再返回给用户，这个过程没有和 Mysql 打交道，这个过程为静态请求。文件不能存放在数据库中。
 
 #### 1、mysql/MariaDB 安装
+> MariaDB 5.5 版本对应 Mysql 5.5 版本，MariaDB 10.0 版本对应 Mysql 5.6 版本
+
 ```bash
 $ wget mysql-5.1.73-linux-x86_64-glibc23.tar.gz
 $ wget http://mirrors.ustc.edu.cn/mariadb/mariadb-10.2.14/bintar-linux-glibc_214-x86_64/mariadb-10.2.14-linux-glibc_214-x86_64.tar.gz
