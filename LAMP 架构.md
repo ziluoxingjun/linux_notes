@@ -46,7 +46,7 @@ $ ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb/ --datadi
 $ cd support-files/
 $ cp my-large.cnf /etc/my.cnf (my-fault.cnf)
 $ cp my-small.cnf /usr/local/mariadb/my.cnf
-$ vim /usr/local/mariadb/my.cnf（定义 basedir datadir）
+$ vim /usr/local/mariadb/my.cnf（定义 basedir datadir socket）
 ```
 
 ##### 7、拷贝启动脚本
