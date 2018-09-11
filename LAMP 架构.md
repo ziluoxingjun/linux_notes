@@ -64,6 +64,7 @@ $ vim /etc/init.d/mariadb //定义 basedir datadir conf 以及启动参数
 # mariadb
  conf=$basedir/my.cnf
  $bindir/mysqld_safe --defaults-file="$conf" --datadir="$datadir" --pid-file="$mysqld_pid_file_path" "$@" &
+$ chmod 755 /etc/init.d/mysqld
 ```
 
 ##### 9、加入系统服务项，并设为开机启动，启动
