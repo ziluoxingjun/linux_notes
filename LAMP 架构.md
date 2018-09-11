@@ -173,6 +173,7 @@ $ /usr/local/apache2/bin/apachectl gracefull //进程还在，将配置文件重
 ```
 
 ##### 报错
+>
 > httpd: apr_sockaddr_info_get() failed for xing
 > httpd: Could not reliably determine the server's fully qualified domain name, using 127.0.0.1 for ServerName
 > Syntax OK
