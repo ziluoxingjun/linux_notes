@@ -92,5 +92,5 @@ $ killall mysqld（比直接 kill pid 安全些，会停止当前的读写再杀
 > $ yum install perl-Data-Dumper
 > ```
 
-Mysql 两个引擎：innodb myisam
+Mysql 两个引擎：innodb myisam（存储量和存储空间都比较小）
 
