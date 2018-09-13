@@ -202,7 +202,9 @@ $ /usr/local/apache2/bin/apachectl gracefull //进程还在，将配置文件重
 > ```bash
 > httpd: apr_sockaddr_info_get() failed for xing
 > httpd: Could not reliably determine the server's fully qualified domain name, using 127.0.0.1 for ServerName
-> Syntax OK
+> 
+> AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using fe80::94cd:961b:56ca:8df2. > Set the 'ServerName' directive globally to suppress this message
+>
 > 如果出现上面的错误，需要在配置文件中打开一行(/usr/local/apache2/conf/httpd.conf)
 > ServerName www.example.com 80
 > ```
