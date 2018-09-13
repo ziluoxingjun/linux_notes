@@ -157,7 +157,7 @@ $ /usr/local/apache2.4/bin/httpd -M //查看加载的模块
 > make[1]: *** [all-recursive] 错误 1
 > make[1]: 离开目录“/usr/local/src/httpd-2.4.34/support”
 > make: *** [all-recursive] 错误 1
-> ##### apr 用 1.5 版本即可解决 #####
+> ** apr 用 1.5 版本即可解决 **
 > ```
 
 ##### 4、编译安装 httpd 2.2 
