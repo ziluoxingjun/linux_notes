@@ -211,23 +211,24 @@ Loaded Modules:
 > ServerName www.example.com 80
 > ```
 
-### 3、php5 编译安装
+### 3、php 编译安装
 
 ##### 1、下载、解压
 ```bash
 $ wget http://cn2.php.net/get/php-5.6.37.tar.gz/from/this/mirror/php-5.6.37.tar.gz
 $ wget http://cn2.php.net/distributions/php-5.6.37.tar.bz2 ^C
+$ wget http://cn2.php.net/distributions/php-7.1.21.tar.bz2 ^C
 $ tar jxvf php-5.6.37.tar.bz2
 ```
 
-##### 2、编译安装
+##### 2、php5 编译安装
 ```bash
 $ cd php-5.6.37
 $ ./configure \
 --prefix=/usr/local/php \
 --with-apxs2=/usr/local/apache2.4/bin/apxs \ //自动帮助我们安装拓展模块的
 --with-config-file-path=/usr/local/php/etc  \
---with-mysql=/usr/local/mysql \ //依赖于mysql
+--with-mysql=/usr/local/mysql \ //依赖于mysql,php7 不需要此参数
 --with-pdo-mysql=/usr/local/mysql \
 --with-mysqli=/usr/local/mysql/bin/mysql_config \
 --with-libxml-dir \
@@ -248,13 +249,41 @@ $ ./configure \
 $ make && make install
 ```
 
-##### 3、拷贝配置文件
+##### 3、php7 编译安装
+```bash
+$ cd php-7.1.21
+$ ./configure \
+--prefix=/usr/local/php7 \
+--with-apxs2=/usr/local/apache2.4/bin/apxs \
+--with-config-file-path=/usr/local/php7/etc  \
+--with-pdo-mysql=/usr/local/mysql \
+--with-mysqli=/usr/local/mysql/bin/mysql_config \
+--with-libxml-dir \
+--with-gd \
+--with-jpeg-dir \
+--with-png-dir \
+--with-freetype-dir \
+--with-iconv-dir \
+--with-zlib-dir \
+--with-bz2 \
+--with-openssl \
+--with-mcrypt \
+--enable-soap \
+--enable-gd-native-ttf \
+--enable-mbstring \
+--enable-sockets \
+--enable-exif \
+$ make && make install
+```
+
+##### 4、拷贝配置文件
 ```bash
 $ cp php.ini-production /usr/local/php/etc/php.ini //php.ini-production 是线上生产环境用；php.ini-development 是开发环境用
 ```
 
-##### 4、php 相关命令
+##### 5、php 相关命令
 ```bash
+$ ls /usr/local/apache2.4/modules/libphp5.so
 $ /usr/local/php/bin/php -m（查看所加载模块，静态）
 $ /usr/local/php/bin/php -i（查看相关配置）
 ```
