@@ -359,9 +359,8 @@ $ vim /usr/local/apache2/conf/extra/httpd-vhosts.conf
      DocumentRoot "/data/wwwroot/abc.com"
      ServerName abc.com
  </VirtualHost>
-$ mkdir /data/www/xing.com
-$ mkdir /data/www/abc.com
-$ chmod 600 /data/wwwroot
+$ mkdir -p /data/wwwroot/xing.com
+$ mkdir -p /data/wwwroot/abc.com
 $ /usr/local/apache2.4/bin/apachectl -t
 $ /usr/local/apache2.4/bin/apachectl graceful
 $ curl -x192.168.95.10:80 xing.com
