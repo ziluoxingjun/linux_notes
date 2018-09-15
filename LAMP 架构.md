@@ -196,6 +196,12 @@ $ /usr/local/apache2/bin/apachectl -l //列出静态模块
 $ /usr/local/apache2/bin/apachectl -t //检查配置文件是否有语法错误
 $ /usr/local/apache2/bin/apachectl restart //先将进程杀死再开启新的进程
 $ /usr/local/apache2/bin/apachectl gracefull //进程还在，将配置文件重新加载
+Loaded Modules:
+ core_module (static) //静态，直接将模块编译进主脚本，二进制文件中，也就是核心文件 httpd 中
+ so_module (static)
+ http_module (static)
+ mpm_event_module (static)
+ authn_file_module (shared) //扩展模块
 ```
 
 ##### 报错
@@ -208,3 +214,33 @@ $ /usr/local/apache2/bin/apachectl gracefull //进程还在，将配置文件重
 > 如果出现上面的错误，需要在配置文件中打开一行(/usr/local/apache2/conf/httpd.conf)
 > ServerName www.example.com 80
 > ```
+
+### 3、php5 编译安装
+```bash
+$ wget 
+$ tar jxvf php-5.6.36.tar.bz2
+$ cd php-5.6.36
+$ ./configure \
+--prefix=/usr/local/php \
+--with-apxs2=/usr/local/apache2.4/bin/apxs \ //自动帮助我们安装拓展模块的
+--with-config-file-path=/usr/local/php/etc  \
+--with-mysql=/usr/local/mysql \ //依赖于mysql
+--with-pdo-mysql=/usr/local/mysql \
+--with-mysqli=/usr/local/mysql/bin/mysql_config \
+--with-libxml-dir \
+--with-gd \
+--with-jpeg-dir \
+--with-png-dir \
+--with-freetype-dir \
+--with-iconv-dir \
+--with-zlib-dir \
+--with-bz2 \
+--with-openssl \
+--with-mcrypt \
+--enable-soap \
+--enable-gd-native-ttf \
+--enable-mbstring \
+--enable-sockets \
+--enable-exif \
+$ make && make install
+```
