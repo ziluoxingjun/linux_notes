@@ -250,4 +250,16 @@ $ make && make install
 > ```bash
 > configure: error: xml2-config not found. Please check your libxml2 installation.
 > $ yum install libxml2-devel
+>
+> configure: error: Cannot find OpenSSL's <evp.h>
+> $ yum install openssl-devel
+>
+> configure: error: Please reinstall the BZip2 distribution
+> $ yum install bzip2-devel
+>
+> configure: error: jpeglib.h not found.
+> $ yum install libjpeg-devel
+>
+> configure: error: png.h not found.
+> $ yum install libpng-devel
 > ```
