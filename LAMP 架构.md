@@ -262,4 +262,7 @@ $ make && make install
 >
 > configure: error: png.h not found.
 > $ yum install libpng-devel
+>
+> configure: error: freetype-config not found.
+> $ yum install freetype-devel
 > ```
