@@ -217,9 +217,9 @@ Loaded Modules:
 
 ### 3、php5 编译安装
 ```bash
-$ wget 
-$ tar jxvf php-5.6.36.tar.bz2
-$ cd php-5.6.36
+$ wget http://cn2.php.net/get/php-5.6.37.tar.gz/from/this/mirror/php-5.6.37.tar.gz
+$ tar jxvf php-5.6.37.tar.bz2
+$ cd php-5.6.37
 $ ./configure \
 --prefix=/usr/local/php \
 --with-apxs2=/usr/local/apache2.4/bin/apxs \ //自动帮助我们安装拓展模块的
