@@ -337,3 +337,32 @@ $ /usr/local/php/bin/php -i
 # 有可能 80 端口没有打开，手动增加
 $ iptables -I INPUT -p tcp --dport 80 -j ACCEPT
 ```
+
+## 5、Apache 默认虚拟主机
+> 一台服务器可以访问多个网站，每个网站都是一个虚拟主机
+> 任何一个域名解析到这台机器，都可以访问的虚拟主机就是默认虚拟主机
+
+```bash
+$ vim /usr/local/apache2.4/conf/httpd.conf
+ # Virtual hosts
+ 477 Include conf/extra/httpd-vhosts.conf //去掉前面的 # 符号
+
+$ vim /usr/local/apache2/conf/extra/httpd-vhosts.conf 
+ <VirtualHost *:80>
+     DocumentRoot "/data/wwwroot/xing.com"
+     ServerName xing.com
+     ServerAlias www.xing.com
+     ErrorLog logs/xing.com-error.log
+     CustomLog logs/xing.com-access.log
+ </VirtualHost>
+ <VirtualHost *:80>
+     DocumentRoot "/data/wwwroot/abc.com"
+     ServerName abc.com
+ </VirtualHost>
+$ mkdir /data/www/xing.com
+$ mkdir /data/www/abc.com
+$ chmod 600 /data/wwwroot
+$ /usr/local/apache2.4/bin/apachectl -t
+$ /usr/local/apache2.4/bin/apachectl graceful
+$ curl -x192.168.95.10:80 xing.com
+```
