@@ -10,29 +10,25 @@
 ### 1、mysql/MariaDB 安装
 > MariaDB 5.5 版本对应 Mysql 5.5 版本，MariaDB 10.0 版本对应 Mysql 5.6 版本
 
-##### 1、下载
+##### 1、下载、解压
 ```bash
 $ wget https://cdn.mysql.com//Downloads/MySQL-5.6/mysql-5.6.41-linux-glibc2.12-x86_64.tar.gz
 $ wget http://mirrors.ustc.edu.cn/mariadb/mariadb-10.2.14/bintar-linux-glibc_214-x86_64/mariadb-10.2.14-linux-glibc_214-x86_64.tar.gz
-```
-
-##### 2、解压
-```bash
 $ tar zxvf mysql-5.6.41-linux-glibc2.12-x86_64.tar.gz
 ```
 
-##### 3、创建 mysql 账号
+##### 2、创建 mysql 账号
 ```bash
 $ useradd -s /sbin/nologin mysql
 ```
 
-##### 4、将解压完的目录移动到 /usr/local/mysql
+##### 3、将解压完的目录移动到 /usr/local/mysql
 ```bash
 $ mv mysql-5.6.41-linux-glibc2.12-x86_64 /usr/local/mysql
 $ mv mariadb-10.2.14-linux-glibc_214-x86_64 /usr/local/mariadb
 ```
 
-##### 5、初始化数据库
+##### 4、初始化数据库
 ```bash
 $ cd /usr/local/mysql/
 $ mkdir -p /data/mysql
@@ -41,7 +37,7 @@ $ ./scripts/mysql_install_db --user=mysql --datadir=/data/mysql
 $ ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb/ --datadir=/data/mariadb
 ```
 
-##### 6、拷贝配置文件
+##### 5、拷贝配置文件
 ```bash
 $ cd support-files/
 $ cp my-large.cnf /etc/my.cnf (my-fault.cnf)
@@ -49,13 +45,13 @@ $ cp my-small.cnf /usr/local/mariadb/my.cnf
 $ vim /usr/local/mariadb/my.cnf（定义 basedir datadir socket）
 ```
 
-##### 7、拷贝启动脚本
+##### 6、拷贝启动脚本
 ```bash
 $ cp mysql.server /etc/init.d/mysqld
 $ cp mysql.server /etc/init.d/mariadb
 ```
 
-##### 8、修改启动脚本
+##### 7、修改启动脚本
 ```bash
 $ vim /etc/init.d/mysqld
 $ vim /etc/init.d/mariadb //定义 basedir datadir conf 以及启动参数
@@ -67,7 +63,7 @@ $ vim /etc/init.d/mariadb //定义 basedir datadir conf 以及启动参数
 $ chmod 755 /etc/init.d/mysqld
 ```
 
-##### 9、加入系统服务项，并设为开机启动，启动
+##### 8、加入系统服务项，并设为开机启动，启动
 ```bash
 $ chkconfig --add mysqld
 $ chkconfig mysqld on
@@ -216,10 +212,16 @@ Loaded Modules:
 > ```
 
 ### 3、php5 编译安装
+
+##### 1、下载、解压
 ```bash
 $ wget http://cn2.php.net/get/php-5.6.37.tar.gz/from/this/mirror/php-5.6.37.tar.gz
 $ wget http://cn2.php.net/distributions/php-5.6.37.tar.bz2 ^C
 $ tar jxvf php-5.6.37.tar.bz2
+```
+
+##### 2、编译安装
+```bash
 $ cd php-5.6.37
 $ ./configure \
 --prefix=/usr/local/php \
@@ -244,6 +246,17 @@ $ ./configure \
 --enable-sockets \
 --enable-exif \
 $ make && make install
+```
+
+##### 3、拷贝配置文件
+```bash
+$ cp php.ini-production /usr/local/php/etc/php.ini //php.ini-production 是线上生产环境用；php.ini-development 是开发环境用
+```
+
+##### 4、php 相关命令
+```bash
+$ /usr/local/php/bin/php -m（查看所加载模块，静态）
+$ /usr/local/php/bin/php -i（查看相关配置）
 ```
 
 ##### 报错
