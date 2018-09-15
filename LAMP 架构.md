@@ -245,3 +245,9 @@ $ ./configure \
 --enable-exif \
 $ make && make install
 ```
+
+##### 报错
+> ```bash
+> configure: error: xml2-config not found. Please check your libxml2 installation.
+> $ yum install libxml2-devel
+> ```
