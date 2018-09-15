@@ -319,12 +319,11 @@ $ /usr/local/php/bin/php -i（查看相关配置）
 ```bash
 # httpd 主配置文件 /usr/local/apache2.4/conf/httpd.conf
 $ vim /usr/local/apache2.4/conf/httpd.conf //修改4个地方
- ServerName
- Require all granted
- AddType application/x-httpd-php .php
- DirectoryIndex index.html index.php
+ 193 ServerName
+ 202 Require all granted
+ 251 DirectoryIndex index.html index.php
+ 389 AddType application/x-httpd-php .php
 $ /usr/local/apache2.4/bin/apachectl -t
-$ /usr/local/apache2.4/bin/apachectl start
 $ /usr/local/apache2.4/bin/apachectl graceful
 $ netstat -lntp
 $ curl localhost
