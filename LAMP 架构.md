@@ -265,4 +265,8 @@ $ make && make install
 >
 > configure: error: freetype-config not found.
 > $ yum install freetype-devel
+>
+> configure: error: mcrypt.h not found. Please reinstall libmcrypt.
+> $ yum install epel-release
+> $ yum install libmcrypt-devel
 > ```
