@@ -258,7 +258,7 @@ $ make && make install
 > $ yum install bzip2-devel
 >
 > configure: error: jpeglib.h not found.
-> $ yum install libjpeg-devel
+> $ yum install libjpeg-turbo-devel
 >
 > configure: error: png.h not found.
 > $ yum install libpng-devel
