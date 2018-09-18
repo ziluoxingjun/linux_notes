@@ -365,3 +365,5 @@ $ /usr/local/apache2.4/bin/apachectl -t
 $ /usr/local/apache2.4/bin/apachectl graceful
 $ curl -x192.168.95.10:80 xing.com
 ```
+
+6、Apache 用户认证
