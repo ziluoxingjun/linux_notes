@@ -366,4 +366,21 @@ $ /usr/local/apache2.4/bin/apachectl graceful
 $ curl -x192.168.95.10:80 xing.com
 ```
 
-6、Apache 用户认证
+## 6、Apache 用户认证
+```bash
+$ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
+<VirtualHost *:80>
+    DocumentRoot "/data/wwwroot/abc.com"
+    ServerName abc.com
+    ServerAlias www.abc.com
+    <Directory /data/wwwroot/abc.com> //指定认证的目录
+        AllowOverride AuthConfig //相当于打开认证的开关
+        AuthName "abc.com user auth" //自定义认证的名字，作用不大
+        AuthType Basic //认证的类型，一般为 Basic
+        AuthUserFile /data/.htpasswd //指定密码文件所在位置
+        require valid-user //指定需要认证的用户为全部可用用户
+    </Directory>
+    ErrorLog "logs/abc.com-error.log"
+    CustomLog "logs/abc.com-access.log" common
+</VirtualHost>
+```
