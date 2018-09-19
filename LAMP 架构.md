@@ -389,4 +389,8 @@ $ /usr/local/apache2.4/bin/htpasswd -h
 $ /usr/local/apache2.4/bin/htpasswd -cm /data/.htpasswd abc //创建第二个用户不用加 -c 选项
 $ /usr/local/apache2.4/bin/apachectl -t
 $ /usr/local/apache2.4/bin/apachectl graceful
+$ curl -x192.168.95.13:80 abc.com -I
+HTTP/1.1 401 Unauthorized
+$ curl -x192.168.95.13:80 -uuser:passwd abc.com -I
+HTTP/1.1 200 OK
 ```
