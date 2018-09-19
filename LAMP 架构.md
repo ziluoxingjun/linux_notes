@@ -383,4 +383,10 @@ $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
     ErrorLog "logs/abc.com-error.log"
     CustomLog "logs/abc.com-access.log" common
 </VirtualHost>
+
+# 生成 .htpasswd 文件
+$ /usr/local/apache2.4/bin/htpasswd -h
+$ /usr/local/apache2.4/bin/htpasswd -cm /data/.htpasswd abc //创建第二个用户不用加 -c 选项
+$ /usr/local/apache2.4/bin/apachectl -t
+$ /usr/local/apache2.4/bin/apachectl graceful
 ```
