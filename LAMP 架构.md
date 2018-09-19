@@ -367,6 +367,8 @@ $ curl -x192.168.95.10:80 xing.com
 ```
 
 ## 6、Apache 用户认证
+
+#### 1、针对目录认证
 ```bash
 $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
 <VirtualHost *:80>
@@ -393,4 +395,23 @@ $ curl -x192.168.95.13:80 abc.com -I
 HTTP/1.1 401 Unauthorized
 $ curl -x192.168.95.13:80 -uuser:passwd abc.com -I
 HTTP/1.1 200 OK
+```
+
+#### 2、针对单个文件认证
+```bash
+$ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
+<VirtualHost *:80>
+    DocumentRoot "/data/wwwroot/abc.com"
+    ServerName abc.com
+    ServerAlias www.abc.com
+    <FileMatch admin.php>
+        AllowOverride AuthConfig
+        AuthName "abc.com user auth"
+        AuthType Basic
+        AuthUserFile /data/.htpasswd
+        require valid-user
+    </FileMatch>
+    ErrorLog "logs/abc.com-error.log"
+    CustomLog "logs/abc.com-access.log" common
+</VirtualHost>
 ```
