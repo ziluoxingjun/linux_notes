@@ -414,4 +414,11 @@ $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
     ErrorLog "logs/abc.com-error.log"
     CustomLog "logs/abc.com-access.log" common
 </VirtualHost>
+
+$ /usr/local/apache2.4/bin/apachectl -t
+$ /usr/local/apache2.4/bin/apachectl graceful
+$ curl -x 192.168.95.13:80 abc.com/admin.php -I
+HTTP/1.1 401 Unauthorized
+$ curl -x 192.168.95.13:80 abc.com/admin.php -uuser:passwd
+HTTP/1.1 200 OK
 ```
