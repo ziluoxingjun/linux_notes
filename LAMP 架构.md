@@ -422,3 +422,22 @@ HTTP/1.1 401 Unauthorized
 $ curl -x 192.168.95.13:80 abc.com/admin.php -uuser:passwd
 HTTP/1.1 200 OK
 ```
+
+## 7、域名跳转
+> 需求：将 abc.com 跳转到 www.test.com
+
+```bash
+$ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
+<VirtualHost *:80>
+    DocumentRoot "/data/wwwroot/abc.com"
+    ServerName abc.com
+    ServerAlias www.abc.com
+    <IfModule mod_rewrite.c> //需要 mod_rewirte 模块支持
+        RewriteEngine on //打开 rewrite 功能
+        RewriteCond %{HTTP_HOST} !^www.test.com$ //定义 rewrite 条件，主机名（域名）不是 www.test.com 的时候满足条件
+        RewriteRule ^/(.*)$ http://www.test.com/$1 [R=301,L] //定义 rewrite 规则，当满足上面的条件时，本规则才会执行
+    </IfModule>
+    ErrorLog "logs/abc.com-error.log"
+    CustomLog "logs/abc.com-access.log" common
+</VirtualHost>
+```
