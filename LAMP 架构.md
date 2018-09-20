@@ -512,5 +512,13 @@ $ tail /usr/local/apache2.4/logs/abc.com-access.log
 > 随着日志越来越多，占用磁盘空间，必须自动切割，并删除老旧的日志
 
 ```bash
+$ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
+<VirtualHost *:80>
+    DocumentRoot "/data/wwwroot/abc.com"
+    ServerName abc.com
+    ServerAlias www.lll.com
+    ErrorLog "logs/abc.com-error.log"
+    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400" //最前面的那个竖线是管道符，意思是把产生的日志交给 rotatelogs，Apache 自带的切割日志的工具， -l 以当前系统日期为基准切割
+</VirtualHos
 
 ```
