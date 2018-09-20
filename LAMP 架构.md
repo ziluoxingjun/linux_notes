@@ -450,7 +450,7 @@ $ curl -x127.0.0.1:80 www.xyz.com -I
 HTTP/1.1 301 Moved Permanently // 301 永久重定向
 ```
 
-## 8、Apache 的访问日志
+## 8、Apache 访问日志
 > 访问日志记录用户的每一个请求
 ```bash
 $ vim /usr/local/apache2.4/conf/httpd.conf
@@ -474,3 +474,5 @@ $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
 $ curl -x 127.0.0.1:80 www.xyz.com -I
 $ tail /usr/local/apache2.4/logs/abc.com-access.log
 ```
+
+## 9、Apache 访问日志不记录静态文件
