@@ -476,3 +476,8 @@ $ tail /usr/local/apache2.4/logs/abc.com-access.log
 ```
 
 ## 9、Apache 访问日志不记录静态文件
+> 网站大多数元素为静态文件，如图片，css，js等，这些静态元素可以不用记录到日志中
+
+```bash
+$ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
+```
