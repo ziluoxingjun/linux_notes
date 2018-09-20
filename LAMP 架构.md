@@ -543,7 +543,7 @@ $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
     <IfModule mod_expires.c>
         ExpiresActive on
         ExpiresByType image/gif "access plus 1 days"
-        ExpiresByType image/jpg "access plus 24 hours"
+        ExpiresByType image/jpeg "access plus 24 hours"
         ExpiresByType image/png "access plus 24 hours"
         ExpiresByType text/css "now plus 2 hours"
         ExpiresByType application/x-javascript "now plus 2 hours"
@@ -554,5 +554,10 @@ $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
     ErrorLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-error_%Y%m%d.log 86400"
     CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400"
 </VirtualHost>
+$ /usr/local/apache2.4/bin/apachectl -t
+$ /usr/local/apache2.4/bin/apachectl graceful
+$ curl -x127.0.0.1:80 abc.com/images/mix.jpg -I
+Cache-Control: max-age=86400
+Expires: Fri, 21 Sep 2018 06:30:11 GMT
 
 ```
