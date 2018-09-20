@@ -480,4 +480,21 @@ $ tail /usr/local/apache2.4/logs/abc.com-access.log
 
 ```bash
 $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
+<VirtualHost *:80>
+    DocumentRoot "/data/wwwroot/abc.com"
+    ServerName abc.com
+    ServerAlias www.lll.com
+    ErrorLog "logs/abc.com-error.log"
+    SetEnvIf Request_URI ".*\.gif$" img
+    SetEnvIf Request_URI ".*\.jpg$" img
+    SetEnvIf Request_URI ".*\.png$" img
+    SetEnvIf Request_URI ".*\.bmp$" img
+    SetEnvIf Request_URI ".*\.swf$" img
+    SetEnvIf Request_URI ".*\.js$" img
+    SetEnvIf Request_URI ".*\.css$" img
+    SetEnvIf Request_URI ".*\.txt$" img
+    SetEnvIf Request_URI ".*\.ico$" img
+    CustomLog "logs/abc.com-access.log" combined env=!img
+</VirtualHost>
+
 ```
