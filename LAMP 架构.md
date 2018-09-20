@@ -526,3 +526,10 @@ $ /usr/local/apache2.4/bin/apachectl graceful
 $ curl -x127.0.0.1:80 www.lll.com
 $ ls /usr/local/apache2.4/logs/
 ```
+
+## 11、配置静态元素的过期时间
+> 浏览器访问网站的图片时会把静态文件缓存在本地电脑，这样下次访问时就不用从远程下载了，减少访问时间，加快访问速度，减小IO压力
+
+```bash
+
+```
