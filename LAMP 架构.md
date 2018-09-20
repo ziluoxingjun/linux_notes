@@ -456,4 +456,21 @@ HTTP/1.1 301 Moved Permanently // 301 永久重定向
 $ vim /usr/local/apache2.4/conf/httpd.conf
 283     LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
 284     LogFormat "%h %l %u %t \"%r\" %>s %b" common
+
+$ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
+<VirtualHost *:80>
+    DocumentRoot "/data/wwwroot/abc.com"
+    ServerName ddd.com
+    ServerAlias www.xyz.com
+    <IfModule mod_rewrite.c> //需要 mod_rewirte 模块支持
+        RewriteEngine on //打开 rewrite 功能
+        RewriteCond %{HTTP_HOST} !^ddd.com$ //定义 rewrite 条件，主机名（域名）不是 ddd.com 的时候满足条件
+        RewriteRule ^/(.*)$ http://www.test.com/$1 [R=301,L] //定义 rewrite 规则，当满足上面的条件时，本规则才会执行，L 表示只跳转一次，last
+    </IfModule>
+    ErrorLog "logs/abc.com-error.log"
+    CustomLog "logs/abc.com-access.log" combined
+</VirtualHost>
+
+$ curl -x 127.0.0.1:80 www.xyz.com -I
+$ tail /usr/local/apache2.4/logs/abc.com-access.log
 ```
