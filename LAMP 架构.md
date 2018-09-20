@@ -430,7 +430,7 @@ HTTP/1.1 200 OK
 $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
 <VirtualHost *:80>
     DocumentRoot "/data/wwwroot/abc.com"
-    ServerName abc.com
+    ServerName ddd.com
     ServerAlias www.xyz.com
     <IfModule mod_rewrite.c> //需要 mod_rewirte 模块支持
         RewriteEngine on //打开 rewrite 功能
@@ -448,4 +448,12 @@ $ vim /usr/local/apache2.4/conf/httpd.conf
 
 $ curl -x127.0.0.1:80 www.xyz.com -I
 HTTP/1.1 301 Moved Permanently // 301 永久重定向
+```
+
+## 8、Apache 的访问日志
+> 访问日志记录用户的每一个请求
+```bash
+$ vim /usr/local/apache2.4/conf/httpd.conf
+283     LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+284     LogFormat "%h %l %u %t \"%r\" %>s %b" common
 ```
