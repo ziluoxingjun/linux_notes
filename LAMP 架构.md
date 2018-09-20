@@ -528,8 +528,31 @@ $ ls /usr/local/apache2.4/logs/
 ```
 
 ## 11、配置静态元素的过期时间
-> 浏览器访问网站的图片时会把静态文件缓存在本地电脑，这样下次访问时就不用从远程下载了，减少访问时间，加快访问速度，减小IO压力
+> 浏览器访问网站的图片时会把静态文件缓存在本地电脑，这样下次访问时就不用从远程下载了，减少访问时间，加快访问速度，节省带宽，减小IO压力
 
 ```bash
+# 打开 expires 模块
+$ vim /usr/local/apache2.4/conf/httpd.conf
+109 #LoadModule expires_module modules/mod_expires.so
+
+$ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
+<VirtualHost *:80>
+    DocumentRoot "/data/wwwroot/abc.com"
+    ServerName abc.com
+    ServerAlias www.lll.com
+    <IfModule mod_expires.c>
+        ExpiresActive on
+        ExpiresByType image/gif "access plus 1 days"
+        ExpiresByType image/jpg "access plus 24 hours"
+        ExpiresByType image/png "access plus 24 hours"
+        ExpiresByType text/css "now plus 2 hours"
+        ExpiresByType application/x-javascript "now plus 2 hours"
+        ExpiresByType application/javascript "now plus 2 hours"
+        ExpiresByType application/x-shockwave-flash "now plus 2 hours"
+        ExpiresDefault "now plus 0 min"
+    </IfModule>
+    ErrorLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-error_%Y%m%d.log 86400"
+    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400"
+</VirtualHost>
 
 ```
