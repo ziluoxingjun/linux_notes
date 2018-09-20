@@ -507,3 +507,10 @@ $ /usr/local/apache2.4/bin/apachectl graceful
 $ curl -x 127.0.0.1:80 www.lll.com/meinv.png -I
 $ tail /usr/local/apache2.4/logs/abc.com-access.log
 ```
+
+## 10、Apache 访问日志切割
+> 随着日志越来越多，占用磁盘空间，必须自动切割，并删除老旧的日志
+
+```bash
+
+```
