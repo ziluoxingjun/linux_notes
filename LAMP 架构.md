@@ -504,7 +504,6 @@ $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
 $ curl -x 127.0.0.1:80 www.lll.com/meinv.png -I
 $ /usr/local/apache2.4/bin/apachectl -t
 $ /usr/local/apache2.4/bin/apachectl graceful
-$ mkdir /data/wwwroot/abc.com/images
 $ curl -x 127.0.0.1:80 www.lll.com/meinv.png -I
 $ tail /usr/local/apache2.4/logs/abc.com-access.log
 ```
