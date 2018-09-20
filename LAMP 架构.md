@@ -559,5 +559,5 @@ $ /usr/local/apache2.4/bin/apachectl graceful
 $ curl -x127.0.0.1:80 abc.com/images/mix.jpg -I
 Cache-Control: max-age=86400
 Expires: Fri, 21 Sep 2018 06:30:11 GMT
-
 ```
+> 在浏览器中访问  abc.com/images/mix.jpg，第一次 Status Code:200 ,再次刷新后 Status Code: 304 Not Modified
