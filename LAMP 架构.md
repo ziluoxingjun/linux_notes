@@ -512,6 +512,7 @@ $ tail /usr/local/apache2.4/logs/abc.com-access.log
 ## 10、Apache 访问日志切割
 > 随着日志越来越多，占用磁盘空间，必须自动切割，并删除老旧的日志
 
+#### 1、访问日志切割
 ```bash
 $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
 <VirtualHost *:80>
@@ -525,6 +526,20 @@ $ /usr/local/apache2.4/bin/apachectl -t
 $ /usr/local/apache2.4/bin/apachectl graceful
 $ curl -x127.0.0.1:80 www.lll.com
 $ ls /usr/local/apache2.4/logs/
+```
+
+#### 2、定期删除老旧日志
+```bash
+$ mkdir /usr/local/crontab
+$ vim /usr/local/crontab/clean_apache_logs.sh
+#!/bin/bash
+# 删除 apache 日志文件，保留最近30天的日志
+/usr/bin/find /usr/local/apache2.4/logs -mtime +30 -exec rm -f {} \;
+
+$ chmod 755 /usr/local/crontab/clean_apache_logs.sh
+$ crontab -e
+0 0 1 * * /usr/local/crontab/clean_apache_logs.sh
+$ crontabl -l
 ```
 
 ## 11、配置静态元素的过期时间
