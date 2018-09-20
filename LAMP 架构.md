@@ -446,6 +446,8 @@ $ bin/apachectl -M | grep rewrite //检测是否打开 rewrite 模块
 $ vim /usr/local/apache2.4/conf/httpd.conf
 150 LoadModule rewrite_module modules/mod_rewrite.so
 
+$ /usr/local/apache2.4/bin/apachectl -t
+$ /usr/local/apache2.4/bin/apachectl graceful
 $ curl -x127.0.0.1:80 www.xyz.com -I
 HTTP/1.1 301 Moved Permanently // 301 永久重定向
 ```
@@ -471,6 +473,8 @@ $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
     CustomLog "logs/abc.com-access.log" combined
 </VirtualHost>
 
+$ /usr/local/apache2.4/bin/apachectl -t
+$ /usr/local/apache2.4/bin/apachectl graceful
 $ curl -x 127.0.0.1:80 www.xyz.com -I
 $ tail /usr/local/apache2.4/logs/abc.com-access.log
 ```
@@ -497,4 +501,10 @@ $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
     CustomLog "logs/abc.com-access.log" combined env=!img
 </VirtualHost>
 
+$ curl -x 127.0.0.1:80 www.lll.com/meinv.png -I
+$ /usr/local/apache2.4/bin/apachectl -t
+$ /usr/local/apache2.4/bin/apachectl graceful
+$ mkdir /data/wwwroot/abc.com/images
+$ curl -x 127.0.0.1:80 www.lll.com/meinv.png -I
+$ tail /usr/local/apache2.4/logs/abc.com-access.log
 ```
