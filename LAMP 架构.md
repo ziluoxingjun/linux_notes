@@ -96,22 +96,22 @@ Mysql 两个引擎：innodb myisam（存储量和存储空间都比较小）
 ```bash
 $ cd /usr/local/src
 $ wget https://mirrors.tuna.tsinghua.edu.cn/apache/httpd/httpd-2.4.34.tar.bz2
-$ wget http://mirrors.hust.edu.cn/apache/apr/apr-1.6.3.tar.gz
-$ wget http://mirrors.hust.edu.cn/apache/apr/apr-util-1.6.1.tar.gz
+$ wget http://mirrors.hust.edu.cn/apache/apr/apr-1.5.2.tar.gz
+$ wget http://mirrors.hust.edu.cn/apache/apr/apr-util-1.5.4.tar.gz
 # apr 和 apr-util 是一个通用函数库，httpd 依赖的一个包,可以让 httpd 不关心底层的操作系统平台，可以很方便的移植,跨平台应用，需要底层的包支持就是 apr
 $ tar jxf httpd-2.4.34.tar.bz2
-$ tar zxvf apr-1.6.3.tar.gz
-$ tar zxvf apr-util-1.6.1.tar.gz
+$ tar zxvf apr-1.5.2.tar.gz
+$ tar zxvf apr-util-1.5.4.tar.gz
 ```
 
 ##### 2、安装 httpd 2.4 版本前安装依赖
 ```bash
 # httpd 2.4 版本需要先安装 apr apr-util
 配置编译参数：
-$ cd /usr/local/apr-1.6.3
+$ cd /usr/local/apr-5.2
 $ ./configure --prefix=/usr/local/apr
 $ make && make install
-$ cd /usr/local/apr-util-1.6.1
+$ cd /usr/local/apr-util-1.5.4
 $ ./configure --prefix=/usr/local/apr-util --with-apr=/usr/local/apr
 $ make && make install
 # httpd 2.4 版本需要先安装以上
