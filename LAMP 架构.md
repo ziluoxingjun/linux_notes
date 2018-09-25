@@ -580,5 +580,21 @@ Expires: Fri, 21 Sep 2018 06:30:11 GMT
 ## 12、配置防盗链
 > 通过限制 referer 来实现防盗链的功能
 ```bash
-
+$ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
+<VirtualHost *:80>
+    DocumentRoot "/data/wwwroot/abc.com"
+    ServerName abc.com
+    ServerAlias www.aaa.com
+    <Directory /data/wwwroot/abc.com>
+        SetEnvIfNoCase Referer "http://abc.com" local_ref
+        SetEnvIfNoCase Referer "http://www.abc.com" local_ref
+        SetEnvIfNoCase Referer "^$" local_ref
+        <filesmatch "\.(txt|doc|mp3|zip|rar|jpg|gif|png|swf)">
+            Order Allow,Deny
+            Allow from env=local_ref
+        </filesmatch>
+    </Directory>
+    ErrorLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-error_%Y%m%d.log 86400"
+    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400"
+</VirtualHost>
 ```
