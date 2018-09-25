@@ -667,8 +667,8 @@ $ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
     ServerName abc.com
     ServerAlias www.aaa.com
     <Directory /data/wwwroot/abc.com/upload>
-        php_admin_flag engine off
-        <FilesMatch (.*)\.php(.*)>
+        php_admin_flag engine off // 1
+        <FilesMatch (.*)\.php(.*)> // 2
             Order allow,deny
             Deny from all
         </FilesMatch>
@@ -678,4 +678,14 @@ $ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
 </VirtualHost>
 $ /usr/local/apache2.4/bin/apachectl -t
 $ /usr/local/apache2.4/bin/apachectl graceful
+
+# 只设置 1 ,在浏览器中访问会下载文件 info.php
+$ curl -x127.0.0.1:80 abc.com/upload/info.php
+<?php
+    phpinfo();
+?>
+
+# 设置 1 2 ，在浏览器中会 403 Forbidden
+$  curl -x127.0.0.1:80 abc.com/images/info.php -I
+HTTP/1.1 403 Forbidden
 ```
