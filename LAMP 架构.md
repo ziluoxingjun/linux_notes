@@ -589,10 +589,10 @@ $ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
         SetEnvIfNoCase Referer "http://abc.com" local_ref
         SetEnvIfNoCase Referer "http://www.aaa.com" local_ref
         SetEnvIfNoCase Referer "^$" local_ref //空的 referer
-        <filesmatch "\.(txt|doc|mp3|zip|rar|jpg|gif|png|swf)">
+        <FilesMatch "\.(txt|doc|mp3|zip|rar|jpg|gif|png|swf)">
             Order Allow,Deny
             Allow from env=local_ref
-        </filesmatch>
+        </FilesMatch>
     </Directory>
     ErrorLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-error_%Y%m%d.log 86400"
     CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400"
