@@ -609,5 +609,19 @@ HTTP/1.1 403 Forbidden
 
 ## 13、访问控制 Directory
 ```bash
-
+$ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
+<VirtualHost *:80>
+    DocumentRoot "/data/wwwroot/abc.com"
+    ServerName abc.com
+    ServerAlias www.aaa.com
+    <Directory /data/wwwroot/abc.com/admin/>
+        Order deny,allow
+        Deny from all
+        allow from 127.0.0.1
+    </Directory>
+    ErrorLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-error_%Y%m%d.log 86400"
+    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400"
+</VirtualHost>
+$ /usr/local/apache2.4/bin/apachectl -t
+$ /usr/local/apache2.4/bin/apachectl graceful
 ```
