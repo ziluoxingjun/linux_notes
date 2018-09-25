@@ -694,5 +694,20 @@ HTTP/1.1 403 Forbidden
 > user_agent 可理解为浏览器标识
 
 ```bash
-
+$ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
+<VirtualHost *:80>
+    DocumentRoot "/data/wwwroot/abc.com"
+    ServerName abc.com
+    ServerAlias www.aaa.com
+    <IfModule mod_rewrite.c>
+        RewriteEngine on
+        RewriteCond %{HTTP_USER_AGENT} .*curl.* [NC,OR]
+        RewriteCond %{HTTP_USER_AGENT} .*baidu.com.* [NC]
+        RewriteRule .* - [F]
+    </IfModule>
+    ErrorLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-error_%Y%m%d.log 86400"
+    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400"
+</VirtualHost>
+$ /usr/local/apache2.4/bin/apachectl -t
+$ /usr/local/apache2.4/bin/apachectl graceful
 ```
