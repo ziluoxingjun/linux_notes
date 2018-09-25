@@ -424,18 +424,18 @@ HTTP/1.1 200 OK
 ```
 
 ## 7、域名跳转（域名重定向）
-> 需求：将 abc.com 跳转到 www.test.com
+> 需求：将 abc.com 跳转到 www.xing.com
 
 ```bash
 $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
 <VirtualHost *:80>
     DocumentRoot "/data/wwwroot/abc.com"
-    ServerName ddd.com
+    ServerName abc.com
     ServerAlias www.xyz.com
     <IfModule mod_rewrite.c> //需要 mod_rewirte 模块支持
         RewriteEngine on //打开 rewrite 功能
-        RewriteCond %{HTTP_HOST} !^ddd.com$ //定义 rewrite 条件，主机名（域名）不是 ddd.com 的时候满足条件
-        RewriteRule ^/(.*)$ http://www.test.com/$1 [R=301,L] //定义 rewrite 规则，当满足上面的条件时，本规则才会执行，L 表示只跳转一次，last
+        RewriteCond %{HTTP_HOST} !^abc.com$ //定义 rewrite 条件，主机名（域名）不是 abc.com 的时候满足条件
+        RewriteRule ^/(.*)$ http://www.xing.com/$1 [R=301,L] //定义 rewrite 规则，当满足上面的条件时，本规则才会执行，L 表示只跳转一次，last
     </IfModule>
     ErrorLog "logs/abc.com-error.log"
     CustomLog "logs/abc.com-access.log" common
