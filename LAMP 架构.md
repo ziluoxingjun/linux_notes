@@ -679,7 +679,7 @@ $ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
 $ /usr/local/apache2.4/bin/apachectl -t
 $ /usr/local/apache2.4/bin/apachectl graceful
 
-# 只设置 1 ,在浏览器中访问会下载文件 info.php
+# 只设置 1 ,在浏览器中访问会下载文件 info.php 不解析 php 文件
 $ curl -x127.0.0.1:80 abc.com/upload/info.php
 <?php
     phpinfo();
