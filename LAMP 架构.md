@@ -519,7 +519,7 @@ $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
     DocumentRoot "/data/wwwroot/abc.com"
     ServerName abc.com
     ServerAlias www.lll.com
-    ErrorLog "logs/abc.com-error.log"
+    ErrorLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-error_%Y%m%d.log 86400"
     CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400" //最前面的那个竖线是管道符，意思是把产生的日志交给 rotatelogs，Apache 自带的切割日志的工具， -l 以当前系统日期为基准切割
 </VirtualHos
 $ /usr/local/apache2.4/bin/apachectl -t
