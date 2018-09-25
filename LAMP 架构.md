@@ -668,7 +668,7 @@ $ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
     ServerAlias www.aaa.com
     <Directory /data/wwwroot/abc.com/upload>
         php_admin_flag engine off
-        <FilesMatch *\.php(.*)>
+        <FilesMatch (.*)\.php(.*)>
             Order allow,deny
             Deny from all
         </FilesMatch>
