@@ -599,4 +599,10 @@ $ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
 </VirtualHost>
 $ /usr/local/apache2.4/bin/apachectl -t
 $ /usr/local/apache2.4/bin/apachectl graceful
+$ curl -e "http://www.aaa.com" -x 127.0.0.1:80 abc.com/cat.jpg -I
+$ curl -e "http://abc.com" -x 127.0.0.1:80 abc.com/images/cat.jpg -I
+HTTP/1.1 200 OK
+
+$ curl -e "http://qq.com" -x 127.0.0.1:80 abc.com/images/cat.jpg -I
+HTTP/1.1 403 Forbidden
 ```
