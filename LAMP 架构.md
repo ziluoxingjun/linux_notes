@@ -404,13 +404,13 @@ $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
     DocumentRoot "/data/wwwroot/abc.com"
     ServerName abc.com
     ServerAlias www.abc.com
-    <FileMatch admin.php>
+    <FilesMatch admin.php>
         AllowOverride AuthConfig
         AuthName "abc.com user auth"
         AuthType Basic
         AuthUserFile /data/.htpasswd
         require valid-user
-    </FileMatch>
+    </FilesMatch>
     ErrorLog "logs/abc.com-error.log"
     CustomLog "logs/abc.com-access.log" common
 </VirtualHost>
