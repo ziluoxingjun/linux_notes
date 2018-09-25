@@ -606,3 +606,8 @@ HTTP/1.1 200 OK
 $ curl -e "http://qq.com" -x 127.0.0.1:80 abc.com/images/cat.jpg -I
 HTTP/1.1 403 Forbidden
 ```
+
+## 13、访问控制 Directory
+```bash
+
+```
