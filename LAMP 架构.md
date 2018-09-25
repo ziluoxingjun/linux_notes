@@ -587,8 +587,8 @@ $ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
     ServerAlias www.aaa.com
     <Directory /data/wwwroot/abc.com>
         SetEnvIfNoCase Referer "http://abc.com" local_ref
-        SetEnvIfNoCase Referer "http://www.abc.com" local_ref
-        SetEnvIfNoCase Referer "^$" local_ref
+        SetEnvIfNoCase Referer "http://www.aaa.com" local_ref
+        SetEnvIfNoCase Referer "^$" local_ref //空的 referer
         <filesmatch "\.(txt|doc|mp3|zip|rar|jpg|gif|png|swf)">
             Order Allow,Deny
             Allow from env=local_ref
