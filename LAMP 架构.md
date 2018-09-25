@@ -656,3 +656,22 @@ HTTP/1.1 200 OK
 $ curl -x192.168.6.128:80 abc.com/admin.php -I
 HTTP/1.1 403 Forbidden
 ```
+
+#### 3、禁止 php 解析
+> 限定某个目录禁止解析 php
+
+```bash
+$ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
+<VirtualHost *:80>
+    DocumentRoot "/data/wwwroot/abc.com"
+    ServerName abc.com
+    ServerAlias www.aaa.com
+    <Directory /data/wwwroot/abc.com/upload>
+        php_admin_flag engine off
+    </Directory>
+    ErrorLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-error_%Y%m%d.log 86400"
+    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400"
+</VirtualHost>
+$ /usr/local/apache2.4/bin/apachectl -t
+$ /usr/local/apache2.4/bin/apachectl graceful
+```
