@@ -576,3 +576,9 @@ Cache-Control: max-age=86400
 Expires: Fri, 21 Sep 2018 06:30:11 GMT
 ```
 > 在浏览器中访问  abc.com/images/mix.jpg，第一次 Status Code:200 ,再次刷新后 Status Code: 304 Not Modified
+
+## 12、配置防盗链
+> 通过限制 referer 来实现防盗链的功能
+```bash
+
+```
