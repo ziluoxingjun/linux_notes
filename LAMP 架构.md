@@ -701,9 +701,9 @@ $ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
     ServerAlias www.aaa.com
     <IfModule mod_rewrite.c>
         RewriteEngine on
-        RewriteCond %{HTTP_USER_AGENT} .*curl.* [NC,OR]
+        RewriteCond %{HTTP_USER_AGENT} .*curl.* [NC,OR] //NC 表示忽略大小写，OR 上下两个条件的连接符，表示或者
         RewriteCond %{HTTP_USER_AGENT} .*baidu.com.* [NC]
-        RewriteRule .* - [F]
+        RewriteRule .* - [F] //F 表示 Forbidden
     </IfModule>
     ErrorLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-error_%Y%m%d.log 86400"
     CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400"
