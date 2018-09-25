@@ -615,7 +615,7 @@ $ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
     ServerName abc.com
     ServerAlias www.aaa.com
     <Directory /data/wwwroot/abc.com/admin/>
-        Order deny,allow
+        Order deny,allow //哪个在前先执行哪个
         Deny from all
         allow from 127.0.0.1
     </Directory>
