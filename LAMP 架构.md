@@ -783,6 +783,9 @@ $ /usr/local/php/bin/phpize //生成 configure 文件
 $ ./configure --with-php-config=/usr/local/php/bin/php-config
 $ make && make install
 $ /usr/local/php/bin/php -i | grep extension_dir //查看扩展模块存放目录，可自定义
+$ ls /usr/local/php/lib/php/extensions/no-debug-zts-20131226/
+redis.so
+
 $ vim /usr/local/php/etc/php.ini 
 # 增加一行配置
 extension = redis.so
