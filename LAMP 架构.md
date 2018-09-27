@@ -747,3 +747,45 @@ $ chmod 777 !$（生成这个日志的是 apache 所以需要给它权限）
 $ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
 php_admin_value open_basedir "/data/www/abc.com:/tmp/" //最后斜杠可加可不加
 ```
+
+## 15、PHP 动态扩展模块安装
+
+#### 1、安装 curl 模块
+```bash
+$ /usr/local/php/bin/php -m
+
+# 假设没有 curl
+$ /usr/local/php/bin/php -m|grep -i curl
+
+# 进入源码
+$ cd /usr/local/src/php-5.6.37/ext/curl
+$ /usr/local/php/bin/phpize （生成 configure 文件）
+
+# 配置编译参数
+$ ./configure --with-php-config=/usr/local/php/bin/php-config
+$ make && make install
+
+$ /usr/local/php/bin/php -i|grep extension_dir //放扩展的目录
+
+# 最后 进入 php.ini 配置加载一下 curl.so 就可
+$ vim /usr/local/php/etc/php.ini
+ 897 extension=curl.so
+
+$ grep '^extension=' /usr/local/php/etc/php.ini //查看哪些是动态加载的
+```
+
+#### 2、安装 redis 模块
+```bash
+$ cd /usr/local/src/
+$ wget https://codeload.github.com/phpredis/phpredis/zip/develop
+$ mv develop phpredis-develop.zip
+$ unzip phpredis-develop.zip
+$ cd phpredis-develop
+$ /usr/local/php/bin/phpize //生成 configure 文件
+$ ./configure --with-php-config=/usr/local/php/bin/php-config
+$ make && make install
+$ /usr/local/php/bin/php -i | grep extension_dir //查看扩展模块存放目录，可自定义
+$ vim /usr/local/php/etc/php.ini 
+# 增加一行配置
+extension = redis.so
+```
