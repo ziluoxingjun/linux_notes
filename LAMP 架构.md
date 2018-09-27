@@ -716,3 +716,9 @@ HTTP/1.1 403 Forbidden
 curl -x127.0.0.1:80 abc.com -I -A "chrome"
 HTTP/1.1 200 O
 ```
+
+14、PHP 相关配置
+```bash
+$ vim /usr/local/php/etc/php.ini
+
+```
