@@ -741,8 +741,9 @@ $ chmod 777 !$（生成这个日志的是 apache 所以需要给它权限）
 449 error_reporting = E_ALL & ~E_NOTICE（& 为 and，~ 为取反）
 
 # 如果网站有漏洞，被人获得一些权限，只能限制在某个指定的目录里
-298 open_basedir = /data/www/123.com:/tmp/
+298 open_basedir = /data/www/abc.com:/tmp/
+
+# apache 如果有多个站点，虚拟主机，都在php.ini里配置无法区分开，所以在每个虚拟主机，每个域名，每个站点下都配置一个,php 里的 php.ini 可以不配置。好处在于，可以区分不同的虚拟主机。
+$ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
+php_admin_value open_basedir "/data/www/abc.com:/tmp/" //最后斜杠可加可不加
 ```
-> apache 如果有多个站点，虚拟主机，都在php.ini里配置，是无法区分开的，所以在每个虚拟主机，每个域名，每个站点下都配置一个：
-     php_admin_value open_basedir "/data/www/123.com:/tmp/" //最后斜杠可加可不加
-配置这个，php 里的 php.ini 可以不配置。好处在于，可以区分不同的虚拟主机。
