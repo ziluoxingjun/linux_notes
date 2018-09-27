@@ -520,7 +520,7 @@ $ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
     ServerName abc.com
     ServerAlias www.lll.com
     ErrorLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-error_%Y%m%d.log 86400"
-    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400" //最前面的那个竖线是管道符，意思是把产生的日志交给 rotatelogs，Apache 自带的切割日志的工具， -l 以当前系统日期为基准切割
+    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400" combined//最前面的那个竖线是管道符，意思是把产生的日志交给 rotatelogs，Apache 自带的切割日志的工具， -l 以当前系统日期为基准切割
 </VirtualHos
 $ /usr/local/apache2.4/bin/apachectl -t
 $ /usr/local/apache2.4/bin/apachectl graceful
@@ -622,7 +622,7 @@ $ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
         allow from 127.0.0.1
     </Directory>
     ErrorLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-error_%Y%m%d.log 86400"
-    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400"
+    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400" combined
 </VirtualHost>
 $ /usr/local/apache2.4/bin/apachectl -t
 $ /usr/local/apache2.4/bin/apachectl graceful
@@ -647,7 +647,7 @@ $ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
         </FilesMatch>
     </Directory>
     ErrorLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-error_%Y%m%d.log 86400"
-    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400"
+    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400" combined
 </VirtualHost>
 $ /usr/local/apache2.4/bin/apachectl -t
 $ /usr/local/apache2.4/bin/apachectl graceful
@@ -674,7 +674,7 @@ $ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
         </FilesMatch>
     </Directory>
     ErrorLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-error_%Y%m%d.log 86400"
-    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400"
+    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400" combined
 </VirtualHost>
 $ /usr/local/apache2.4/bin/apachectl -t
 $ /usr/local/apache2.4/bin/apachectl graceful
@@ -706,7 +706,7 @@ $ vim /usr/local/apache2.4/conf/extra/httpd_vhosts.conf
         RewriteRule .* - [F] //F 表示 Forbidden
     </IfModule>
     ErrorLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-error_%Y%m%d.log 86400"
-    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400"
+    CustomLog "|/usr/local/apache2.4/bin/rotatelogs -l logs/abc.com-access_%Y%m%d.log 86400" combined
 </VirtualHost>
 $ /usr/local/apache2.4/bin/apachectl -t
 $ /usr/local/apache2.4/bin/apachectl graceful
