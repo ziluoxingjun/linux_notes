@@ -753,8 +753,6 @@ php_admin_value open_basedir "/data/www/abc.com:/tmp/" //最后斜杠可加可�
 #### 1、安装 curl 模块
 ```bash
 $ /usr/local/php/bin/php -m
-
-# 假设没有 curl
 $ /usr/local/php/bin/php -m|grep -i curl
 
 # 进入源码
