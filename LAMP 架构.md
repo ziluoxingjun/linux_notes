@@ -719,6 +719,30 @@ HTTP/1.1 200 O
 
 ## 14、PHP 相关配置
 ```bash
+$ /usr/local/php/bin/php -i |head
+$ /usr/local/php/bin/php -i | grep -i "loaded configuration file"
 $ vim /usr/local/php/etc/php.ini
+936 date.timezone = Asia/Shanghai
+
+# 禁用函数，默认为空,一些高风险的函数：
 303 disable_functions = eval,assert,popen,passthru,exec,system,chroot,scandir,chgrp,escapeshellarg     ,escapeshellcmd,chown,shell_exec,proc_get_status,ini_alter,ini_restore,dl,pfsockopen,openlog,s     yslog,readlink,symlink,leak,popepassthru,stream_socket_server,proc_open,proc_close,phpinfo
+
+466 display_errors = Off //错误日志，改成 on 会在浏览器里显示一些错误日志，会被别人看到，泄露信息
+# 状态码：500 一般为php脚本有问题
+
+487 log_errors = On //错误日志是否开启
+
+572 error_log = /usr/local/php/logs/php_errors.log
+
+$ mkdir /usr/local/php/logs
+$ chmod 777 !$（生成这个日志的是 apache 所以需要给它权限）
+
+# 配置日志的级别
+449 error_reporting = E_ALL & ~E_NOTICE（& 为 and，~ 为取反）
+
+# 如果网站有漏洞，被人获得一些权限，只能限制在某个指定的目录里
+298 open_basedir = /data/www/123.com:/tmp/
 ```
+> apache 如果有多个站点，虚拟主机，都在php.ini里配置，是无法区分开的，所以在每个虚拟主机，每个域名，每个站点下都配置一个：
+     php_admin_value open_basedir "/data/www/123.com:/tmp/" //最后斜杠可加可不加
+配置这个，php 里的 php.ini 可以不配置。好处在于，可以区分不同的虚拟主机。
