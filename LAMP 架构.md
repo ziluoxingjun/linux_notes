@@ -788,5 +788,7 @@ redis.so
 
 $ vim /usr/local/php/etc/php.ini 
 # 增加一行配置
-extension = redis.so
+925 extension = redis.so
+
+$ /usr/local/php/bin/php -m| grep redis
 ```
