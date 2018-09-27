@@ -728,11 +728,11 @@ $ vim /usr/local/php/etc/php.ini
 303 disable_functions = eval,assert,popen,passthru,exec,system,chroot,scandir,chgrp,escapeshellarg     ,escapeshellcmd,chown,shell_exec,proc_get_status,ini_alter,ini_restore,dl,pfsockopen,openlog,s     yslog,readlink,symlink,leak,popepassthru,stream_socket_server,proc_open,proc_close,phpinfo
 
 466 display_errors = Off //错误日志，改成 on 会在浏览器里显示一些错误日志，会被别人看到，泄露信息
-# 状态码：500 一般为php脚本有问题
 
 487 log_errors = On //错误日志是否开启
 
 572 error_log = /usr/local/php/logs/php_errors.log
+# 状态码：HTTP/1.0 500 Internal Server Error 一般为php脚本有问题
 
 $ mkdir /usr/local/php/logs
 $ chmod 777 !$（生成这个日志的是 apache 所以需要给它权限）
