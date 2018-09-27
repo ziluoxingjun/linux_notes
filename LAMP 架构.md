@@ -720,5 +720,5 @@ HTTP/1.1 200 O
 ## 14、PHP 相关配置
 ```bash
 $ vim /usr/local/php/etc/php.ini
-
+303 disable_functions = eval,assert,popen,passthru,exec,system,chroot,scandir,chgrp,escapeshellarg     ,escapeshellcmd,chown,shell_exec,proc_get_status,ini_alter,ini_restore,dl,pfsockopen,openlog,s     yslog,readlink,symlink,leak,popepassthru,stream_socket_server,proc_open,proc_close,phpinfo
 ```
