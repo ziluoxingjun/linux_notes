@@ -329,6 +329,7 @@ http
            fastcgi_param SCRIPT_FILENAME /usr/local/nginx/html$fastcgi_script_name;
          } 
     }
+}
  curl -x127.0.0.1:80 wfsda.com（随便写，全是403）
 如果有其它虚拟主机，其它域名：
 cd /usr/local/nginx/conf/vhosts
