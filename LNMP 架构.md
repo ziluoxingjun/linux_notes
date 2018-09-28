@@ -3,7 +3,8 @@
 
 ![LNMP 架构图](https://ww1.sinaimg.cn/large/005BYqpgly1frj6bxzho9j30cs07waa8.jpg)
 
-提供 web 服务的是 Nginx,php 是作为独立服务存在的，名字叫做 php-fpm ，Nginx 直接处理静态请求，动态请求会转发给 php-fpm。
+### 架构原理
+- 提供 web 服务的是 Nginx,php 是作为独立服务存在的，名字叫做 php-fpm ，Nginx 直接处理静态请求，动态请求会转发给 php-fpm。
 
 ## 1、MariaDB 下载、解压
 
