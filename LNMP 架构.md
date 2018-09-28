@@ -83,7 +83,7 @@ $ killall mysqld（比直接 kill pid 安全些，会停止当前的读写再杀
 >```
 
 
-## 2、php安装
+## 2、php 安装
 > 和 LAMP 中安装 PHP 有差别，需要开启 php-fpm 服务
 
 #### 1、下载、解压、创建用户
@@ -185,33 +185,14 @@ $ cd nginx-1.14.0
 $ ./configure --prefix=/usr/local/nginx (# --with-pcre //做正则的)
 # $ yum install -y pcre-devel
 $ make && make install
-$ /usr/local/nginx/sbin/nginx //启动
 $ /usr/local/nginx/sbin/nginx -t
 # 如果有 apache 会占用 80 端口，先停掉才能启动
 # 在配置 php nginx 之前，两者无法联系在一起，需要手动配置，才能正常成功解析 php 网站
 ```
 
-3、测试 php 解析
-$ vim /usr/local/nginx/conf/nginx.conf
-location ~ \.php$ {
-	root           html;
-	fastcgi_pass   127.0.0.1:9000;
-	fastcgi_index  index.php;
-	fastcgi_param  SCRIPT_FILENAME  /usr/local/nginx/html$fastcgi_script_name;
-	include        fastcgi_params;
-}
- 
-location ~ \.php$
-{ 
-	include fastcgi_params;
-	fastcgi_pass unix:/tmp/php-fcgi.sock;
-	fastcgi_index index.php;
-	fastcgi_param SCRIPT_FILENAME /data/www/test.com$fastcgi_script_name;
-}
-
-$ /usr/local/nginx/sbin/nginx -s reload（重新加载配置文件）
-4、nginx 启动脚本和配置文件
-vim /etc/init.d/nginx
+## 4、nginx 启动脚本
+```bash
+$ vim /etc/init.d/nginx
 #!/bin/bash
 # chkconfig: - 30 21
 # description: http service.
@@ -278,11 +259,17 @@ case "$1" in
 esac
 exit $RETVAL
 
-chmod 755 /etc/init.d/nginx
-chkconfig --add nginx
-chkconfig nginx on
-配置文件很乱，需要重写
-> /usr/local/nginx/conf/nginx.conf
+$ chmod 755 /etc/init.d/nginx
+$ chkconfig --add nginx
+$ chkconfig nginx on
+```
+
+## 5、nginx 配置文件
+```bash
+$ cd /usr/local/nginx/conf
+$ mv nginx.conf{,.bak}
+# 配置文件很乱，需要重写
+$ vim /usr/local/nginx/conf/nginx.conf
 user nobody nobody;//定义启动 nginx 服务的用户
 worker_processes 2;//子进程个数
 error_log /usr/local/nginx/logs/nginx_error.log crit;
@@ -327,20 +314,21 @@ http
     gzip_comp_level 5;
     gzip_http_version 1.1;
     gzip_types text/plain application/x-javascript text/css text/htm application/xml;
-    include vhosts/*.conf;
-}
-cd /usr/local/nginx/conf
-mkdir vhosts
-cd vhosts/
-vim default.conf
-  server
-{
-     listen 80 default_server;（也可以 default ,这个就是默认虚拟主机）   
-     server_name localhost;
-     index index.html index.htm index.php;     
-     root /tmp/1233;
-     deny all; 
-}
+    server
+    {
+         listen 80 default_server;（也可以 default ,这个就是默认虚拟主机）   
+         server_name localhost;
+         index index.html index.htm index.php;     
+         root /usr/local/nginx/html;
+         location ~ \.php$
+         {             
+           include fastcgi_params;
+           fastcgi_pass unix:/tmp/php-fcgi.sock;
+           #fastcgi_pass 127.0.0.1:9000;
+           fastcgi_index index.php;
+           fastcgi_param SCRIPT_FILENAME /usr/local/nginx/html$fastcgi_script_name;
+         } 
+    }
  curl -x127.0.0.1:80 wfsda.com（随便写，全是403）
 如果有其它虚拟主机，其它域名：
 cd /usr/local/nginx/conf/vhosts
@@ -351,23 +339,35 @@ vim 111.conf
        server_name 111.com;
        index index.html index.htm index.php;
        root /data/www;
-           
-       location ~ \.php$ {             
-            include fastcgi_params;
-           #fastcgi_pass unix:/tmp/php-fcgi.sock;
-           fastcgi_pass 127.0.0.1:9000;
-           fastcgi_index index.php;
-           fastcgi_param SCRIPT_FILENAME /data/www$fastcgi_script_name;
-       } 
   }
-
+}
 curl -x127.0.0.1:80 111.com/forum.php -I
 200 ok
 
 如果用第 10 行 sock 监听：
 curl -x127.0.0.1:80 111.com/forum.php -I
 502 Bad Gateway
-Ctrl + r（搜索使用命令，只需要输入关键字即可）
+```
+
+3、测试 php 解析
+$ vim /usr/local/nginx/conf/nginx.conf
+location ~ \.php$ {
+	root           html;
+	fastcgi_pass   127.0.0.1:9000;
+	fastcgi_index  index.php;
+	fastcgi_param  SCRIPT_FILENAME  /usr/local/nginx/html$fastcgi_script_name;
+	include        fastcgi_params;
+}
+ 
+location ~ \.php$
+{ 
+	include fastcgi_params;
+	fastcgi_pass unix:/tmp/php-fcgi.sock;
+	fastcgi_index index.php;
+	fastcgi_param SCRIPT_FILENAME /data/www/test.com$fastcgi_script_name;
+}
+
+$ /usr/local/nginx/sbin/nginx -s reload（重新加载配置文件）
 
 5、php-fpm 配置文件
 ll /usr/local/php-n/etc/php-fpm.conf（php-fpm 服务相关配置）
