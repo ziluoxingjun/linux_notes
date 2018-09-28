@@ -7,10 +7,79 @@
 - 提供 web 服务的是 Nginx,php 是作为独立服务存在的，名字叫做 php-fpm ，Nginx 直接处理静态请求，动态请求会转发给 php-fpm。
 
 ## 1、MariaDB 安装
+> MariaDB 5.5 版本对应 Mysql 5.5 版本，MariaDB 10.0 版本对应 Mysql 5.6 版本
 
-#### 1、MariaDB 下载、解压
+##### 1、下载、解压
 ```bash
+$ wget https://downloads.mariadb.com/MariaDB/mariadb-10.2.18/bintar-linux-glibc_214-x86_64/mariadb-10.2.18-linux-glibc_214-x86_64.tar.gz
+$ tar zxvf mariadb-10.2.18-linux-glibc_214-x86_64.tar.gz
+```
 
+##### 2、创建 mysql 账号
+```bash
+$ useradd -s /sbin/nologin mysql
+```
+
+##### 3、将解压完的目录移动到 /usr/local/mysql
+```bash
+$ mv mariadb-10.2.18-linux-glibc_214-x86_64 /usr/local/mariadb
+```
+
+##### 4、初始化数据库
+```bash
+$ cd /usr/local/mysql/
+$ mkdir -p /data/mysql
+$ chown -R mysql /data/mysql
+$ ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb/ --datadir=/data/mariadb
+```
+
+##### 5、拷贝配置文件
+```bash
+$ cd support-files/
+$ cp my-large.cnf /etc/my.cnf (my-fault.cnf)
+$ cp my-small.cnf /usr/local/mariadb/my.cnf
+$ vim /usr/local/mariadb/my.cnf（定义 basedir datadir socket）
+```
+
+##### 6、拷贝启动脚本
+```bash
+$ cp mysql.server /etc/init.d/mariadb
+```
+
+##### 7、修改启动脚本
+```bash
+$ vim /etc/init.d/mariadb //定义 basedir datadir conf 以及启动参数
+ basedir=/usr/local/mysql
+ datadir=/data/mysql
+# mariadb
+ conf=$basedir/my.cnf
+ $bindir/mysqld_safe --defaults-file="$conf" --datadir="$datadir" --pid-file="$mysqld_pid_file_path" "$@" &
+$ chmod 755 /etc/init.d/mariadb
+```
+
+##### 8、加入系统服务项，并设为开机启动，启动
+```bash
+$ chkconfig --add mariadb
+$ chkconfig mariadb on
+$ service mariadb start 或 /etc/init.d/mariadb start
+
+# 检查mysql是否启动
+$ ps aux|grep mysqld
+$ netstat -lntp
+
+# 手动命令行启动
+$ /usr/local/mysql/bin/mysqld_safe --defaults-file=/etc/my.cnf --user=mysql --datadir=/data/mysql &
+$ killall mysqld（比直接 kill pid 安全些，会停止当前的读写再杀死进程）
+```
+
+##### 报错
+> ```bash
+> FATAL ERROR: please install the following Perl modules before executing ./scripts/mysql_install_db:
+> Data::Dumper
+>
+> $ yum list | grep perl | grep -i dumper
+> $ yum install perl-Data-Dumper
+> ```
 ```
 
 
