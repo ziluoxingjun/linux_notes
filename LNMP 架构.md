@@ -182,8 +182,8 @@ $ cd /usr/local/src
 $ wget http://nginx.org/download/nginx-1.14.0.tar.gz
 $ tar xvf nginx-1.14.0.tar.gz
 $ cd nginx-1.14.0
-$ ./configure --prefix=/usr/local/nginx --with-pcre //做正则的
-$ yum install -y pcre-devel
+$ ./configure --prefix=/usr/local/nginx (# --with-pcre //做正则的)
+# $ yum install -y pcre-devel
 $ make && make install
 $ /usr/local/nginx/sbin/nginx //启动
 $ /usr/local/nginx/sbin/nginx -t
