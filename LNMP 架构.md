@@ -73,7 +73,7 @@ $ killall mysqld（比直接 kill pid 安全些，会停止当前的读写再杀
 ```
 
 ##### 报错
-> ```bash
+>```bash
 > FATAL ERROR: please install the following Perl modules before executing ./scripts/mysql_install_db:
 > Data::Dumper
 >
@@ -82,7 +82,7 @@ $ killall mysqld（比直接 kill pid 安全些，会停止当前的读写再杀
 > 
 > ./bin/mysqld: error while loading shared libraries: libaio.so.1: cannot open shared object file: No such file or directory
 > $ yum install libaio-devel
-```
+>```
 
 
 ## 2、php安装
