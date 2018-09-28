@@ -10,7 +10,7 @@
 
 ##### 1、下载、解压
 ```bash
-$ wget https://downloads.mariadb.com/MariaDB/mariadb-10.2.18/bintar-linux-glibc_214-x86_64/mariadb-10.2.18-linux-glibc_214-x86_64.tar.gz
+$ wget https://cdn.mysql.com//Downloads/MySQL-5.6/mysql-5.6.41-linux-glibc2.12-x86_64.tar.gz
 $ tar zxvf mysql-5.6.41-linux-glibc2.12-x86_64.tar.gz
 ```
 
