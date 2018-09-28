@@ -88,11 +88,12 @@ $ killall mysqld（比直接 kill pid 安全些，会停止当前的读写再杀
 ## 2、php安装
 > 和 LAMP 中安装 PHP 有差别，需要开启 php-fpm 服务
 
-#### 1、下载、解压
+#### 1、下载、解压、创建用户
 ```bash
 $ wget http://cn2.php.net/distributions/php-5.6.37.tar.bz2
 $ tar jxvf php-5.6.37.tar.bz2 
 $ cd php-5.6.37
+$ useradd -s /sbin/nologin php-fpm
 ```
 
 #### 2、编译、安装
