@@ -1,0 +1,749 @@
+
+LNMP 架构搭建与优化
+提供 web 服务的是 Nginx,php 是作为独立服务存在的，名字叫做 php-fpm ，Nginx 直接处理静态请求，动态请求会转发给 php-fpm。
+
+https://ww1.sinaimg.cn/large/005BYqpgly1frj6bxzho9j30cs07waa8.jpg
+
+1、php编译安装
+第一步先安装 mysql（和 lamp 一样），跳过。
+
+wget http://cn2.php.net/distributions/php-5.5.45.tar.bz2
+tar jxvf php-5.5.45.tar.bz2 
+cd php-5.5.45
+make clean //可将之前编译过的文件全部删除
+./configure \
+--prefix=/usr/local/php-fpm \
+--with-config-file-path=/usr/local/php-fpm/etc \
+--enable-fpm \
+--with-fpm-user=php-fpm \
+--with-fpm-group=php-fpm \
+--with-mysql=/usr/local/mysql \
+--with-mysqli=/usr/local/mysql/bin/mysql_config \
+--with-pdo-mysql=/usr/local/mysql \
+--with-mysql-sock=/tmp/mysql.sock \
+--with-libxml-dir \
+--with-gd \
+--with-jpeg-dir \
+--with-png-dir \
+--with-freetype-dir \
+--with-iconv-dir \
+--with-zlib-dir \
+--with-mcrypt \
+--enable-soap \
+--enable-gd-native-ttf \
+--enable-ftp \
+--enable-mbstring \
+--enable-exif \
+--with-pear \
+--with-curl \
+--with-openssl \
+# --disable-ipv6 
+
+make
+echo $?
+make install（之前应该先 rm -rf /usr/local/php 比较妥当）
+
+cp php.ini-production /usr/local/php-fpm/etc/php.ini
+cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+chmod 755 /etc/init.d/php-fpm 
+chkconfig --add php-fpm
+chkconfig php-fpm on（开机启动）
+
+cd /usr/local/php-fpm/etc
+mv php-fpm.conf.default php-fpm.conf
+ [global]
+pid = /usr/local/php-fpm/var/run/php-fpm.pid
+error_log = /usr/local/php-fpm/var/log/php-fpm.log
+[www] //模块名称
+user = php-fpm
+group = php-fpm
+listen = /tmp/php-fcgi.sock //监听地址
+#listen = 127.0.0.1:9000 //也可以
+listen.mode = 0666 //监听上面 sock 本条语句才生效
+pm = dynamic
+pm.max_children = 50
+pm.start_servers = 20
+pm.min_spare_servers = 5
+pm.max_spare_servers = 35
+pm.max_requests = 500
+rlimit_files = 1024
+
+useradd -s /sbin/nologin php-fpm
+
+/usr/local/php-fpm/sbin/php-fpm -t
+2、nginx 编译安装
+cd /usr/local/src
+wget http://nginx.org/download/nginx-1.14.0.tar.gz
+tar xvf nginx-1.14.0.tar.gz
+cd nginx-1.14.0
+./configure --prefix=/usr/local/nginx --with-pcre（做正则的）
+yum install -y pcre-devel
+make
+make install
+
+/usr/local/nginx/sbin/nginx （启动）
+/usr/local/nginx/sbin/nginx -t
+如果有 apache 会占用 80 端口，先停掉才能启动
+
+在配置 php nginx 之前，两者无法联系在一起，需要手动配置，才能正常成功解析 php 网站
+3、测试 php 解析
+$ vim /usr/local/nginx/conf/nginx.conf
+location ~ \.php$ {
+	root           html;
+	fastcgi_pass   127.0.0.1:9000;
+	fastcgi_index  index.php;
+	fastcgi_param  SCRIPT_FILENAME  /usr/local/nginx/html$fastcgi_script_name;
+	include        fastcgi_params;
+}
+ 
+location ~ \.php$
+{ 
+	include fastcgi_params;
+	fastcgi_pass unix:/tmp/php-fcgi.sock;
+	fastcgi_index index.php;
+	fastcgi_param SCRIPT_FILENAME /data/www/test.com$fastcgi_script_name;
+}
+
+$ /usr/local/nginx/sbin/nginx -s reload（重新加载配置文件）
+4、nginx 启动脚本和配置文件
+vim /etc/init.d/nginx
+#!/bin/bash
+# chkconfig: - 30 21
+# description: http service.
+# Source Function Library
+. /etc/init.d/functions
+# Nginx Settings
+
+NGINX_SBIN="/usr/local/nginx/sbin/nginx"
+NGINX_CONF="/usr/local/nginx/conf/nginx.conf"
+NGINX_PID="/usr/local/nginx/logs/nginx.pid"
+RETVAL=0
+prog="Nginx"
+start() {
+        echo -n $"Starting $prog: "
+        mkdir -p /dev/shm/nginx_temp
+        daemon $NGINX_SBIN -c $NGINX_CONF
+        RETVAL=$?
+        echo
+        return $RETVAL
+}
+stop() {
+        echo -n $"Stopping $prog: "
+        killproc -p $NGINX_PID $NGINX_SBIN -TERM
+        rm -rf /dev/shm/nginx_temp
+        RETVAL=$?
+        echo
+        return $RETVAL
+}
+reload(){
+        echo -n $"Reloading $prog: "
+        killproc -p $NGINX_PID $NGINX_SBIN -HUP
+        RETVAL=$?
+        echo
+        return $RETVAL
+}
+restart(){
+        stop
+        start
+}
+
+configtest(){
+    $NGINX_SBIN -c $NGINX_CONF -t
+    return 0
+}
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  reload)
+        reload
+        ;;
+  restart)
+        restart
+        ;;
+  configtest)
+        configtest
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|reload|restart|configtest}"
+        RETVAL=1
+esac
+exit $RETVAL
+
+chmod 755 /etc/init.d/nginx
+chkconfig --add nginx
+chkconfig nginx on
+配置文件很乱，需要重写
+> /usr/local/nginx/conf/nginx.conf
+user nobody nobody;//定义启动 nginx 服务的用户
+worker_processes 2;//子进程个数
+error_log /usr/local/nginx/logs/nginx_error.log crit;
+pid /usr/local/nginx/logs/nginx.pid;
+worker_rlimit_nofile 51200;//最多可以打开的文件数
+events
+{
+    use epoll;
+    worker_connections 6000;//进程最大连接数
+}
+http
+{
+    include mime.types;
+    default_type application/octet-stream;
+    server_names_hash_bucket_size 3526;
+    server_names_hash_max_size 4096;
+    log_format combined_realip '$remote_addr $http_x_forwarded_for [$time_local]'
+    '$host "$request_uri" $status'
+    '"$http_referer" "$http_user_agent"';
+    sendfile on;
+    tcp_nopush on;
+    keepalive_timeout 30;
+    client_header_timeout 3m;
+    client_body_timeout 3m;
+    send_timeout 3m;
+    connection_pool_size 256;
+    client_header_buffer_size 1k;
+    large_client_header_buffers 8 4k;
+    request_pool_size 4k;
+    output_buffers 4 32k;
+    postpone_output 1460;
+    client_max_body_size 10m;
+    client_body_buffer_size 256k;
+    client_body_temp_path /usr/local/nginx/client_body_temp;
+    proxy_temp_path /usr/local/nginx/proxy_temp;
+    fastcgi_temp_path /usr/local/nginx/fastcgi_temp;
+    fastcgi_intercept_errors on;
+    tcp_nodelay on;
+    gzip on;
+    gzip_min_length 1k;
+    gzip_buffers 4 8k;
+    gzip_comp_level 5;
+    gzip_http_version 1.1;
+    gzip_types text/plain application/x-javascript text/css text/htm application/xml;
+    include vhosts/*.conf;
+}
+cd /usr/local/nginx/conf
+mkdir vhosts
+cd vhosts/
+vim default.conf
+  server
+{
+     listen 80 default_server;（也可以 default ,这个就是默认虚拟主机）   
+     server_name localhost;
+     index index.html index.htm index.php;     
+     root /tmp/1233;
+     deny all; 
+}
+ curl -x127.0.0.1:80 wfsda.com（随便写，全是403）
+如果有其它虚拟主机，其它域名：
+cd /usr/local/nginx/conf/vhosts
+vim 111.conf
+  server
+  {
+     listen 80;
+       server_name 111.com;
+       index index.html index.htm index.php;
+       root /data/www;
+           
+       location ~ \.php$ {             
+            include fastcgi_params;
+           #fastcgi_pass unix:/tmp/php-fcgi.sock;
+           fastcgi_pass 127.0.0.1:9000;
+           fastcgi_index index.php;
+           fastcgi_param SCRIPT_FILENAME /data/www$fastcgi_script_name;
+       } 
+  }
+
+curl -x127.0.0.1:80 111.com/forum.php -I
+200 ok
+
+如果用第 10 行 sock 监听：
+curl -x127.0.0.1:80 111.com/forum.php -I
+502 Bad Gateway
+Ctrl + r（搜索使用命令，只需要输入关键字即可）
+
+5、php-fpm 配置文件
+ll /usr/local/php-n/etc/php-fpm.conf（php-fpm 服务相关配置）
+ll /usr/local/php-n/etc/php.ini（php 全局配置）
+> /usr/local/php-n/etc/php-fpm.conf（清空）
+  [global]
+  pid = /usr/local/php/var/run/php-fpm.pid
+  error_log = /usr/local/php/var/log/php-fpm.log
+  [www]
+  listen = /tmp/php-fcgi.sock
+  user = php-fpm
+  group = php-fpm
+  pm = dynamic
+  pm.max_children = 50（子进程）
+  pm.start_servers = 20（开始有50个）
+  pm.min_spare_servers = 5（最小空闲）
+  pm.max_spare_servers = 35
+  pm.max_requests = 500（一个子进程在一个生命周期之内处理多少个请求）
+  rlimit_files = 1024
+
+  [www1]
+  listen = /tmp/php-fcgi1.sock
+  user = php-fpm
+  group = php-fpm
+  pm = dynamic
+  pm.max_children = 50（子进程）
+  pm.start_servers = 20（开始有50个）
+  pm.min_spare_servers = 5（最小空闲）
+  pm.max_spare_servers = 35
+  pm.max_requests = 500（一个子进程在一个生命周期之内处理多少个请求）
+  rlimit_files = 1024
+
+如果 pm=static,只有这一条生效 pm.max_children = 50
+ls /usr/local/nginx/conf/vhosts/
+111.conf  default.conf
+可以指定 111.conf 用 www 这个 pool，222.conf 用 www1 这个 pool
+
+cat /usr/local/nginx/conf/vhosts/111.conf 
+server
+  {
+     listen 80;
+       server_name 111.com;
+       index index.html index.htm index.php;
+       root /data/www;
+           
+       location ~ \.php$ {             
+           include fastcgi_params;
+           #fastcgi_pass unix:/tmp/php-fcgi.sock;
+           fastcgi_pass 127.0.0.1:9000;
+           fastcgi_index index.php;
+           fastcgi_param SCRIPT_FILENAME /data/www$fastcgi_script_name;
+       } 
+  }
+在这个文件里 # 行，指定用哪个 pool ，www.sock www1.sock，也可以都用一个sock（pool），好处是可以分别指定用户名，设置权限。如果一个访问量过大，down掉了，另一个不受影响。
+
+性能追踪：
+
+vim /usr/local/php/etc/php-fpm.conf 
+slowlog = /tmp/www_slow.log（排查慢的原因）
+request_slowlog_timeout = 1（请求超过 1 秒，就记录日志，为什么慢）
+
+php_admin_value[open_basedir]=/data/www/:/tmp/（针对不同的域名进行限制）
+6、常见的502问题解决
+vim /usr/local/nginx/conf/vhosts/111.conf
+ server_name www.111.com;
+ fastcgi_pass unix:/tmp/www.sock;
+cat /usr/local/nginx/logs/nginx_error.log 
+ 2016/12/30 06:23:17 [crit] 4039#0: *2 connect() to unix:/tmp/www.sock failed (13: Permission denied) while connecting to upstream, 
+client: 192.168.1.156, server: www.xing.com, request: "GET / HTTP/1.1", upstream: "fastcgi://unix:/tmp/www.sock:", 
+host: "www.xing.com"
+
+www.sock 没有权限
+
+ll /tmp/www.sock 
+ srw-rw----. 1 root root 0 Dec 30 05:51 /tmp/www.sock（其它人没有读写的权限）
+
+ps aux |grep nginx（可以看到是 nobody 在读这个文件）
+
+解决办法：
+vim /usr/local/php/etc/php-fpm.conf（在文件中添加配置，指定监听用户和组）
+ listen.owner = nobody
+ listen.group = nobody
+7、nginx 用户认证
+vim /usr/local/nginx/conf/vhosts/xing.conf
+ location ~ .*admin\.php$ {（~ 是匹配的意思）
+      auth_basic "star auth";
+      auth_basic_user_file /usr/local/nginx/conf/.htpasswd;
+      include fastcgi_params;
+      fastcgi_pass unix:/tmp/www.sock;
+      fastcgi_index index.php;
+      fastcgi_param SCRIPT_FILENAME /data/www$fastcgi_script_name;
+ }
+
+vim /usr/local/nginx/conf/vhost/test.conf.conf
+server
+{
+    listen 80;
+    server_name test.com
+    index index.html index.htm index.php
+    root /data/www/test.com
+    
+    #location /admin/
+    location ~ admin.php
+    {
+        auth_basic 			"Auth"
+        auth_basic_user_file /user/local/nginx/conf/htpasswd
+    }
+}
+如果没有 htpasswd 工具，需要安装：
+yum install httpd
+htpasswd -c /usr/local/nginx/conf/htpasswd star
+cat /usr/local/nginx/conf/.htpasswd 
+htpasswd /usr/local/nginx/conf/.htpasswd star1（再次创建不要 -c ，否则会删除之前的）
+/usr/local/nginx/sbin/nginx -t && /usr/local/nginx/sbin/nginx -s reload
+service nginx configtest
+service nginx reload
+
+curl -x127.0.0.1:80 www.xing.com/admin.php（显示 401 说明需要用户名和密码）
+curl -x127.0.0.1:80 -ustar:star/ www.xing.com/admin.php -I
+$ curl -x 127.0.0.1:80 test.com
+: 401 Authorization Required
+$ curl -u test:123456 -x 127.0.0.1:80 test.com
+$ curl -x 127.0.0.1:80 test.com/admin/ -I
+ : 401 Unauthorized
+ $ curl -x 127.0.0.1:80 test.com/admin/ -u test:123456 -I
+ : 200 OK
+ $ curl -x 127.0.0.1:80 test.com/admin.php -I
+ : 401
+8、nginx 域名跳转
+目的是为了对搜索引擎友好，加重 www.xing.com 权重
+
+在百度：
+
+site:www.xing.com
+
+site:x.com 检查权重
+
+vim /usr/local/nginx/conf/vhosts/test.com.conf
+server|
+{
+    listen 80;
+    server_name test.com test1.com test2.com;//支持写多个域名
+    index index.html index.htm index.php
+    root /data/www/test.com
+ 	if ($host != 'test.com')
+     {
+          #rewrite ^/(.*)$ http://www.test.com/$1 permanent;
+          rewrite http://$host/(.*)$ http://test.com/$1 permanent
+     }
+}
+//permanent 301
+//redirect 302
+curl -x127.0.0.1:80 test.com/test -I（测试）
+$ curl -x 127.0.0.1:80 test1.com/index.html -I
+:301 
+9、nginx不记录指定文件类型日志
+/usr/local/nginx/conf/nginx.conf
+log_format combined_realip '$remote_addr $http_x_forwarded_for [$time_local]'
+'$host "$request_uri" $status'
+'"$http_referer" "$http_user_agent"';
+log_format 日志格式
+combined_realip 名称，可以随便写
+$remote_addr 远程IP，客户端IP（公网IP）
+$http_x_forwarded_for 代理服务器IP
+[$time_local] 服务器本地时间
+$host 访问主机名（域名）
+$request_uri 访问的URL地址
+$status 状态码
+$http_referer referer
+$http_user_agent user_agent
+
+除了在主配置文件中配置定义日志格式，还要在虚拟主机配置文件中定义：
+vim /usr/local/nginx/conf/vhosts/xing.conf
+ access_log /tmp/nginx_access.log combined_realip;
+ （combined_realip 日志所用格式）
+
+vim /usr/local/nginx/conf/vhosts/xing.conf
+ location ~ .*\.(gif|jpg|jpeg|png|bmp|ico|swf|css|js)$
+        {
+                access_log off;
+        }
+ location ~ (static|cache)
+        {
+                access_log off;
+        }
+10、nginx 日志切割
+vim /usr/local/sbin/nginx_logrotate1.sh
+ #!/bin/bash
+ date=`date -d "-1 day" +%F`（今天切割昨天的）
+ [ -d /tmp/nginx_log ] || mkdir /tmp/nginx_log（判断目录是否存在）
+ mv /tmp/nginx_access.log /tmp/nginx_log/$date.log（将日志移动）
+ /etc/init.d/nginx reload > /dev/null（重新生成 nginx_access.log）
+ cd /tmp/nginx_log/
+ gzip -f $date.log（如果日志太大进行压缩 -f 强制覆盖）
+
+vim /usr/local/sbin/nginx_logrotate2.sh
+ #！/bin/bash
+ # 假设 nginx 日志存放路径为 /data/logs/
+ d=`date -d "-1 day" +%Y%m%d`
+ log_dir="/data/logs"
+ nginx_pid="/user/local/nginx/logs/nginx.pid"
+ cd $log_dir
+ for log in `ls *.log`
+ do
+ 	mv $log $log-$d
+ done
+ /bin/kill -HUP `cat $nginx_pid`（-HUP 让进程挂起，睡眠；动态更新配置，重新加载配置而不用重启服务：更改日志名称后，重新生成新的日志文件 相当于 -s reload）
+ 
+$ sh -x /usr/local/sbin/nginx_logrotate.sh （-x 能看到执行过程; 应加入 cron 里，每天 0 点执行切割脚本）
+清理：
+$ find /tmp/ -name *.log-* -type f -mtime +30 |xargs rm
+$ crontab -e
+ 0 0 * * * /bin/bash /usr/local/sbin/nginx_logrotate.sh
+11、nginx 配置静态文件过期时间（配置静态文件缓存）
+cd /usr/local/nginx/conf/vhosts/
+vim test.conf
+ location ~ .*\.(gif|jpg|jpeg|png|bmp|ico|swf)$ //（\ 脱意）
+        {
+                access_log off;
+                expires 15d;（增加本行）
+        }
+        location ~ \.(js|css)
+        {
+                access_log off;//不记录指定格式文件的日志
+                expires 2h;//配置过期时间
+        }
+12、nginx 配置防盗链
+vim /usr/local/nginx/conf/vhosts/xing.conf 
+ location ~ .*\.(gif|jpg|jpeg|png|bmp|ico|swf|flv|rar|zip|gz|bz2)$
+ location ~* ^.+\.(flv|rar|zip|doc|ppt|xls)$
+        {
+                access_log off;
+                expires 15d;
+                valid_referers none blocked *.xing.com *.x.com;
+                if ($invalid_referer)
+                {
+                        #resturn 403;
+                        deny all;
+                }
+        }
+
+
+curl -e "http://www.baidu.com/test" -I -x127.0.0.1:80 
+'http://www.xing.com/static/image/common/logo.png'（测试；-e referer ）
+$ curl -x 127.0.0.1:80 -I test.com/1.jpg -e "http://www.baidu.com"
+： 403
+$ curl -x 127.0.0.1:80 -I test.com/1.jpg -e "http://www.test.com" 
+: 200
+13、nginx 访问控制
+禁止非法 ip 访问，限制 ip 访问，比如后台只需要管理员登录即可。
+
+需求：访问 /admin/ 目录的请求，只允许某几个 IP 访问，其它 deny
+
+ deny 127.0.0.1（加入黑名单）如果匹配到此条规则，以下再有 127.0.0.1 的忽略，从上向下匹配
+ deny 192.168.1.0/24（禁掉此网段）
+ location ~ .*admin\.php$ {
+           #auth_basic "star auth";
+          allow 127.0.0.1;
+          deny all;
+           auth_basic_user_file /usr/local/nginx/conf/.htpasswd;
+           include fastcgi_params;
+           fastcgi_pass unix:/tmp/www.sock;
+           fastcgi_index index.php;
+           fastcgi_param SCRIPT_FILENAME /data/www$fastcgi_script_name;
+}
+ location /admin/
+ {
+     allow 192.168.95.1;
+     allow 127.0.0.1;
+     deny all;
+ }
+
+测试
+curl -x127.0.0.1:80 www.xing.com/admin.php -I （200）
+curl -x192.168.1.11:80 www.xing.com/admin.php -I（403）
+curl -x192.168.1.11:80 www.xing.com/forum.php -I（200）
+$ curl -x 127.0.0.1:80 test.com/admin/ -I
+: 200
+$ curl -x 192.168.95.11:80 test.com/admin/ -I
+: 403
+匹配正则
+
+location ~ .*(upload|image)/.*\.php$
+{
+    deny all;
+}
+//禁止解析 upload|image 目录里的 php
+$ curl -x 127.0.0.1:80 test.com/upload/1.php
+: 403
+14、nginx 禁止指定 user_agent 访问
+ if ($http_user_agent ~* 'curl|baidu|qq|360|sogou')（~* 不区分大小写的正则匹配）
+ if ($http_user_agent ~* 'Spider/3.0|YoudaoBot|Tomato')
+ if ($http_user_agent ~* "python|curl|wget|httpclient|okhttp")
+ // python 就可以过滤掉 80% 的 Python 爬虫
+        {
+                return 403;
+                return 503;
+        }
+ curl -x192.168.1.11:80 www.xing.com/forum.php -I（测试 403）
+ curl -A "test" -x192.168.1.11:80 www.xing.com/forum.php -I（200）
+$ curl -A "YoudaoBot" -x 127.0.0.1:80 test.com/ -I 
+: 403
+$ curl -A "youdaoBot" -x 127.0.0.1:80 test.com/ -I
+: 403
+tail /tmp/nginx_access.log （可以看到 user_agent）
+15、nginx 解析 php 的配置
+location ~ \.php$
+{
+	include fastcgi_params;
+	fastcgi_pass unix:/tmp/php-fcgi.sock;
+	fastcgi_index index.php;
+	fastcgi_param SCRIPT_FILENAME /data/www/test.com$fastcgi_script_name;
+}
+//fastcgi_pass 用来指定 php-fpm 监听的地址或者 socket
+
+// /usr/local/php-fpm/etc/php-fpm.conf listen 写的什么就要在 nginx 里 fastcgi_pass 写什么
+// SCRIPT_FILENAME 后面的路径和上面的 root 要一致
+// php 配置文件中 listen.mode 如果没写默认是 440 ，属主和属组为 root ，报 502 错误，需要 socket 文件属主和属组为 nobody。
+// 还有一种情况，就是 php-fpm 进程资源耗尽了，也是报502错误
+16、nginx 代理详解
+用户 <------> 代理服务器 <-----------> web 服务器
+
+本测试中 代理服务器就是 虚拟机，web 服务器是 论坛
+
+一个 ip
+
+cd /usr/local/nginx/conf/vhosts/
+vim proxy.conf
+server {
+       listen 80;
+       #server_name www.baidu.com;
+       server_name ask.apelearn.com;
+       
+       location /
+       {
+            #proxy_pass http://119.75.217.109/;（百度 ip）
+             proxy_pass http://47.104.7.242/; //真正要访问的 web 服务器
+             proxy_set_header Host $host; // 域名是上面的 server_name
+             proxy_set_header X-Real-IP $remote_addr;
+             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+       }
+}
+
+$ curl ask.apelearn.com/robots.txt 
+$ curl -x 127.0.0.1:80 ask.apelearn.com/robots.txt
+yum install bind-utils
+dig www.baidu.com （之前的 IP 地址可能失效，可以挖出更多最新的 ip）
+$ dig ask.apelearn.com
+17、nginx 负载均衡
+多个 ip（相当于负载均衡）
+
+vim /usr/local/nginx/conf/vhosts/load.conf
+upstream qq
+{
+        ip_hash;
+        server 111.161.64.40:80;
+        server 111.161.64.48:80;
+}
+server
+{
+        listen 80;
+        server_name www.qq.com;
+        location /
+        {
+                proxy_pass http://qq;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+}
+
+$ curl -x 127.0.0.1:80 www.qq.com
+upstream 用来指定多个 web server
+
+ip_hash 同一用户保证请求在同一机器上
+
+upstream 模块名和 proxy_pass 名称一致
+
+nginx 不支持 https 443
+
+18、SSL
+生成 SSL 密钥对
+
+$ cd /usr/local/nginx/conf
+$ openssl genrsa -des3 -out tmp.key 2048
+//key文件为私钥 -des3 为加密算法
+$ openssl rsa -in tmp.key -out zilo.key
+//转换 key ，取消密码
+$ rm -f tmp.key
+$ openssl req -new -key zilo.key -out zilo.csr
+//生成证书请求文件，需要这个文件和私钥一直产生公钥文件
+//Certificate Signing Request（CSR）
+//req 统一生成密钥对和证书请求，也可以指定是否对私钥文件进行加密
+$ openssl x509 -req -days 365 -in zilo.csr -signkey zilo.key -out zilo.crt //zilo.crt 为公钥
+//x509 命令 进行格式转换及显示证书文件中的 text,module 等信息
+19、nginx 配置 SSL
+$ vim /usr/local/nginx/conf/vhosts/ssl.conf
+server
+{
+    listen 443;
+    server_name test.com
+    index index.html index.php index.htm;
+    root /data/www/test.com;
+    ssl on;
+    ssl_certificate zilo.crt;
+    ssl_certificate_key zilo.key;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+}
+报错：nginx: [emerg] unknown directive “ssl” 需要重新编译
+
+$ /usr/local/nginx/sbin/nginx -V
+$ cd /usr/local/src/nginx-1.14.0/
+$ .configure --help | grep -i ssl
+$ ./configure --prefix=/usr/local/nginx --with-http_ssl_module
+$ -t && -s reload
+$ /etc/init.d/nginx restart
+$ netstat -lntp
+:443
+$ vim /etc/hosts
+:127.0.0.1 test.com
+$ curl https://test.com/
+
+在 windows hosts 中添加： 192.168.95.11 test.com 用浏览器访问 https://test.com
+20、php-fpm 的 pool
+$ vim /usr/local/php-fpm/etc/php-fpm.conf
+// 在 [global] 部分增加
+ include = etc/php-fpm.d/*.conf
+$ mkdir /usr/local/php/etc/php-fpm.d/
+$ cd /usr/local/php-fpm/etc/php-fpm.d/
+$ vim www.conf
+ [www]
+ listen = /tmp/www.sock
+ listen.mode = 666
+ user = php-fpm
+ group = php-fpm
+ pm = dynamic
+ pm.max_children = 50
+ pm.start_servers = 20
+ pm.min_spare_servers = 5
+ pm.max_spare_servers = 35
+ pm.max_requests = 500
+ rlimit_files = 1024
+每个站点隔离开，单独写一个 pool 在 nignx 配置文件中可以根据不同站点配置不同的 socket
+
+21、php-fpm 慢执行日志
+$ vim /usr/local/php-fpm/etc/php-fpm.d/www.conf
+ [wwww]
+ request_slowlog_timeout = 2 //超过 2 秒就要记录日志
+ slowlgo = /usr/local/php-fpm/var/log/www-slow.log
+$ vim /usr/local/nginx/conf/vhosts/test.com.conf
+ unix:/tmp/php-fcgi.sock --> unix:/tmp/www.sock
+$ /etc/init.d/nginx restart
+$ vim /data/www/test.com/sleep.php
+ <?php echo "test slow log";sleep(3); echo "done"; ?>
+$ curl -x 127.0.0.1:80 test.com/sleep.php
+$ cat /usr/local/php-fpm/var/log/www-slow.log
+22、php-fpm 定义 open_basedir
+有多个网站不适合在 php.ini 中定义
+
+在 Apache 虚拟主机配置文件中定义 open_basedir
+在 php-fpm 中根据不同的不同的网站不同的 pool 定义不同的open_basedir
+$ vim /usr/local/php-fpm/etc/php-fpm.d/www.conf
+ php_admin_value[open_basedir]=/data/www/test.com:/tmp/
+$ vim /usr/local/php-fpm/etc/php.ini
+//定义 php-fpm 错误日志和日志级别
+ error_log = /usr/local/php-fpm/var/log/php-fpm_errors.log
+ error_reporting = E_ALL
+touch /usr/local/php-fpm/var/log/php-fpm_errors.log
+chmod 777 /usr/local/php-fpm/var/log/php-fpm_errors.log
+//以上两步操作防止不能正常写入日志
+23、php-fpm 进程管理
+pm = dynamic
+//process manage dynamic 动态进程管理 一开始先启动20个服务，当访问量增加，动态增加子进程，如服务器比较空闲可自动销毁子进程
+//static 静态 只有 pm.max_children = 50 生效，启动就50个子进程，不变
+pm.max_children = 50
+//最大子进程数
+pm.start_servers = 20
+//启动服务时启动的子进程
+pm.min_spare_servers = 5
+//在空闲时段，子进程最小数，如果达到数值，php-fpm 会自动派生新的子进程
+pm.max_spare_servers = 35
+//空闲时段，子进程最大数，如果达到数值，就开始清理空闲的子进程
+pm.max_requests = 500
+//一个子进程最多处理的请求数，一个 Php-fpm 子进程最多可以处理的请求数，当达到这个数值会自动退出
