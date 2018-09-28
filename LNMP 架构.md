@@ -1,8 +1,8 @@
 
-LNMP 架构搭建与优化
-提供 web 服务的是 Nginx,php 是作为独立服务存在的，名字叫做 php-fpm ，Nginx 直接处理静态请求，动态请求会转发给 php-fpm。
+LNMP 架构
 
-[LNMP 架构图](https://ww1.sinaimg.cn/large/005BYqpgly1frj6bxzho9j30cs07waa8.jpg)
+![LNMP 架构图](https://ww1.sinaimg.cn/large/005BYqpgly1frj6bxzho9j30cs07waa8.jpg)
+提供 web 服务的是 Nginx,php 是作为独立服务存在的，名字叫做 php-fpm ，Nginx 直接处理静态请求，动态请求会转发给 php-fpm。
 
 1、php编译安装
 第一步先安装 mysql（和 lamp 一样），跳过。
