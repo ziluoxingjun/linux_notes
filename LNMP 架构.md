@@ -106,7 +106,7 @@ $ ./configure \
 --with-fpm-user=php-fpm \
 --with-fpm-group=php-fpm \
 --with-mysql=/usr/local/mariadb \
---with-mysqli=/usr/local/mysql/bin/mysql_config \
+--with-mysqli=/usr/local/mariadb/bin/mysql_config \
 --with-pdo-mysql=/usr/local/mariadb \
 --with-mysql-sock=/tmp/mysql.sock \
 --with-libxml-dir \
