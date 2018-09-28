@@ -316,7 +316,7 @@ http
     gzip_types text/plain application/x-javascript text/css text/htm application/xml;
     server
     {
-         listen 80 default_server;（也可以 default ,这个就是默认虚拟主机）   
+         listen 80 default_server; 
          server_name localhost;
          index index.html index.htm index.php;     
          root /usr/local/nginx/html;
@@ -330,18 +330,37 @@ http
          } 
     }
 }
- curl -x127.0.0.1:80 wfsda.com（随便写，全是403）
-如果有其它虚拟主机，其它域名：
-cd /usr/local/nginx/conf/vhosts
-vim 111.conf
-  server
-  {
-     listen 80;
-       server_name 111.com;
-       index index.html index.htm index.php;
-       root /data/www;
-  }
+
+$ curl localhost 
+$ curl 127.0.0.1
+```
+
+## 6、Nginx 默认虚拟主机
+```bash
+$ vim /usr/local/nginx/conf/nginx.conf
+http
+{
+
+    ...
+    gzip_types text/plain application/x-javascript text/css text/htm application/xml;
+    include vhosts/*.conf;
 }
+$ mkdir /usr/local/nginx/conf/vhosts
+$ vim /usr/local/nginx/conf/vhosts/aaa.com.conf
+server
+{
+    listen 80 default_server; //也可以 default ,这个就是默认虚拟主机
+    server_name aaa.com;
+    index index.html index.htm index.php;
+    root /data/wwwroot/aaa.com;
+}
+$ mkdir /data/wwwroot/aaa.com -p
+$ vim /data/wwwroot/aaa.com/index.php
+$ /usr/local/nginx/sbin/nginx -t
+$ /usr/local/nginx/sbin/nginx -s reload
+
+ curl -x127.0.0.1:80 wfsda.com（随便写，全是403）
+
 curl -x127.0.0.1:80 111.com/forum.php -I
 200 ok
 
