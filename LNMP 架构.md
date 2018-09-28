@@ -129,6 +129,15 @@ $ ./configure \
 $ make && make install
 ```
 
+#### 报错
+> ```bash
+> configure: error: wrong mysql library version or lib not found. Check config.log for more information.
+>> 将 --with-mysqli 后面的路径删掉重新编译，因为php本身有这个模块，不用再添加 mysql 的配置文件路径。
+>
+> configure: error: PDO_MYSQL configure failed, MySQL 4.1 needed. Please check config.log for more information.
+>> 将 --with-pdo-mysql 后面的路径删掉重新 configure
+> ```
+
 #### 3、拷贝配置和启动脚本
 ```bash
 $ cp php.ini-production /usr/local/php-fpm/etc/php.ini
