@@ -79,18 +79,25 @@ $ killall mysqld（比直接 kill pid 安全些，会停止当前的读写再杀
 >
 > $ yum list | grep perl | grep -i dumper
 > $ yum install perl-Data-Dumper
-> ```
+> 
+> ./bin/mysqld: error while loading shared libraries: libaio.so.1: cannot open shared object file: No such file or directory
+> $ yum install libaio-devel
 ```
 
 
-1、php编译安装
-第一步先安装 mysql（和 lamp 一样），跳过。
+## 2、php安装
 
-wget http://cn2.php.net/distributions/php-5.5.45.tar.bz2
-tar jxvf php-5.5.45.tar.bz2 
-cd php-5.5.45
-make clean //可将之前编译过的文件全部删除
-./configure \
+#### 1、下载、解压
+```bash
+$ wget http://cn2.php.net/distributions/php-5.5.45.tar.bz2
+$ tar jxvf php-5.5.45.tar.bz2 
+$ cd php-5.5.45
+```
+
+#### 2、编译、安装
+```bash
+$ make clean //可将之前编译过的文件全部删除
+$ ./configure \
 --prefix=/usr/local/php-fpm \
 --with-config-file-path=/usr/local/php-fpm/etc \
 --enable-fpm \
@@ -116,20 +123,27 @@ make clean //可将之前编译过的文件全部删除
 --with-pear \
 --with-curl \
 --with-openssl \
-# --disable-ipv6 
+# --disable-ipv6
+$ make && make install
+```
 
-make
-echo $?
-make install（之前应该先 rm -rf /usr/local/php 比较妥当）
+#### 3、拷贝配置和启动脚本
+```bash
+$ cp php.ini-production /usr/local/php-fpm/etc/php.ini
+$ cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+$ chmod 755 /etc/init.d/php-fpm 
+```
 
-cp php.ini-production /usr/local/php-fpm/etc/php.ini
-cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
-chmod 755 /etc/init.d/php-fpm 
-chkconfig --add php-fpm
-chkconfig php-fpm on（开机启动）
+#### 4、加入系统服务项并设为开机启动
+```bash
+$ chkconfig --add php-fpm
+$ chkconfig php-fpm on
+```
 
-cd /usr/local/php-fpm/etc
-mv php-fpm.conf.default php-fpm.conf
+#### 5、修改配置
+```bash
+$ cd /usr/local/php-fpm/etc
+$ mv php-fpm.conf.default php-fpm.conf
  [global]
 pid = /usr/local/php-fpm/var/run/php-fpm.pid
 error_log = /usr/local/php-fpm/var/log/php-fpm.log
@@ -147,10 +161,11 @@ pm.max_spare_servers = 35
 pm.max_requests = 500
 rlimit_files = 1024
 
-useradd -s /sbin/nologin php-fpm
+$ useradd -s /sbin/nologin php-fpm
+$ /usr/local/php-fpm/sbin/php-fpm -t
+```
 
-/usr/local/php-fpm/sbin/php-fpm -t
-2、nginx 编译安装
+## 3、nginx 编译安装
 cd /usr/local/src
 wget http://nginx.org/download/nginx-1.14.0.tar.gz
 tar xvf nginx-1.14.0.tar.gz
