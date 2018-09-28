@@ -1,5 +1,5 @@
 
-## LNMP 架构
+# LNMP 架构
 
 ![LNMP 架构图](https://ww1.sinaimg.cn/large/005BYqpgly1frj6bxzho9j30cs07waa8.jpg)
 
@@ -174,21 +174,23 @@ $ useradd -s /sbin/nologin php-fpm
 $ /usr/local/php-fpm/sbin/php-fpm -t
 ```
 
-## 3、nginx 编译安装
-cd /usr/local/src
-wget http://nginx.org/download/nginx-1.14.0.tar.gz
-tar xvf nginx-1.14.0.tar.gz
-cd nginx-1.14.0
-./configure --prefix=/usr/local/nginx --with-pcre（做正则的）
-yum install -y pcre-devel
-make
-make install
+## 3、nginx 安装
+> Nignx 应用场景：web 服务器、反向代理、负载均衡
 
-/usr/local/nginx/sbin/nginx （启动）
-/usr/local/nginx/sbin/nginx -t
-如果有 apache 会占用 80 端口，先停掉才能启动
+```bash
+$ cd /usr/local/src
+$ wget http://nginx.org/download/nginx-1.14.0.tar.gz
+$ tar xvf nginx-1.14.0.tar.gz
+$ cd nginx-1.14.0
+$ ./configure --prefix=/usr/local/nginx --with-pcre //做正则的
+$ yum install -y pcre-devel
+$ make && make install
+$ /usr/local/nginx/sbin/nginx //启动
+$ /usr/local/nginx/sbin/nginx -t
+# 如果有 apache 会占用 80 端口，先停掉才能启动
+# 在配置 php nginx 之前，两者无法联系在一起，需要手动配置，才能正常成功解析 php 网站
+```
 
-在配置 php nginx 之前，两者无法联系在一起，需要手动配置，才能正常成功解析 php 网站
 3、测试 php 解析
 $ vim /usr/local/nginx/conf/nginx.conf
 location ~ \.php$ {
