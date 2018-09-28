@@ -20,16 +20,16 @@ $ tar zxvf mariadb-10.2.18-linux-glibc_214-x86_64.tar.gz
 $ useradd -s /sbin/nologin mysql
 ```
 
-##### 3、将解压完的目录移动到 /usr/local/mysql
+##### 3、将解压完的目录移动到 /usr/local/mariadb
 ```bash
 $ mv mariadb-10.2.18-linux-glibc_214-x86_64 /usr/local/mariadb
 ```
 
 ##### 4、初始化数据库
 ```bash
-$ cd /usr/local/mysql/
-$ mkdir -p /data/mysql
-$ chown -R mysql /data/mysql
+$ cd /usr/local/mariadb/
+$ mkdir -p /data/mariadb
+$ chown -R mysql /data/mariadb
 $ ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mariadb/ --datadir=/data/mariadb
 ```
 
