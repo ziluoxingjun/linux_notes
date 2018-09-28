@@ -358,6 +358,8 @@ $ mkdir /data/wwwroot/aaa.com -p
 $ vim /data/wwwroot/aaa.com/index.php
 $ /usr/local/nginx/sbin/nginx -t
 $ /usr/local/nginx/sbin/nginx -s reload
+$ curl localhost
+$ curl -x127.0.0.1:80 abc.com
 
  curl -x127.0.0.1:80 wfsda.com（随便写，全是403）
 
