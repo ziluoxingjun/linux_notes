@@ -173,6 +173,11 @@ rlimit_files = 1024
 $ useradd -s /sbin/nologin php-fpm
 $ /usr/local/php-fpm/sbin/php-fpm -t
 ```
+> 如果 pm=static,只有这一条配置生效 pm.max_children = 50
+
+> 可以指定 aaa.com.conf 用 www 这个 pool，bbb.com.conf 用 www1 这个 pool
+
+> 可以在 Nginx 配置文件里 fastcgi_pass unix:/tmp/php-fcgi.sock; 指定用哪个 pool，www.sock www1.sock，也可以都用一个sock（pool），好处是可以分别指定用户名，设置权限。如果一个访问量过大，down 掉了，另一个不受影响。
 
 ## 3、nginx 安装
 > Nignx 应用场景：web 服务器、反向代理、负载均衡
@@ -361,15 +366,64 @@ $ /usr/local/nginx/sbin/nginx -s reload
 $ curl localhost
 $ curl -x127.0.0.1:80 abc.com
 
- curl -x127.0.0.1:80 wfsda.com（随便写，全是403）
-
-curl -x127.0.0.1:80 111.com/forum.php -I
+$ curl -x127.0.0.1:80 111.com/forum.php -I
 200 ok
 
-如果用第 10 行 sock 监听：
-curl -x127.0.0.1:80 111.com/forum.php -I
+# 如果用第 10 行 sock 监听：
+$ curl -x127.0.0.1:80 111.com/forum.php -I
 502 Bad Gateway
 ```
+
+## 7、nginx 用户认证
+```bash
+$ vim /usr/local/nginx/conf/vhosts/aaa.com.conf
+ location ~ .*admin\.php$ { //~ 是匹配的意思
+      auth_basic "aaa.com auth";
+      auth_basic_user_file /usr/local/nginx/conf/.htpasswd;
+      #include fastcgi_params;
+      #fastcgi_pass unix:/tmp/www.sock;
+      #fastcgi_index index.php;
+      #fastcgi_param SCRIPT_FILENAME /data/www$fastcgi_script_name;
+ }
+
+$ vim /usr/local/nginx/conf/vhost/bbb.com.conf
+server
+{
+    listen 80;
+    server_name bbb.com
+    index index.html index.htm index.php
+    root /data/wwwroot/bbb.com
+    #location /admin/
+    location ~ admin.php
+    {
+        auth_basic 			"Auth"
+        auth_basic_user_file /user/local/nginx/conf/htpasswd
+    }
+}
+# 如果没有 htpasswd 工具，需要安装：
+$ yum install httpd
+$ htpasswd -c /usr/local/nginx/conf/htpasswd star
+$ cat /usr/local/nginx/conf/.htpasswd 
+$ htpasswd /usr/local/nginx/conf/.htpasswd star1（再次创建不要 -c ，否则会删除之前的）
+$ /usr/local/nginx/sbin/nginx -t && /usr/local/nginx/sbin/nginx -s reload
+$ service nginx configtest
+$ service nginx reload
+
+$ curl -x127.0.0.1:80 www.xing.com/admin.php（显示 401 说明需要用户名和密码）
+$ curl -x127.0.0.1:80 -ustar:star/ www.xing.com/admin.php -I
+$ curl -x 127.0.0.1:80 test.com
+: 401 Authorization Required
+$ curl -u test:123456 -x 127.0.0.1:80 test.com
+$ curl -x 127.0.0.1:80 test.com/admin/ -I
+ : 401 Unauthorized
+ $ curl -x 127.0.0.1:80 test.com/admin/ -u test:123456 -I
+ : 200 OK
+ $ curl -x 127.0.0.1:80 test.com/admin.php -I
+ : 401
+
+
+
+
 
 3、测试 php 解析
 $ vim /usr/local/nginx/conf/nginx.conf
@@ -472,52 +526,7 @@ ps aux |grep nginx（可以看到是 nobody 在读这个文件）
 vim /usr/local/php/etc/php-fpm.conf（在文件中添加配置，指定监听用户和组）
  listen.owner = nobody
  listen.group = nobody
-7、nginx 用户认证
-vim /usr/local/nginx/conf/vhosts/xing.conf
- location ~ .*admin\.php$ {（~ 是匹配的意思）
-      auth_basic "star auth";
-      auth_basic_user_file /usr/local/nginx/conf/.htpasswd;
-      include fastcgi_params;
-      fastcgi_pass unix:/tmp/www.sock;
-      fastcgi_index index.php;
-      fastcgi_param SCRIPT_FILENAME /data/www$fastcgi_script_name;
- }
 
-vim /usr/local/nginx/conf/vhost/test.conf.conf
-server
-{
-    listen 80;
-    server_name test.com
-    index index.html index.htm index.php
-    root /data/www/test.com
-    
-    #location /admin/
-    location ~ admin.php
-    {
-        auth_basic 			"Auth"
-        auth_basic_user_file /user/local/nginx/conf/htpasswd
-    }
-}
-如果没有 htpasswd 工具，需要安装：
-yum install httpd
-htpasswd -c /usr/local/nginx/conf/htpasswd star
-cat /usr/local/nginx/conf/.htpasswd 
-htpasswd /usr/local/nginx/conf/.htpasswd star1（再次创建不要 -c ，否则会删除之前的）
-/usr/local/nginx/sbin/nginx -t && /usr/local/nginx/sbin/nginx -s reload
-service nginx configtest
-service nginx reload
-
-curl -x127.0.0.1:80 www.xing.com/admin.php（显示 401 说明需要用户名和密码）
-curl -x127.0.0.1:80 -ustar:star/ www.xing.com/admin.php -I
-$ curl -x 127.0.0.1:80 test.com
-: 401 Authorization Required
-$ curl -u test:123456 -x 127.0.0.1:80 test.com
-$ curl -x 127.0.0.1:80 test.com/admin/ -I
- : 401 Unauthorized
- $ curl -x 127.0.0.1:80 test.com/admin/ -u test:123456 -I
- : 200 OK
- $ curl -x 127.0.0.1:80 test.com/admin.php -I
- : 401
 8、nginx 域名跳转
 目的是为了对搜索引擎友好，加重 www.xing.com 权重
 
