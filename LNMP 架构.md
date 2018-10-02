@@ -530,15 +530,14 @@ server
 ## 12、nginx 配置防盗链
 ```bash
 $ vim /usr/local/nginx/conf/vhosts/bbb.com.conf 
- location ~ .*\.(gif|jpg|jpeg|png|bmp|ico|swf|flv|rar|zip|gz|bz2|xls|docx|ppt)$
- location ~* ^.+\.(flv|rar|zip|doc|ppt|xls)$
+ # location ~ .*\.(gif|jpg|jpeg|png|bmp|ico|swf|flv|rar|zip|gz|bz2|xls|docx|ppt)$
+ location ~* ^.+\.(flv|rar|zip|doc|ppt|xls)$ // ~* 表示后缀名不区分大小写，正则和上面的一样
         {
                 expires 7d;
                 valid_referers none blocked server_names *.bbb.com;
                 if ($invalid_referer)
                 {
-                        #resturn 403;
-                        deny all;
+                        resturn 403;
                 }
                 access_log off;
         }
@@ -547,7 +546,7 @@ $ vim /usr/local/nginx/conf/vhosts/bbb.com.conf
 $ curl -e "http://www.baidu.com/test" -I -x127.0.0.1:80 'http://www.xing.com/static/image/common/logo.png' //测试；-e referer
 $ curl -x 127.0.0.1:80 -I bbb.com/1.jpg -e "http://www.baidu.com"
 HTTP/1.1 403 Forbidden
-$ curl -x 127.0.0.1:80 -I bbb.com/1.jpg -e "http://www.test.com" 
+$ curl -x 127.0.0.1:80 -I bbb.com/1.jpg -e "http://www.bbb.com" 
 HTTP/1.1 200 OK
 ```
 
