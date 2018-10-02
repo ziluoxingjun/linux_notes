@@ -409,17 +409,54 @@ $ /usr/local/nginx/sbin/nginx -t && /usr/local/nginx/sbin/nginx -s reload
 $ service nginx configtest
 $ service nginx reload
 
-$ curl -x127.0.0.1:80 www.xing.com/admin.php //显示 401 说明需要用户名和密码
-$ curl -x127.0.0.1:80 -ustar:star/ www.xing.com/admin.php -I
-$ curl -x 127.0.0.1:80 test.com
+$ curl -x127.0.0.1:80 bbb.com/admin.php //显示 401 说明需要用户名和密码
+$ curl -x127.0.0.1:80 -ubbb:bbb bbb.com/admin.php -I
+$ curl -x 127.0.0.1:80 bbb.com
 : 401 Authorization Required
-$ curl -u test:123456 -x 127.0.0.1:80 test.com
 $ curl -x 127.0.0.1:80 test.com/admin/ -I
  : 401 Unauthorized
  $ curl -x 127.0.0.1:80 test.com/admin/ -u test:123456 -I
  : 200 OK
  $ curl -x 127.0.0.1:80 test.com/admin.php -I
  : 401
+
+## 8、nginx 域名跳转
+> 目的是为了对搜索引擎友好，加重网站权重,在搜索引擎：site:www.apelearn.com site:ithome.com 检查权重
+
+```bash
+$ vim /usr/local/nginx/conf/vhosts/test.com.conf
+server|
+{
+    listen 80;
+    server_name test.com test1.com test2.com;//支持写多个域名
+    index index.html index.htm index.php
+    root /data/www/test.com
+ 	if ($host != 'test.com')
+     {
+          #rewrite ^/(.*)$ http://www.test.com/$1 permanent;
+          rewrite http://$host/(.*)$ http://test.com/$1 permanent
+     }
+}
+//permanent 301
+//redirect 302
+$ curl -x127.0.0.1:80 test.com/test -I（测试）
+$ curl -x 127.0.0.1:80 test1.com/index.html -I
+:301
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -527,33 +564,7 @@ vim /usr/local/php/etc/php-fpm.conf（在文件中添加配置，指定监听用
  listen.owner = nobody
  listen.group = nobody
 
-8、nginx 域名跳转
-目的是为了对搜索引擎友好，加重 www.xing.com 权重
 
-在百度：
-
-site:www.xing.com
-
-site:x.com 检查权重
-
-vim /usr/local/nginx/conf/vhosts/test.com.conf
-server|
-{
-    listen 80;
-    server_name test.com test1.com test2.com;//支持写多个域名
-    index index.html index.htm index.php
-    root /data/www/test.com
- 	if ($host != 'test.com')
-     {
-          #rewrite ^/(.*)$ http://www.test.com/$1 permanent;
-          rewrite http://$host/(.*)$ http://test.com/$1 permanent
-     }
-}
-//permanent 301
-//redirect 302
-curl -x127.0.0.1:80 test.com/test -I（测试）
-$ curl -x 127.0.0.1:80 test1.com/index.html -I
-:301 
 9、nginx不记录指定文件类型日志
 /usr/local/nginx/conf/nginx.conf
 log_format combined_realip '$remote_addr $http_x_forwarded_for [$time_local]'
