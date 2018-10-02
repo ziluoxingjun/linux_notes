@@ -402,14 +402,14 @@ server
 }
 # 如果没有 htpasswd 工具，需要安装：
 $ yum install httpd
-$ htpasswd -c /usr/local/nginx/conf/htpasswd star
-$ cat /usr/local/nginx/conf/.htpasswd 
-$ htpasswd /usr/local/nginx/conf/.htpasswd star1（再次创建不要 -c ，否则会删除之前的）
+$ htpasswd -c /usr/local/nginx/conf/htpasswd bbb
+$ cat /usr/local/nginx/conf/htpasswd 
+$ htpasswd /usr/local/nginx/conf/htpasswd ccc //再次创建不要 -c ，否则会删除之前的
 $ /usr/local/nginx/sbin/nginx -t && /usr/local/nginx/sbin/nginx -s reload
 $ service nginx configtest
 $ service nginx reload
 
-$ curl -x127.0.0.1:80 www.xing.com/admin.php（显示 401 说明需要用户名和密码）
+$ curl -x127.0.0.1:80 www.xing.com/admin.php //显示 401 说明需要用户名和密码
 $ curl -x127.0.0.1:80 -ustar:star/ www.xing.com/admin.php -I
 $ curl -x 127.0.0.1:80 test.com
 : 401 Authorization Required
