@@ -614,14 +614,14 @@ location ~ \.php$
 { 
 	include fastcgi_params;
 	fastcgi_pass unix:/tmp/php-fcgi.sock;
-        #fastcgi_pass   127.0.0.1:9000; // fastcgi_pass 用来指定 php-fpm 监听的地址或 socket
+        #fastcgi_pass 127.0.0.1:9000; // fastcgi_pass 用来指定 php-fpm 监听的地址或 socket
 	fastcgi_index index.php;
 	fastcgi_param SCRIPT_FILENAME /data/wwwroot/bbb.com$fastcgi_script_name;
 }
 
 $ /usr/local/nginx/sbin/nginx -s reload
 ```
-
+> 如果 fastcgi_pass unix:/tmp/php-fcgi.sock; 配置错误就会 502 Bad Gateway
 
 
 
