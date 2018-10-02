@@ -396,8 +396,8 @@ server
     #location /admin/
     location ~ admin.php
     {
-        auth_basic 			"Auth"
-        auth_basic_user_file /user/local/nginx/conf/htpasswd
+        auth_basic 			"Auth";
+        auth_basic_user_file /usr/local/nginx/conf/htpasswd;
     }
 }
 # 如果没有 htpasswd 工具，需要安装：
