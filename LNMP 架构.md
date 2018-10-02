@@ -425,22 +425,22 @@ $ curl -x 127.0.0.1:80 test.com/admin/ -I
 > 目的是为了对搜索引擎友好，加重网站权重,在搜索引擎：site:www.apelearn.com site:ithome.com 检查权重
 
 ```bash
-$ vim /usr/local/nginx/conf/vhosts/test.com.conf
+$ vim /usr/local/nginx/conf/vhosts/bbb.com.conf
 server|
 {
     listen 80;
-    server_name test.com test1.com test2.com;//支持写多个域名
+    server_name bbb.com bbb1.com bbb2.com;//支持写多个域名
     index index.html index.htm index.php
-    root /data/www/test.com
- 	if ($host != 'test.com')
+    root /data/www/bbb.com
+ 	if ($host != 'bbb.com')
      {
-          #rewrite ^/(.*)$ http://www.test.com/$1 permanent;
-          rewrite http://$host/(.*)$ http://test.com/$1 permanent
+          #rewrite ^/(.*)$ http://bbb.com/$1 permanent;
+          rewrite http://$host/(.*)$ http://bbb.com/$1 permanent
      }
 }
 # permanent 301 redirect 302
-$ curl -x127.0.0.1:80 test.com/test -I
-$ curl -x 127.0.0.1:80 test1.com/index.html -I
+$ curl -x127.0.0.1:80 bbb.com/test -I
+$ curl -x 127.0.0.1:80 bbb1.com/index.html -I
 :301
 ```
 
