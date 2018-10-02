@@ -442,9 +442,27 @@ $ curl -x 127.0.0.1:80 bbb1.com/index.html -I
 301 Moved Permanently
 ```
 
+## 9、nginx 访问日志
+| $remote_addr           | 客户端IP（公网IP）  |
+| $http_x_forwarded_for | 代理服务器 IP       |
+| $time_local            | 服务器本地时间       |
+| $host                  | 访问主机名（域名）    |
+| $request_uri           | 访问的 URI 地址     |
+| $status                | 状态码               |
+| $http_referer          | referer             |
+| $http_user_agent       | user_agent          |
 
 
-
+|                       |                    |
+| --------------------- | ------------------ |
+| $remote_addr          | 客户端IP（公网IP） |
+| $http_x_forwarded_for | 代理服务器IP       |
+| $time_local           | 服务器本地时间     |
+| $host                 | 访问主机名（域名） |
+| $request_uri          | 访问的 URI 地址    |
+| $status               | 状态码             |
+| $http_referer         | referer            |
+| $http_user_agent      | user_agent         |
 
 
 
