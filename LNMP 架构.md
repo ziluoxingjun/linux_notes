@@ -500,8 +500,6 @@ $ crontab -e
 ```
 
 ## 11、nginx 静态文件不记录日志和过期时间
-
-9、nginx不记录指定文件类型日志
 ```bash
 $ vim /usr/local/nginx/conf/vhosts/bbb.com.conf
 server
