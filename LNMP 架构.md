@@ -499,6 +499,63 @@ $ crontab -e
  0 0 * * * /bin/bash /usr/local/sbin/nginx_logrotate.sh
 ```
 
+## 11、nginx 静态文件不记录日志和过期时间
+
+9、nginx不记录指定文件类型日志
+```bash
+$ vim /usr/local/nginx/conf/vhosts/bbb.com.conf
+server
+{
+    listen 80;
+    server_name bbb.com bcbc.com;
+    index index.html index.htm index.php;
+    root /data/wwwroot/bbb.com;
+    access_log /usr/local/nginx/logs/bbb.com.log log_name;
+    location ~ .*\.(gif|jpg|jpeg|png|ico|bmp|swf)$ // \脱意
+    {
+        expires 7d; //配置静态文件缓存
+        access_log off;
+    }
+    location ~ .*\.(js|css)$
+    {
+        expires 12h;
+        access_log off;
+    }
+    location ~ (static|cache)
+    {
+        expires 2h;
+        access_log off;
+    }
+}
+```
+
+## 12、
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -612,50 +669,7 @@ vim /usr/local/php/etc/php-fpm.conf（在文件中添加配置，指定监听用
  listen.group = nobody
 
 
-9、nginx不记录指定文件类型日志
-/usr/local/nginx/conf/nginx.conf
-log_format combined_realip '$remote_addr $http_x_forwarded_for [$time_local]'
-'$host "$request_uri" $status'
-'"$http_referer" "$http_user_agent"';
-log_format 日志格式
-combined_realip 名称，可以随便写
-$remote_addr 远程IP，客户端IP（公网IP）
-$http_x_forwarded_for 代理服务器IP
-[$time_local] 服务器本地时间
-$host 访问主机名（域名）
-$request_uri 访问的URL地址
-$status 状态码
-$http_referer referer
-$http_user_agent user_agent
 
-除了在主配置文件中配置定义日志格式，还要在虚拟主机配置文件中定义：
-vim /usr/local/nginx/conf/vhosts/xing.conf
- access_log /tmp/nginx_access.log combined_realip;
- （combined_realip 日志所用格式）
-
-vim /usr/local/nginx/conf/vhosts/xing.conf
- location ~ .*\.(gif|jpg|jpeg|png|bmp|ico|swf|css|js)$
-        {
-                access_log off;
-        }
- location ~ (static|cache)
-        {
-                access_log off;
-        }
-
-11、nginx 配置静态文件过期时间（配置静态文件缓存）
-cd /usr/local/nginx/conf/vhosts/
-vim test.conf
- location ~ .*\.(gif|jpg|jpeg|png|bmp|ico|swf)$ //（\ 脱意）
-        {
-                access_log off;
-                expires 15d;（增加本行）
-        }
-        location ~ \.(js|css)
-        {
-                access_log off;//不记录指定格式文件的日志
-                expires 2h;//配置过期时间
-        }
 12、nginx 配置防盗链
 vim /usr/local/nginx/conf/vhosts/xing.conf 
  location ~ .*\.(gif|jpg|jpeg|png|bmp|ico|swf|flv|rar|zip|gz|bz2)$
