@@ -624,7 +624,33 @@ $ /usr/local/nginx/sbin/nginx -s reload
 > 如果 fastcgi_pass unix:/tmp/php-fcgi.sock; 配置错误就会 502 Bad Gateway,因为找不到 socket 文件
 
 
+## nginx & php-fpm
+```bash
+Nginx 和 PHP-FPM 的进程间通信有两种方式，一种是 TCP,一种是 UNIX Domain Socket.
+其中 TCP 是 IP 加端口，可以跨服务器.而 UNIX Domain Socket 不经过网络，只能用于 Nginx 跟 PHP-FPM 都在同一服务器的场景。用哪种取决于你的 PHP-FPM 配置：
+方式1：
+php-fpm.conf: listen = 127.0.0.1:9000
+nginx.conf: fastcgi_pass 127.0.0.1:9000;
+方式2：
+php-fpm.conf: listen = /tmp/php-fpm.sock
+nginx.conf: fastcgi_pass unix:/tmp/php-fpm.sock;
+其中 php-fpm.sock 是一个文件，由 php-fpm 生成，类型是srw-rw----.
 
+UNIX Domain Socket 可用于两个没有亲缘关系的进程，是目前广泛使用的 IPC 机制，比如 X Window 服务器和 GUI 程序之间就是通过 UNIX Domain Socket 通讯的。这种通信方式是发生在系统内核里而不会在网络里传播。UNIX Domain Socket 和长连接都能避免频繁创建 TCP 短连接而导致TIME_WAIT 连接过多的问题。对于进程间通讯的两个程序，UNIX Domain Socket 的流程不会走到 TCP 那层，直接以文件形式，以 stream socket 通讯。如果是 TCP Socket,则需要走到 IP 层，对于非同一台服务器上，TCP Socket 走的就更多了。
+
+UNIX Domain Socket:
+Nginx <=> socket <=> PHP-FPM
+TCP Socket(本地回环)：
+Nginx <=> socket <=> TCP/IP <=> socket <=> PHP-FPM
+TCP Socket(Nginx和PHP-FPM位于不同服务器)：
+Nginx <=> socket <=> TCP/IP <=> 物理层 <=> 路由器 <=> 物理层 <=> TCP/IP <=> socket <=> PHP-FPM
+
+像 mysql 命令行客户端连接 mysqld 服务也类似有这两种方式：
+使用 Unix Socket 连接(默认)：
+mysql -uroot -p --protocol=socket --socket=/tmp/mysql.sock
+使用TCP连接:
+mysql -uroot -p --protocol=tcp --host=127.0.0.1 --port=3306
+```
 
 
 
