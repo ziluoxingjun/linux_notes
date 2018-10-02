@@ -527,8 +527,29 @@ server
 }
 ```
 
-## 12、
+## 12、nginx 配置防盗链
+```bash
+$ vim /usr/local/nginx/conf/vhosts/bbb.com.conf 
+ location ~ .*\.(gif|jpg|jpeg|png|bmp|ico|swf|flv|rar|zip|gz|bz2|xls|docx|ppt)$
+ location ~* ^.+\.(flv|rar|zip|doc|ppt|xls)$
+        {
+                expires 7d;
+                valid_referers none blocked server_names *.bbb.com;
+                if ($invalid_referer)
+                {
+                        #resturn 403;
+                        deny all;
+                }
+                access_log off;
+        }
 
+
+$ curl -e "http://www.baidu.com/test" -I -x127.0.0.1:80 'http://www.xing.com/static/image/common/logo.png' //测试；-e referer
+$ curl -x 127.0.0.1:80 -I bbb.com/1.jpg -e "http://www.baidu.com"
+HTTP/1.1 403 Forbidden
+$ curl -x 127.0.0.1:80 -I bbb.com/1.jpg -e "http://www.test.com" 
+HTTP/1.1 200 OK
+```
 
 
 
@@ -667,29 +688,6 @@ vim /usr/local/php/etc/php-fpm.conf（在文件中添加配置，指定监听用
  listen.group = nobody
 
 
-
-12、nginx 配置防盗链
-vim /usr/local/nginx/conf/vhosts/xing.conf 
- location ~ .*\.(gif|jpg|jpeg|png|bmp|ico|swf|flv|rar|zip|gz|bz2)$
- location ~* ^.+\.(flv|rar|zip|doc|ppt|xls)$
-        {
-                access_log off;
-                expires 15d;
-                valid_referers none blocked *.xing.com *.x.com;
-                if ($invalid_referer)
-                {
-                        #resturn 403;
-                        deny all;
-                }
-        }
-
-
-curl -e "http://www.baidu.com/test" -I -x127.0.0.1:80 
-'http://www.xing.com/static/image/common/logo.png'（测试；-e referer ）
-$ curl -x 127.0.0.1:80 -I test.com/1.jpg -e "http://www.baidu.com"
-： 403
-$ curl -x 127.0.0.1:80 -I test.com/1.jpg -e "http://www.test.com" 
-: 200
 13、nginx 访问控制
 禁止非法 ip 访问，限制 ip 访问，比如后台只需要管理员登录即可。
 
