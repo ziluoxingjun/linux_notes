@@ -345,7 +345,6 @@ $ curl 127.0.0.1
 $ vim /usr/local/nginx/conf/nginx.conf
 http
 {
-
     ...
     gzip_types text/plain application/x-javascript text/css text/htm application/xml;
     include vhosts/*.conf;
@@ -608,56 +607,50 @@ $ curl -x127.0.0.1:80 -A "Spider/3.0" bbb.com
 HTTP/1.1 403 Forbidden
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-3、测试 php 解析
+## 14、nginx 解析 php 的配置
+```bash
 $ vim /usr/local/nginx/conf/nginx.conf
-location ~ \.php$ {
-	root           html;
-	fastcgi_pass   127.0.0.1:9000;
-	fastcgi_index  index.php;
-	fastcgi_param  SCRIPT_FILENAME  /usr/local/nginx/html$fastcgi_script_name;
-	include        fastcgi_params;
-}
- 
 location ~ \.php$
 { 
 	include fastcgi_params;
 	fastcgi_pass unix:/tmp/php-fcgi.sock;
+        #fastcgi_pass   127.0.0.1:9000; // fastcgi_pass 用来指定 php-fpm 监听的地址或 socket
 	fastcgi_index index.php;
-	fastcgi_param SCRIPT_FILENAME /data/www/test.com$fastcgi_script_name;
+	fastcgi_param SCRIPT_FILENAME /data/wwwroot/bbb.com$fastcgi_script_name;
 }
 
-$ /usr/local/nginx/sbin/nginx -s reload（重新加载配置文件）
+$ /usr/local/nginx/sbin/nginx -s reload
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 5、php-fpm 配置文件
 ll /usr/local/php-n/etc/php-fpm.conf（php-fpm 服务相关配置）
