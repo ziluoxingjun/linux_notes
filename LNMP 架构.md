@@ -492,6 +492,7 @@ vim /usr/local/sbin/nginx_logrotate2.sh
  done
  /bin/kill -HUP `cat $nginx_pid` //-HUP 让进程挂起，睡眠；动态更新配置，重新加载配置而不用重启服务：更改日志名称后，重新生成新的日志文件 相当于 -s reload
  
+$ chmod 755 /usr/local/sbin/nginx_logrotate.sh
 $ sh -x /usr/local/sbin/nginx_logrotate.sh //-x 能看到执行过程; 应加入 cron 里，每天 0 点执行切割脚本
 清理：
 $ find /tmp/ -name *.log-* -type f -mtime +30 |xargs rm
