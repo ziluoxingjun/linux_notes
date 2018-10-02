@@ -525,6 +525,8 @@ server
         access_log off;
     }
 }
+$ /usr/local/nginx/sbin/nginx -t
+$ /usr/local/nginx/sbin/nginx -s reload
 ```
 
 ## 12、nginx 配置防盗链
@@ -542,7 +544,8 @@ $ vim /usr/local/nginx/conf/vhosts/bbb.com.conf
                 access_log off;
         }
 
-
+$ /usr/local/nginx/sbin/nginx -t
+$ /usr/local/nginx/sbin/nginx -s reload
 $ curl -e "http://www.baidu.com/test" -I -x127.0.0.1:80 'http://www.xing.com/static/image/common/logo.png' //测试；-e referer
 $ curl -x 127.0.0.1:80 -I bbb.com/1.jpg -e "http://www.baidu.com"
 HTTP/1.1 403 Forbidden
@@ -550,8 +553,50 @@ $ curl -x 127.0.0.1:80 -I bbb.com/1.jpg -e "http://www.bbb.com"
 HTTP/1.1 200 OK
 ```
 
+## 13、nginx 访问控制
+> 禁止非法 ip 访问，限制 ip 访问，比如后台只需要管理员登录即可。
 
+> 需求：访问 /admin/ 目录的请求，只允许某几个 IP 访问，其它 deny
+```bash
+$ vim /usr/local/nginx/conf/vhosts/bbb.com.conf 
+ deny 127.0.0.1 //加入黑名单,如果匹配到此条规则，以下再有 127.0.0.1 的忽略，从上向下匹配
+ deny 192.168.1.0/24 //禁掉此网段
+ location ~ .*admin\.php$ {
+           #auth_basic "star auth";
+          allow 127.0.0.1;
+          deny all;
+           auth_basic_user_file /usr/local/nginx/conf/.htpasswd;
+           include fastcgi_params;
+           fastcgi_pass unix:/tmp/www.sock;
+           fastcgi_index index.php;
+           fastcgi_param SCRIPT_FILENAME /data/www$fastcgi_script_name;
+}
+ location /admin/
+ {
+     allow 192.168.95.1;
+     allow 127.0.0.1;
+     deny all;
+ }
 
+$ /usr/local/nginx/sbin/nginx -t
+$ /usr/local/nginx/sbin/nginx -s reload
+$ curl -x127.0.0.1:80 bbb.com/admin.php -I （200）
+$ curl -x192.168.95.145:80 bbb.com/admin.php -I（403）
+$ curl -x192.168.95.145:80 bbb.com/forum.php -I（200）
+$ curl -x 127.0.0.1:80 bbb.com/admin/ -I
+HTTP/1.1 200 OK
+$ curl -x 192.168.95.145:80 test.com/admin/ -I
+HTTP/1.1 403 Forbidden
+
+# 匹配正则
+location ~ .*(upload|image)/.*\.php$
+{
+    deny all;
+}
+//禁止解析 upload|image 目录里的 php
+$ curl -x 127.0.0.1:80 test.com/upload/1.php
+HTTP/1.1 403 Forbidden
+```
 
 
 
@@ -687,47 +732,7 @@ vim /usr/local/php/etc/php-fpm.conf（在文件中添加配置，指定监听用
  listen.group = nobody
 
 
-13、nginx 访问控制
-禁止非法 ip 访问，限制 ip 访问，比如后台只需要管理员登录即可。
 
-需求：访问 /admin/ 目录的请求，只允许某几个 IP 访问，其它 deny
-
- deny 127.0.0.1（加入黑名单）如果匹配到此条规则，以下再有 127.0.0.1 的忽略，从上向下匹配
- deny 192.168.1.0/24（禁掉此网段）
- location ~ .*admin\.php$ {
-           #auth_basic "star auth";
-          allow 127.0.0.1;
-          deny all;
-           auth_basic_user_file /usr/local/nginx/conf/.htpasswd;
-           include fastcgi_params;
-           fastcgi_pass unix:/tmp/www.sock;
-           fastcgi_index index.php;
-           fastcgi_param SCRIPT_FILENAME /data/www$fastcgi_script_name;
-}
- location /admin/
- {
-     allow 192.168.95.1;
-     allow 127.0.0.1;
-     deny all;
- }
-
-测试
-curl -x127.0.0.1:80 www.xing.com/admin.php -I （200）
-curl -x192.168.1.11:80 www.xing.com/admin.php -I（403）
-curl -x192.168.1.11:80 www.xing.com/forum.php -I（200）
-$ curl -x 127.0.0.1:80 test.com/admin/ -I
-: 200
-$ curl -x 192.168.95.11:80 test.com/admin/ -I
-: 403
-匹配正则
-
-location ~ .*(upload|image)/.*\.php$
-{
-    deny all;
-}
-//禁止解析 upload|image 目录里的 php
-$ curl -x 127.0.0.1:80 test.com/upload/1.php
-: 403
 14、nginx 禁止指定 user_agent 访问
  if ($http_user_agent ~* 'curl|baidu|qq|360|sogou')（~* 不区分大小写的正则匹配）
  if ($http_user_agent ~* 'Spider/3.0|YoudaoBot|Tomato')
