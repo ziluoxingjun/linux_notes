@@ -589,12 +589,22 @@ $ curl -x 192.168.95.145:80 test.com/admin/ -I
 HTTP/1.1 403 Forbidden
 
 # 匹配正则
-location ~ .*(upload|image)/.*\.php$
+location ~ .*(upload|image)/.*\.php$ //禁止解析 upload|image 目录里的 php
 {
     deny all;
 }
-//禁止解析 upload|image 目录里的 php
+
 $ curl -x 127.0.0.1:80 test.com/upload/1.php
+HTTP/1.1 403 Forbidden
+
+# 根据 user_agent 限制
+if ($http_user_agent ~ 'Spider/3.0|YoudaoBot|Tomato')
+    {
+        return 403;
+    }
+$  /usr/local/nginx/sbin/nginx -t
+$  /usr/local/nginx/sbin/nginx -s reload
+$ curl -x127.0.0.1:80 -A "Spider/3.0" bbb.com
 HTTP/1.1 403 Forbidden
 ```
 
