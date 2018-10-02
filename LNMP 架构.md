@@ -435,13 +435,11 @@ server|
  	if ($host != 'bbb.com')
      {
           #rewrite ^/(.*)$ http://bbb.com/$1 permanent;
-          rewrite http://$host/(.*)$ http://bbb.com/$1 permanent
+          rewrite http://$host/(.*)$ http://bbb.com/$1 permanent //permanent 301 redirect 302
      }
 }
-# permanent 301 redirect 302
-$ curl -x127.0.0.1:80 bbb.com/test -I
 $ curl -x 127.0.0.1:80 bbb1.com/index.html -I
-:301
+301 Moved Permanently
 ```
 
 
