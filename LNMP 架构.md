@@ -621,7 +621,7 @@ location ~ \.php$
 
 $ /usr/local/nginx/sbin/nginx -s reload
 ```
-> 如果 fastcgi_pass unix:/tmp/php-fcgi.sock; 配置错误就会 502 Bad Gateway
+> 如果 fastcgi_pass unix:/tmp/php-fcgi.sock; 配置错误就会 502 Bad Gateway,因为找不到 socket 文件
 
 
 
