@@ -419,6 +419,7 @@ $ curl -x 127.0.0.1:80 test.com/admin/ -I
  : 200 OK
  $ curl -x 127.0.0.1:80 test.com/admin.php -I
  : 401
+```
 
 ## 8、nginx 域名跳转
 > 目的是为了对搜索引擎友好，加重网站权重,在搜索引擎：site:www.apelearn.com site:ithome.com 检查权重
@@ -437,12 +438,11 @@ server|
           rewrite http://$host/(.*)$ http://test.com/$1 permanent
      }
 }
-//permanent 301
-//redirect 302
-$ curl -x127.0.0.1:80 test.com/test -I（测试）
+# permanent 301 redirect 302
+$ curl -x127.0.0.1:80 test.com/test -I
 $ curl -x 127.0.0.1:80 test1.com/index.html -I
 :301
-
+```
 
 
 
