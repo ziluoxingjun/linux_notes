@@ -617,6 +617,7 @@ location ~ \.php$
         #fastcgi_pass 127.0.0.1:9000; // fastcgi_pass 用来指定 php-fpm 监听的地址或 socket
 	fastcgi_index index.php;
 	fastcgi_param SCRIPT_FILENAME /data/wwwroot/bbb.com$fastcgi_script_name;
+        //脚本文件请求的路径,也就是说当访问 127.0.0.1/index.php 的时候，需要读取网站根目录下面的 index.php 文件，如果没有配置这一配置项时，nginx 不会去网站根目录下访问 .php 文件，所以返回空白
 }
 
 $ /usr/local/nginx/sbin/nginx -s reload
