@@ -443,17 +443,14 @@ $ curl -x 127.0.0.1:80 bbb1.com/index.html -I
 ```
 
 ## 9、nginx 访问日志
-| $remote_addr           | 客户端IP（公网IP）  |
-| $http_x_forwarded_for | 代理服务器 IP       |
-| $time_local            | 服务器本地时间       |
-| $host                  | 访问主机名（域名）    |
-| $request_uri           | 访问的 URI 地址     |
-| $status                | 状态码               |
-| $http_referer          | referer             |
-| $http_user_agent       | user_agent          |
+```bash
+$ vim /usr/local/nginx/conf/nginx.conf
+ 19     log_format log_name '$remote_addr $http_x_forwarded_for [$time_local]'
+ 20     ' $host "$request_uri" $status'
+ 21     ' "$http_referer" "$http_user_agent"';
+```
 
-
-|                       |                    |
+| 变量名                | 说明               |
 | --------------------- | ------------------ |
 | $remote_addr          | 客户端IP（公网IP） |
 | $http_x_forwarded_for | 代理服务器IP       |
