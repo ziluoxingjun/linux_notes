@@ -365,7 +365,6 @@ $ /usr/local/nginx/sbin/nginx -t
 $ /usr/local/nginx/sbin/nginx -s reload
 $ curl localhost
 $ curl -x127.0.0.1:80 abc.com
-
 $ curl -x127.0.0.1:80 111.com/forum.php -I
 200 ok
 
@@ -438,6 +437,8 @@ server|
           rewrite http://$host/(.*)$ http://bbb.com/$1 permanent //permanent 301 redirect 302
      }
 }
+$ /usr/local/nginx/sbin/nginx -t
+$ /usr/local/nginx/sbin/nginx -s reload
 $ curl -x 127.0.0.1:80 bbb1.com/index.html -I
 301 Moved Permanently
 ```
@@ -448,6 +449,11 @@ $ vim /usr/local/nginx/conf/nginx.conf
  19     log_format log_name '$remote_addr $http_x_forwarded_for [$time_local]'
  20     ' $host "$request_uri" $status'
  21     ' "$http_referer" "$http_user_agent"';
+
+$ vim /usr/local/nginx/conf/vhosts/bbb.com.conf
+access_log /usr/local/nginx/logs/bbb.com.log log_name
+$ /usr/local/nginx/sbin/nginx -t
+$ /usr/local/nginx/sbin/nginx -s reload
 ```
 
 | 变量名                | 说明               |
@@ -462,8 +468,36 @@ $ vim /usr/local/nginx/conf/nginx.conf
 | $http_user_agent      | user_agent         |
 
 
+## 10、nginx 日志切割
+```bash
+$ vim /usr/local/sbin/nginx_logrotate1.sh
+ #!/bin/bash
+ date=`date -d "-1 day" +%F`（今天切割昨天的）
+ [ -d /tmp/nginx_log ] || mkdir /tmp/nginx_log（判断目录是否存在）
+ mv /tmp/nginx_access.log /tmp/nginx_log/$date.log（将日志移动）
+ /etc/init.d/nginx reload > /dev/null（重新生成 nginx_access.log）
+ cd /tmp/nginx_log/
+ gzip -f $date.log（如果日志太大进行压缩 -f 强制覆盖）
 
-
+vim /usr/local/sbin/nginx_logrotate2.sh
+ #！/bin/bash
+ # 假设 nginx 日志存放路径为 /data/logs/
+ d=`date -d "-1 day" +%Y%m%d`
+ log_dir="/data/logs"
+ nginx_pid="/user/local/nginx/logs/nginx.pid"
+ cd $log_dir
+ for log in `ls *.log`
+ do
+ 	mv $log $log-$d
+ done
+ /bin/kill -HUP `cat $nginx_pid`（-HUP 让进程挂起，睡眠；动态更新配置，重新加载配置而不用重启服务：更改日志名称后，重新生成新的日志文件 相当于 -s reload）
+ 
+$ sh -x /usr/local/sbin/nginx_logrotate.sh （-x 能看到执行过程; 应加入 cron 里，每天 0 点执行切割脚本）
+清理：
+$ find /tmp/ -name *.log-* -type f -mtime +30 |xargs rm
+$ crontab -e
+ 0 0 * * * /bin/bash /usr/local/sbin/nginx_logrotate.sh
+```
 
 
 
@@ -608,34 +642,7 @@ vim /usr/local/nginx/conf/vhosts/xing.conf
         {
                 access_log off;
         }
-10、nginx 日志切割
-vim /usr/local/sbin/nginx_logrotate1.sh
- #!/bin/bash
- date=`date -d "-1 day" +%F`（今天切割昨天的）
- [ -d /tmp/nginx_log ] || mkdir /tmp/nginx_log（判断目录是否存在）
- mv /tmp/nginx_access.log /tmp/nginx_log/$date.log（将日志移动）
- /etc/init.d/nginx reload > /dev/null（重新生成 nginx_access.log）
- cd /tmp/nginx_log/
- gzip -f $date.log（如果日志太大进行压缩 -f 强制覆盖）
 
-vim /usr/local/sbin/nginx_logrotate2.sh
- #！/bin/bash
- # 假设 nginx 日志存放路径为 /data/logs/
- d=`date -d "-1 day" +%Y%m%d`
- log_dir="/data/logs"
- nginx_pid="/user/local/nginx/logs/nginx.pid"
- cd $log_dir
- for log in `ls *.log`
- do
- 	mv $log $log-$d
- done
- /bin/kill -HUP `cat $nginx_pid`（-HUP 让进程挂起，睡眠；动态更新配置，重新加载配置而不用重启服务：更改日志名称后，重新生成新的日志文件 相当于 -s reload）
- 
-$ sh -x /usr/local/sbin/nginx_logrotate.sh （-x 能看到执行过程; 应加入 cron 里，每天 0 点执行切割脚本）
-清理：
-$ find /tmp/ -name *.log-* -type f -mtime +30 |xargs rm
-$ crontab -e
- 0 0 * * * /bin/bash /usr/local/sbin/nginx_logrotate.sh
 11、nginx 配置静态文件过期时间（配置静态文件缓存）
 cd /usr/local/nginx/conf/vhosts/
 vim test.conf
