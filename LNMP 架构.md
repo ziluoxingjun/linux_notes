@@ -709,7 +709,7 @@ server
         server_name www.qq.com;
         location /
         {
-                proxy_pass http://qq; //upstream 模块名和 proxy_pass 名称一致
+                proxy_pass http://qqcom; //upstream 模块名和 proxy_pass 名称一致
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
