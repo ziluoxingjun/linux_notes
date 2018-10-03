@@ -692,9 +692,33 @@ dig www.baidu.com //之前的 IP 地址可能失效，可以挖出更多最新�
 $ dig ask.apelearn.com
 ```
 
+## 16、nginx 负载均衡
+> 多个 ip 相当于负载均衡
 
+```bash
+$ vim /usr/local/nginx/conf/vhosts/load.conf
+upstream qq //upstream 用来指定多个 web server
+{
+        ip_hash; //ip_hash 同一用户保证请求在同一机器上
+        server 111.161.64.40:80;
+        server 111.161.64.48:80;
+}
+server
+{
+        listen 80;
+        server_name www.qq.com;
+        location /
+        {
+                proxy_pass http://qq; //upstream 模块名和 proxy_pass 名称一致
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+}
 
-
+$ curl -x 127.0.0.1:80 www.qq.com
+```
+> nginx 不支持 https 443
 
 
 
@@ -816,38 +840,6 @@ $ curl -A "youdaoBot" -x 127.0.0.1:80 test.com/ -I
 : 403
 tail /tmp/nginx_access.log （可以看到 user_agent）
 
-
-17、nginx 负载均衡
-多个 ip（相当于负载均衡）
-
-vim /usr/local/nginx/conf/vhosts/load.conf
-upstream qq
-{
-        ip_hash;
-        server 111.161.64.40:80;
-        server 111.161.64.48:80;
-}
-server
-{
-        listen 80;
-        server_name www.qq.com;
-        location /
-        {
-                proxy_pass http://qq;
-                proxy_set_header Host $host;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        }
-}
-
-$ curl -x 127.0.0.1:80 www.qq.com
-upstream 用来指定多个 web server
-
-ip_hash 同一用户保证请求在同一机器上
-
-upstream 模块名和 proxy_pass 名称一致
-
-nginx 不支持 https 443
 
 18、SSL
 生成 SSL 密钥对
