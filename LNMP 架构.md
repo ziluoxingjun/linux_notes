@@ -687,8 +687,8 @@ server {
 
 $ curl ask.apelearn.com/robots.txt 
 $ curl -x 127.0.0.1:80 ask.apelearn.com/robots.txt
-yum install bind-utils
-dig www.baidu.com //之前的 IP 地址可能失效，可以挖出更多最新的 ip
+$ yum install bind-utils
+$ dig www.baidu.com //之前的 IP 地址可能失效，可以挖出更多最新的 ip
 $ dig ask.apelearn.com
 ```
 
@@ -697,7 +697,7 @@ $ dig ask.apelearn.com
 
 ```bash
 $ vim /usr/local/nginx/conf/vhosts/load.conf
-upstream qq //upstream 用来指定多个 web server
+upstream qqcom //upstream 用来指定多个 web server
 {
         ip_hash; //ip_hash 同一用户保证请求在同一机器上
         server 111.161.64.40:80;
