@@ -624,6 +624,14 @@ $ /usr/local/nginx/sbin/nginx -s reload
 ```
 > 如果 fastcgi_pass unix:/tmp/php-fcgi.sock; 配置错误就会 502 Bad Gateway,因为找不到 socket 文件
 
+> /usr/local/php-fpm/etc/php-fpm.conf listen 写的什么就要在 nginx conf 里 fastcgi_pass 写什么
+
+> SCRIPT_FILENAME 后面的路径和上面的 root 要一致
+
+> php 配置文件中 listen.mode 如果没写默认是 440 ，属主和属组为 root ，报 502 错误，需要 socket 文件属主和属组为 nobody
+
+> 还有一种情况，就是 php-fpm 进程资源耗尽了，也是报502错误
+
 
 ## nginx & php-fpm
 ```bash
@@ -653,8 +661,36 @@ mysql -uroot -p --protocol=socket --socket=/tmp/mysql.sock
 mysql -uroot -p --protocol=tcp --host=127.0.0.1 --port=3306
 ```
 
+## 15、nginx 代理
+> 用户 <------> 代理服务器 <------> web 服务器
 
+```bash
+# 本测试中 代理服务器就是 虚拟机，web 服务器是 论坛
+# 一个 ip
 
+$ cd /usr/local/nginx/conf/vhosts/
+$ vim proxy.conf
+server {
+       listen 80;
+       #server_name www.baidu.com;
+       server_name ask.apelearn.com;
+       
+       location /
+       {
+            #proxy_pass http://119.75.217.109/;（百度 ip）
+             proxy_pass http://47.104.7.242/; //真正要访问的 web 服务器
+             proxy_set_header Host $host; // 域名是上面的 server_name
+             proxy_set_header X-Real-IP $remote_addr;
+             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+       }
+}
+
+$ curl ask.apelearn.com/robots.txt 
+$ curl -x 127.0.0.1:80 ask.apelearn.com/robots.txt
+yum install bind-utils
+dig www.baidu.com //之前的 IP 地址可能失效，可以挖出更多最新的 ip
+$ dig ask.apelearn.com
+```
 
 
 
@@ -779,49 +815,8 @@ $ curl -A "YoudaoBot" -x 127.0.0.1:80 test.com/ -I
 $ curl -A "youdaoBot" -x 127.0.0.1:80 test.com/ -I
 : 403
 tail /tmp/nginx_access.log （可以看到 user_agent）
-15、nginx 解析 php 的配置
-location ~ \.php$
-{
-	include fastcgi_params;
-	fastcgi_pass unix:/tmp/php-fcgi.sock;
-	fastcgi_index index.php;
-	fastcgi_param SCRIPT_FILENAME /data/www/test.com$fastcgi_script_name;
-}
-//fastcgi_pass 用来指定 php-fpm 监听的地址或者 socket
 
-// /usr/local/php-fpm/etc/php-fpm.conf listen 写的什么就要在 nginx 里 fastcgi_pass 写什么
-// SCRIPT_FILENAME 后面的路径和上面的 root 要一致
-// php 配置文件中 listen.mode 如果没写默认是 440 ，属主和属组为 root ，报 502 错误，需要 socket 文件属主和属组为 nobody。
-// 还有一种情况，就是 php-fpm 进程资源耗尽了，也是报502错误
-16、nginx 代理详解
-用户 <------> 代理服务器 <-----------> web 服务器
 
-本测试中 代理服务器就是 虚拟机，web 服务器是 论坛
-
-一个 ip
-
-cd /usr/local/nginx/conf/vhosts/
-vim proxy.conf
-server {
-       listen 80;
-       #server_name www.baidu.com;
-       server_name ask.apelearn.com;
-       
-       location /
-       {
-            #proxy_pass http://119.75.217.109/;（百度 ip）
-             proxy_pass http://47.104.7.242/; //真正要访问的 web 服务器
-             proxy_set_header Host $host; // 域名是上面的 server_name
-             proxy_set_header X-Real-IP $remote_addr;
-             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-       }
-}
-
-$ curl ask.apelearn.com/robots.txt 
-$ curl -x 127.0.0.1:80 ask.apelearn.com/robots.txt
-yum install bind-utils
-dig www.baidu.com （之前的 IP 地址可能失效，可以挖出更多最新的 ip）
-$ dig ask.apelearn.com
 17、nginx 负载均衡
 多个 ip（相当于负载均衡）
 
