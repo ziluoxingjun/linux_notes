@@ -741,9 +741,9 @@ $ vim /usr/local/nginx/conf/vhosts/ssl.conf
 server
 {
     listen 443;
-    server_name test.com
+    server_name bbb.com
     index index.html index.php index.htm;
-    root /data/www/test.com;
+    root /data/wwwroot/bbb.com;
     ssl on;
     ssl_certificate zilo.crt;
     ssl_certificate_key zilo.key;
@@ -755,15 +755,16 @@ $ /usr/local/nginx/sbin/nginx -V
 $ cd /usr/local/src/nginx-1.14.0/
 $ .configure --help | grep -i ssl
 $ ./configure --prefix=/usr/local/nginx --with-http_ssl_module
+$ make && make install
 $ -t && -s reload
 $ /etc/init.d/nginx restart
 $ netstat -lntp
 :443
 $ vim /etc/hosts
-:127.0.0.1 test.com
-$ curl https://test.com/
+:127.0.0.1 bbb.com
+$ curl https://bbb.com/
 ```
-> 在 windows hosts 中添加： 192.168.95.11 test.com 用浏览器访问 https://test.com
+> 在 windows hosts 中添加： 192.168.95.145 bbb.com 用浏览器访问 https://bbb.com
 
 19
 
