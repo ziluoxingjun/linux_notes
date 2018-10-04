@@ -740,11 +740,11 @@ $ openssl x509 -req -days 365 -in zilo.csr -signkey zilo.key -out zilo.crt //zil
 $ vim /usr/local/nginx/conf/vhosts/ssl.conf
 server
 {
-    listen 443;
-    server_name bbb.com
+    listen 443 ssl;
+    server_name bbb.com;
     index index.html index.php index.htm;
     root /data/wwwroot/bbb.com;
-    ssl on;
+    # ssl on;
     ssl_certificate zilo.crt;
     ssl_certificate_key zilo.key;
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
