@@ -720,8 +720,52 @@ $ curl -x 127.0.0.1:80 www.qq.com
 ```
 > nginx 不支持 https 443
 
+## 17、生成 SSL 密钥对
+```bash
+$ rpm -qf $(which openssl)
+$ cd /usr/local/nginx/conf
+$ openssl genrsa -des3 -out tmp.key 2048 //key文件为私钥 -des3 为加密算法
+$ openssl rsa -in tmp.key -out zilo.key //转换 key ，取消密码
+$ rm -f tmp.key
+$ openssl req -new -key zilo.key -out zilo.csr
+//生成证书请求文件，需要这个文件和私钥一直产生公钥文件
+//Certificate Signing Request（CSR）
+//req 统一生成密钥对和证书请求，也可以指定是否对私钥文件进行加密
+$ openssl x509 -req -days 365 -in zilo.csr -signkey zilo.key -out zilo.crt //zilo.crt 为公钥
+//x509 命令 进行格式转换及显示证书文件中的 text,module 等信息
+```
 
+## 18、nginx 配置 SSL
+```bash
+$ vim /usr/local/nginx/conf/vhosts/ssl.conf
+server
+{
+    listen 443;
+    server_name test.com
+    index index.html index.php index.htm;
+    root /data/www/test.com;
+    ssl on;
+    ssl_certificate zilo.crt;
+    ssl_certificate_key zilo.key;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+}
+报错：nginx: [emerg] unknown directive “ssl” 需要重新编译
 
+$ /usr/local/nginx/sbin/nginx -V
+$ cd /usr/local/src/nginx-1.14.0/
+$ .configure --help | grep -i ssl
+$ ./configure --prefix=/usr/local/nginx --with-http_ssl_module
+$ -t && -s reload
+$ /etc/init.d/nginx restart
+$ netstat -lntp
+:443
+$ vim /etc/hosts
+:127.0.0.1 test.com
+$ curl https://test.com/
+```
+> 在 windows hosts 中添加： 192.168.95.11 test.com 用浏览器访问 https://test.com
+
+19
 
 
 
@@ -841,49 +885,7 @@ $ curl -A "youdaoBot" -x 127.0.0.1:80 test.com/ -I
 tail /tmp/nginx_access.log （可以看到 user_agent）
 
 
-18、SSL
-生成 SSL 密钥对
 
-$ cd /usr/local/nginx/conf
-$ openssl genrsa -des3 -out tmp.key 2048
-//key文件为私钥 -des3 为加密算法
-$ openssl rsa -in tmp.key -out zilo.key
-//转换 key ，取消密码
-$ rm -f tmp.key
-$ openssl req -new -key zilo.key -out zilo.csr
-//生成证书请求文件，需要这个文件和私钥一直产生公钥文件
-//Certificate Signing Request（CSR）
-//req 统一生成密钥对和证书请求，也可以指定是否对私钥文件进行加密
-$ openssl x509 -req -days 365 -in zilo.csr -signkey zilo.key -out zilo.crt //zilo.crt 为公钥
-//x509 命令 进行格式转换及显示证书文件中的 text,module 等信息
-19、nginx 配置 SSL
-$ vim /usr/local/nginx/conf/vhosts/ssl.conf
-server
-{
-    listen 443;
-    server_name test.com
-    index index.html index.php index.htm;
-    root /data/www/test.com;
-    ssl on;
-    ssl_certificate zilo.crt;
-    ssl_certificate_key zilo.key;
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-}
-报错：nginx: [emerg] unknown directive “ssl” 需要重新编译
-
-$ /usr/local/nginx/sbin/nginx -V
-$ cd /usr/local/src/nginx-1.14.0/
-$ .configure --help | grep -i ssl
-$ ./configure --prefix=/usr/local/nginx --with-http_ssl_module
-$ -t && -s reload
-$ /etc/init.d/nginx restart
-$ netstat -lntp
-:443
-$ vim /etc/hosts
-:127.0.0.1 test.com
-$ curl https://test.com/
-
-在 windows hosts 中添加： 192.168.95.11 test.com 用浏览器访问 https://test.com
 20、php-fpm 的 pool
 $ vim /usr/local/php-fpm/etc/php-fpm.conf
 // 在 [global] 部分增加
