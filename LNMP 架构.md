@@ -811,13 +811,11 @@ $ vim www.conf
   rlimit_files = 1024
 ```
 
-> 在这个文件里 # 行，指定用哪个 pool ，www.sock www1.sock，也可以都用一个sock（pool），好处是可以分别指定用户名，设置权限。如果一个访问量过大，down掉了，另一个不受影响。
-```
 > 如果 pm=static,只有这一条配置生效 pm.max_children = 50
 
 > 可以指定 aaa.com.conf 用 www 这个 pool，bbb.com.conf 用 www1 这个 pool
 
-> 可以在 Nginx 配置文件里此行 -> fastcgi_pass unix:/tmp/php-fcgi.sock,指定用哪个 pool，www.sock www1.sock，也可以都用一个sock（pool），好处是可以分别指定用户名，设置权限。如果一个访问量过大，down 掉了，另一个不受影响。
+> 可以在 Nginx 配置文件里此行 -> fastcgi_pass unix:/tmp/php-fcgi.sock,指定用哪个 pool，www.sock www1.sock，也可以都用一个sock（pool），好处是可以分别指定用户名，设置权限，如果一个访问量过大，down 掉了，另一个不受影响。
 
 
 
