@@ -82,7 +82,7 @@ $ netstat -lnp|grep java //80端口
 
 ```bash
 $ vim /usr/local/tomcat/conf/server.xml
-最后一个 Host 下 添加：
+# 最后一个 Host 下 添加：
 <Host name="www.xtest.com" appBase="/data/tomcatweb"
             unpackWARs="true" autoDeploy="true"
             mlValidation="false" xmlNamespaceAware="false">
