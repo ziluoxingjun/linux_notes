@@ -78,6 +78,7 @@ $ netstat -lnp|grep java //80端口
 
 
 ## 4、配置 tomcat 的虚拟主机
+
 > <Host> 和 </Host> 之前的配置为虚拟主机配置部分，name 定义域名，appBase 定义应用的目录，Java 的应用通常是一个 jar 格式的压缩包，只要将压缩包放到  appBase 目录下即可。
 
 ```bash
