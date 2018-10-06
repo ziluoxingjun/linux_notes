@@ -119,8 +119,8 @@ $ mv zrlog-2.0.1-71c552b-release zrlog
 # 浏览器 ip:8080/zrlog/install
 $ mysql -uroot -p
 mysql> create database zrlog;
-mysql> grant all on arlog.* to zrlog@127.0.0.1 identified by 'password'
-    
+mysql> grant all on zrlog.* to 'zrlog'@127.0.0.1 identified by 'password'
+$ mysql -uzrlog -ppassword -h127.0.0.1
 $ mv /usr/local/tomcat/webapps/zrlog/* /data/www/ccc.com/
 # 浏览器 ip:8080 直接访问
 ```
