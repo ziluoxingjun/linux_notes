@@ -122,7 +122,7 @@ mysql> create database zrlog;
 mysql> grant all on zrlog.* to 'zrlog'@127.0.0.1 identified by 'password'
 $ mysql -uzrlog -ppassword -h127.0.0.1
 $ mv /usr/local/tomcat/webapps/zrlog/* /data/www/ccc.com/
-# 浏览器 ip:8080 直接访问
+# 浏览器 www.ccc.com
 ```
 
 
