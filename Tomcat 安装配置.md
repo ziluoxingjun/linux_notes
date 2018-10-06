@@ -90,17 +90,16 @@ $ vim /usr/local/tomcat/conf/server.xml
     <Context path="" docBase="/data/wwwroot/ccc.com/" debug="0" reloadable="true" crossContext="true"/>
 </Host>
     
-$ curl -xlocalhost:80 www.xtest.com/1.txt（可以访问到文件）
-    vim 2.jsp 
-    <html>
-       <body>
-           <center>
-               Now time is:<%=new java.util.Date() %>
-           </center>
-       </body>
-    </html>
-    
-$ curl -xlocalhost:80 www.xtest.com/2.jsp
+$ vim /data/wwwroot/ccc.com/1.jsp
+<html>
+    <body>
+        <center>
+            Now time is:<%=new java.util.Date() %>
+        </center>
+    </body>
+</html>
+$ curl -xlocalhost:80 www.ccc.com/1.txt //可以访问到文件
+$ curl -xlocalhost:80 www.ccc.com/1.jsp
 ```
 > appBase : 应用存放目录，需要把 war 包直接放入该目录，会自动解压为一个程序目录
 
