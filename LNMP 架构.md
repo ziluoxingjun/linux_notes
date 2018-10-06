@@ -157,11 +157,11 @@ $ mv php-fpm.conf.default php-fpm.conf //php-fpm 服务相关配置
 pid = /usr/local/php-fpm/var/run/php-fpm.pid
 error_log = /usr/local/php-fpm/var/log/php-fpm.log
 [www] //模块名称
-user = php-fpm
-group = php-fpm
 listen = /tmp/php-fcgi.sock //监听地址
 #listen = 127.0.0.1:9000 //也可以
 listen.mode = 0666 //监听上面 sock 本条语句才生效，如果不配置此项，则 sock 文件权限为 440,访问时会 502 Bad Gateway
+user = php-fpm
+group = php-fpm
 pm = dynamic
 pm.max_children = 50
 pm.start_servers = 20
