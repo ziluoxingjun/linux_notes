@@ -15,7 +15,7 @@ $ cd /usr/local/src/
 $ wget http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jdk-8u181-linux-x64.tar.gz?AuthParam=1538813426_02ed11d13fc1a3ea7e89c540bd596435
 $ tar zxvf jdk-8u181-linux-x64.tar.gz
 $ mv jdk1.8.0_181 /usr/local/jdk1.8
-$ vim /etc/profile.d/java.sh
+# $ vim /etc/profile.d/java.sh
 $ vim /etc/profile
  JAVA_HOME=/usr/local/jdk1.8
  JAVA_BIN=/usr/local/jdk1.8/bin
@@ -24,8 +24,8 @@ $ vim /etc/profile
  CLASSPATH=/usr/local/jdk1.8/jre/lib:/usr/local/jdk1.8/lib:/usr/local/jdk1.8/jre/lib/charsets.jar
 
 $ source /etc/profile
-$ . /etc/profile.d/java.sh （初始化；source 也可以）
-$ java -version（验证是否生效）
+# $ . /etc/profile.d/java.sh //初始化；source 也可以
+$ java -version //验证是否生效
 ```
 ## 2、下载安装 tomcat
 ```bash
