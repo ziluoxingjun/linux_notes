@@ -591,10 +591,14 @@ location ~ .*(upload|image)/.*\.php$ //禁止解析 upload|image 目录里的 ph
 $ curl -x 127.0.0.1:80 test.com/upload/1.php
 HTTP/1.1 403 Forbidden
 
-# 根据 user_agent 限制
+# 根据 user_agent 限制,nginx 禁止指定 user_agent 访问
+if ($http_user_agent ~* 'curl|baidu|qq|360|sogou') //~* 不区分大小写的正则匹配
 if ($http_user_agent ~ 'Spider/3.0|YoudaoBot|Tomato')
+if ($http_user_agent ~* "python|curl|wget|httpclient|okhttp")
+// python 就可以过滤掉 80% 的 Python 爬虫
     {
         return 403;
+        return 503;
     }
 $  /usr/local/nginx/sbin/nginx -t
 $  /usr/local/nginx/sbin/nginx -s reload
@@ -836,74 +840,15 @@ $ curl -x 127.0.0.1:80 bbb.com/sleep.php
 $ cat /usr/local/php-fpm/var/log/www-slow.log
 ```
 
+## 21、php-fpm 定义 open_basedir
 
+> 有多个网站不适合在 php.ini 中定义
 
+> 在 Apache 虚拟主机配置文件中定义 open_basedir
 
+> 在 php-fpm 中根据不同的不同的网站不同的 pool 定义不同的open_basedir
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-6、常见的502问题解决
-vim /usr/local/nginx/conf/vhosts/111.conf
- server_name www.111.com;
- fastcgi_pass unix:/tmp/www.sock;
-cat /usr/local/nginx/logs/nginx_error.log 
- 2016/12/30 06:23:17 [crit] 4039#0: *2 connect() to unix:/tmp/www.sock failed (13: Permission denied) while connecting to upstream, 
-client: 192.168.1.156, server: www.xing.com, request: "GET / HTTP/1.1", upstream: "fastcgi://unix:/tmp/www.sock:", 
-host: "www.xing.com"
-
-www.sock 没有权限
-
-ll /tmp/www.sock 
- srw-rw----. 1 root root 0 Dec 30 05:51 /tmp/www.sock（其它人没有读写的权限）
-
-ps aux |grep nginx（可以看到是 nobody 在读这个文件）
-
-解决办法：
-vim /usr/local/php/etc/php-fpm.conf（在文件中添加配置，指定监听用户和组）
- listen.owner = nobody
- listen.group = nobody
-
-
-
-14、nginx 禁止指定 user_agent 访问
- if ($http_user_agent ~* 'curl|baidu|qq|360|sogou')（~* 不区分大小写的正则匹配）
- if ($http_user_agent ~* 'Spider/3.0|YoudaoBot|Tomato')
- if ($http_user_agent ~* "python|curl|wget|httpclient|okhttp")
- // python 就可以过滤掉 80% 的 Python 爬虫
-        {
-                return 403;
-                return 503;
-        }
- curl -x192.168.1.11:80 www.xing.com/forum.php -I（测试 403）
- curl -A "test" -x192.168.1.11:80 www.xing.com/forum.php -I（200）
-$ curl -A "YoudaoBot" -x 127.0.0.1:80 test.com/ -I 
-: 403
-$ curl -A "youdaoBot" -x 127.0.0.1:80 test.com/ -I
-: 403
-tail /tmp/nginx_access.log （可以看到 user_agent）
-
-
-
-
-
-
-22、php-fpm 定义 open_basedir
-有多个网站不适合在 php.ini 中定义
-
-在 Apache 虚拟主机配置文件中定义 open_basedir
-在 php-fpm 中根据不同的不同的网站不同的 pool 定义不同的open_basedir
-
+```bash
 $ vim /usr/local/php-fpm/etc/php-fpm.d/www.conf
 php_admin_value[open_basedir]=/data/www/:/tmp/（针对不同的域名进行限制）
  php_admin_value[open_basedir]=/data/www/test.com:/tmp/
@@ -911,10 +856,14 @@ $ vim /usr/local/php-fpm/etc/php.ini
 //定义 php-fpm 错误日志和日志级别
  error_log = /usr/local/php-fpm/var/log/php-fpm_errors.log
  error_reporting = E_ALL
-touch /usr/local/php-fpm/var/log/php-fpm_errors.log
-chmod 777 /usr/local/php-fpm/var/log/php-fpm_errors.log
+$ touch /usr/local/php-fpm/var/log/php-fpm_errors.log
+$ chmod 777 /usr/local/php-fpm/var/log/php-fpm_errors.log
 //以上两步操作防止不能正常写入日志
-23、php-fpm 进程管理
+```
+
+
+## 22、php-fpm 进程管理
+```bash
 pm = dynamic
 //process manage dynamic 动态进程管理 一开始先启动20个服务，当访问量增加，动态增加子进程，如服务器比较空闲可自动销毁子进程
 //static 静态 只有 pm.max_children = 50 生效，启动就50个子进程，不变
@@ -928,3 +877,4 @@ pm.max_spare_servers = 35
 //空闲时段，子进程最大数，如果达到数值，就开始清理空闲的子进程
 pm.max_requests = 500
 //一个子进程最多处理的请求数，一个 Php-fpm 子进程最多可以处理的请求数，当达到这个数值会自动退出
+```
