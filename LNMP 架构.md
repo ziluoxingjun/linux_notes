@@ -761,7 +761,7 @@ $ curl https://bbb.com/
 ```
 > 在 windows hosts 中添加： 192.168.95.145 bbb.com 用浏览器访问 https://bbb.com
 
-19、php-fpm 的 pool
+## 19、php-fpm 的 pool
 ```bash
 $ vim /usr/local/php-fpm/etc/php-fpm.conf
 // 在 [global] 部分增加
