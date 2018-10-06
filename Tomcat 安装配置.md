@@ -112,23 +112,23 @@ $ curl -xlocalhost:80 www.ccc.com/1.jsp
 > 通过实例，部署一个 java 网站
 ```bash
 $ cd /usr/local/src/
-$ http -d http://dl.zrlog.com/release/zrlog-1.10.0-f3c522d-release.war
-$ mv zrlog-1.10.0-f3c522d-release.war /usr/local/tomcat/webapps/
+$ wget http://dl.zrlog.com/release/zrlog-2.0.1-71c552b-release.war
+$ mv zrlog-2.0.1-71c552b-release.war /usr/local/tomcat/webapps/
 $ cd /usr/local/tomcat/webapps/
-$ mv zrlog-1.10.0-f3c522d-release zrlog
+$ mv zrlog-2.0.1-71c552b-release zrlog
 # 浏览器 ip:8080/zrlog/install
 $ mysql -uroot -p
 mysql> create database zrlog;
 mysql> grant all on arlog.* to zrlog@127.0.0.1 identified by 'password'
     
-$ mv /usr/local/tomcat/webapps/zrlog/* /data/www/log.com/
+$ mv /usr/local/tomcat/webapps/zrlog/* /data/www/ccc.com/
 # 浏览器 ip:8080 直接访问
 ```
 
 
 ## 6、tomcat 日志
-
-    $ ls /usr/local/tomcat/logs
+```bash
+$ ls /usr/local/tomcat/logs
 
 catalina 开头的日志为 tomcat 的综合日志，它记录 tomcat 服务相关信息，也会记录错误日志。
 
@@ -151,3 +151,4 @@ suffix 访问日志的后缀
 pattern 访问日志的格式
 
 错误日志会统一记录在 catalina.out 中，出现问题时，第一时间要想到查看它。
+```
