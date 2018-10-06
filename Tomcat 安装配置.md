@@ -105,7 +105,7 @@ $ curl -xlocalhost:80 www.ccc.com/1.jsp
 
 > unpackWARs : 自动解压
 
-> docBase : 定义网站的文件存放路径，和 appBase 二选一，另一个留空，如果定义了此参数就默认以该目录为主
+> docBase : 定义网站的文件存放路径，如果定义了此参数就默认以该目录为主,如果不定义默认是在 appBase/ROOT 下，docBase,appBase 二选一，另一个留空，也可以一样。
 
 
 ## 5、java 网站
