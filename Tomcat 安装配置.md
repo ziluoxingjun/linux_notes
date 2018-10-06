@@ -66,15 +66,14 @@ $ netstat -lntp | grep java
 
 ## 3、配置 tomcat 监听端口为 80
 ```bash
-$ cd /usr/local/tomcat/conf/
 $ vim /usr/local/tomcat/conf/server.xml
-<Connector port="80" protocol="HTTP/1.1"（改为 80）
+<Connector port="80" protocol="HTTP/1.1" //改为 80
     
 $ /usr/local/tomcat/bin/shutdown.sh
 $ /usr/local/tomcat/bin/startup.sh
    
-$ netstat -lnp|grep java（80端口）
-浏览器 192.168.95.145 //不用输入 80
+$ netstat -lnp|grep java //80端口
+# 浏览器 192.168.95.145 //不用输入 80
 ```
 
 
