@@ -157,4 +157,3 @@ $ vim /usr/local/tomcat/conf/server.xml
 > pattern 访问日志的格式
 
 > 错误日志会统一记录在 catalina.out 中，出现问题时，第一时间要想到查看它。
-```
