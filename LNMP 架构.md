@@ -818,6 +818,23 @@ $ vim www.conf
 > 可以在 Nginx 配置文件里此行 -> fastcgi_pass unix:/tmp/php-fcgi.sock,指定用哪个 pool，www.sock www1.sock，也可以都用一个sock（pool），好处是可以分别指定用户名，设置权限，如果一个访问量过大，down 掉了，另一个不受影响。
 
 
+## 20、php-fpm 慢执行日志
+```bash
+# 性能追踪
+$ vim /usr/local/php-fpm/etc/php-fpm.d/www.conf
+ [www]
+ request_slowlog_timeout = 2 //超过 2 秒就要记录日志，为什么慢
+ slowlog = /usr/local/php-fpm/var/log/www-slow.log //排查慢的原因
+
+$ vim /usr/local/nginx/conf/vhosts/bbb.com.conf
+ unix:/tmp/php-fcgi.sock --> unix:/tmp/www.sock
+$ /etc/init.d/nginx -s reload
+
+$ vim /data/www/bbb.com/sleep.php
+ <?php echo "test slow log";sleep(3); echo "done"; ?>
+$ curl -x 127.0.0.1:80 bbb.com/sleep.php
+$ cat /usr/local/php-fpm/var/log/www-slow.log
+```
 
 
 
@@ -831,15 +848,11 @@ $ vim www.conf
 
 
 
-  
 
-性能追踪：
 
-vim /usr/local/php/etc/php-fpm.conf 
-slowlog = /tmp/www_slow.log（排查慢的原因）
-request_slowlog_timeout = 1（请求超过 1 秒，就记录日志，为什么慢）
 
-php_admin_value[open_basedir]=/data/www/:/tmp/（针对不同的域名进行限制）
+
+
 6、常见的502问题解决
 vim /usr/local/nginx/conf/vhosts/111.conf
  server_name www.111.com;
@@ -884,24 +897,15 @@ tail /tmp/nginx_access.log （可以看到 user_agent）
 
 
 
-21、php-fpm 慢执行日志
-$ vim /usr/local/php-fpm/etc/php-fpm.d/www.conf
- [wwww]
- request_slowlog_timeout = 2 //超过 2 秒就要记录日志
- slowlgo = /usr/local/php-fpm/var/log/www-slow.log
-$ vim /usr/local/nginx/conf/vhosts/test.com.conf
- unix:/tmp/php-fcgi.sock --> unix:/tmp/www.sock
-$ /etc/init.d/nginx restart
-$ vim /data/www/test.com/sleep.php
- <?php echo "test slow log";sleep(3); echo "done"; ?>
-$ curl -x 127.0.0.1:80 test.com/sleep.php
-$ cat /usr/local/php-fpm/var/log/www-slow.log
+
 22、php-fpm 定义 open_basedir
 有多个网站不适合在 php.ini 中定义
 
 在 Apache 虚拟主机配置文件中定义 open_basedir
 在 php-fpm 中根据不同的不同的网站不同的 pool 定义不同的open_basedir
+
 $ vim /usr/local/php-fpm/etc/php-fpm.d/www.conf
+php_admin_value[open_basedir]=/data/www/:/tmp/（针对不同的域名进行限制）
  php_admin_value[open_basedir]=/data/www/test.com:/tmp/
 $ vim /usr/local/php-fpm/etc/php.ini
 //定义 php-fpm 错误日志和日志级别
