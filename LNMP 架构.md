@@ -138,7 +138,7 @@ $ make && make install
 
 #### 3、拷贝配置和启动脚本
 ```bash
-$ cp php.ini-production /usr/local/php-fpm/etc/php.ini
+$ cp php.ini-production /usr/local/php-fpm/etc/php.ini //php 全局配置
 $ cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
 $ chmod 755 /etc/init.d/php-fpm 
 ```
@@ -152,7 +152,7 @@ $ chkconfig php-fpm on
 #### 5、修改配置
 ```bash
 $ cd /usr/local/php-fpm/etc
-$ mv php-fpm.conf.default php-fpm.conf
+$ mv php-fpm.conf.default php-fpm.conf //php-fpm 服务相关配置
  [global]
 pid = /usr/local/php-fpm/var/run/php-fpm.pid
 error_log = /usr/local/php-fpm/var/log/php-fpm.log
@@ -173,11 +173,6 @@ rlimit_files = 1024
 $ useradd -s /sbin/nologin php-fpm
 $ /usr/local/php-fpm/sbin/php-fpm -t
 ```
-> 如果 pm=static,只有这一条配置生效 pm.max_children = 50
-
-> 可以指定 aaa.com.conf 用 www 这个 pool，bbb.com.conf 用 www1 这个 pool
-
-> 可以在 Nginx 配置文件里 fastcgi_pass unix:/tmp/php-fcgi.sock; 指定用哪个 pool，www.sock www1.sock，也可以都用一个sock（pool），好处是可以分别指定用户名，设置权限。如果一个访问量过大，down 掉了，另一个不受影响。
 
 ## 3、nginx 安装
 > Nignx 应用场景：web 服务器、反向代理、负载均衡
@@ -767,6 +762,7 @@ $ curl https://bbb.com/
 > 在 windows hosts 中添加： 192.168.95.145 bbb.com 用浏览器访问 https://bbb.com
 
 19、php-fpm 的 pool
+```bash
 $ vim /usr/local/php-fpm/etc/php-fpm.conf
 // 在 [global] 部分增加
  include = etc/php-fpm.d/*.conf
@@ -785,29 +781,10 @@ $ vim www.conf
  pm.max_spare_servers = 35
  pm.max_requests = 500
  rlimit_files = 1024
-每个站点隔离开，单独写一个 pool 在 nignx 配置文件中可以根据不同站点配置不同的 socket
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-5、php-fpm 配置文件
-ll /usr/local/php-n/etc/php-fpm.conf（php-fpm 服务相关配置）
-ll /usr/local/php-n/etc/php.ini（php 全局配置）
-> /usr/local/php-n/etc/php-fpm.conf（清空）
-  [global]
+# 每个站点隔离开，单独写一个 pool 在 nignx 配置文件中可以根据不同站点配置不同的 socket
+```
+```bash
+[global]
   pid = /usr/local/php/var/run/php-fpm.pid
   error_log = /usr/local/php/var/log/php-fpm.log
   [www]
@@ -821,41 +798,42 @@ ll /usr/local/php-n/etc/php.ini（php 全局配置）
   pm.max_spare_servers = 35
   pm.max_requests = 500（一个子进程在一个生命周期之内处理多少个请求）
   rlimit_files = 1024
-
   [www1]
   listen = /tmp/php-fcgi1.sock
   user = php-fpm
   group = php-fpm
   pm = dynamic
-  pm.max_children = 50（子进程）
-  pm.start_servers = 20（开始有50个）
-  pm.min_spare_servers = 5（最小空闲）
+  pm.max_children = 50
+  pm.start_servers = 20
+  pm.min_spare_servers = 5
   pm.max_spare_servers = 35
-  pm.max_requests = 500（一个子进程在一个生命周期之内处理多少个请求）
+  pm.max_requests = 500
   rlimit_files = 1024
+```
 
-如果 pm=static,只有这一条生效 pm.max_children = 50
-ls /usr/local/nginx/conf/vhosts/
-111.conf  default.conf
-可以指定 111.conf 用 www 这个 pool，222.conf 用 www1 这个 pool
+> 在这个文件里 # 行，指定用哪个 pool ，www.sock www1.sock，也可以都用一个sock（pool），好处是可以分别指定用户名，设置权限。如果一个访问量过大，down掉了，另一个不受影响。
+```
+> 如果 pm=static,只有这一条配置生效 pm.max_children = 50
 
-cat /usr/local/nginx/conf/vhosts/111.conf 
-server
-  {
-     listen 80;
-       server_name 111.com;
-       index index.html index.htm index.php;
-       root /data/www;
-           
-       location ~ \.php$ {             
-           include fastcgi_params;
-           #fastcgi_pass unix:/tmp/php-fcgi.sock;
-           fastcgi_pass 127.0.0.1:9000;
-           fastcgi_index index.php;
-           fastcgi_param SCRIPT_FILENAME /data/www$fastcgi_script_name;
-       } 
-  }
-在这个文件里 # 行，指定用哪个 pool ，www.sock www1.sock，也可以都用一个sock（pool），好处是可以分别指定用户名，设置权限。如果一个访问量过大，down掉了，另一个不受影响。
+> 可以指定 aaa.com.conf 用 www 这个 pool，bbb.com.conf 用 www1 这个 pool
+
+> 可以在 Nginx 配置文件里此行 -> fastcgi_pass unix:/tmp/php-fcgi.sock,指定用哪个 pool，www.sock www1.sock，也可以都用一个sock（pool），好处是可以分别指定用户名，设置权限。如果一个访问量过大，down 掉了，另一个不受影响。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
 性能追踪：
 
