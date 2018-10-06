@@ -29,36 +29,39 @@ $ java -version //验证是否生效
 ```
 
 ## 2、下载安装 tomcat
+> http://tomcat.apache.org/download-80.cgi
+
 ```bash
-wget http://124.205.69.169/files/2015000004DD3C07/apache.fayea.com/tomcat/tomcat-7/v7.0.73/bin/apache-tomcat-7.0.73.tar.gz
-tar zxvf apache-tomcat-7.0.73.tar.gz 
-mv apache-tomcat-7.0.73 /usr/local/tomcat
-/usr/local/tomcat/bin/startup.sh //启动
+$ wget http://mirrors.shu.edu.cn/apache/tomcat/tomcat-8/v8.5.34/bin/apache-tomcat-8.5.34.tar.gz
+$ tar zxvf apache-tomcat-8.5.34.tar.gz
+$ mv apache-tomcat-8.5.34 /usr/local/tomcat
+$ /usr/local/tomcat/bin/startup.sh //启动
 
 #cp -v /usr/local/tomcat/bin/catalina.sh /etc/init.d/tomcat
 #chmod 755 /etc/init.d/tomcat
-#chkconfig --add tomcat（服务不支持 chkconfig 配置写的不符合规范）
-vim /etc/init.d/tomcat （加入以下几行）
- # chkconfig: 2345 63 37（第63个启动，第37个关闭）
+#chkconfig --add tomcat //服务不支持 chkconfig 配置写的不符合规范
+$ vim /etc/init.d/tomcat //加入以下几行
+ # chkconfig: 2345 63 37 //第63个启动，第37个关闭
  . /etc/init.d/functions
  JAVA_HOME=/usr/local/jdk1.8.0_111
- CATALINA_HOME=/usr/local/tomcat（tomcat 的家目录）
-chkconfig --add tomcat
-chkconfig tomcat on
-service tomcat start（不支持 restart 只能 stop 再 start）
-浏览器 192.168.1.11:8080
+ CATALINA_HOME=/usr/local/tomcat //tomcat 的家目录
+
+$ chkconfig --add tomcat
+$ chkconfig tomcat on
+$ service tomcat start //不支持 restart 只能 stop 再 start
+# 浏览器 192.168.1.11:8080
 
 $ ps aux | grep java
 $ netstat -lntp | grep java
 ```
 
-3 个 端口:
-
-8080：提供 web 服务的端口
-
-8009：第三方服务调用端口，比如 httpd 和 tomcat 结合时会用到
-
-8005：管理端口
+> 3 个 端口:
+>
+> 8080：提供 web 服务的端口
+>
+> 8009：第三方服务调用端口，比如 httpd 和 tomcat 结合时会用到
+>
+> 8005：管理端口
 
 
 ## 3、配置 tomcat 监听端口为 80
