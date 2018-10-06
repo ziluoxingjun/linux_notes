@@ -766,7 +766,26 @@ $ curl https://bbb.com/
 ```
 > 在 windows hosts 中添加： 192.168.95.145 bbb.com 用浏览器访问 https://bbb.com
 
-19
+19、php-fpm 的 pool
+$ vim /usr/local/php-fpm/etc/php-fpm.conf
+// 在 [global] 部分增加
+ include = etc/php-fpm.d/*.conf
+$ mkdir /usr/local/php/etc/php-fpm.d/
+$ cd /usr/local/php-fpm/etc/php-fpm.d/
+$ vim www.conf
+ [www]
+ listen = /tmp/www.sock
+ listen.mode = 666
+ user = php-fpm
+ group = php-fpm
+ pm = dynamic
+ pm.max_children = 50
+ pm.start_servers = 20
+ pm.min_spare_servers = 5
+ pm.max_spare_servers = 35
+ pm.max_requests = 500
+ rlimit_files = 1024
+每个站点隔离开，单独写一个 pool 在 nignx 配置文件中可以根据不同站点配置不同的 socket
 
 
 
@@ -887,26 +906,7 @@ tail /tmp/nginx_access.log （可以看到 user_agent）
 
 
 
-20、php-fpm 的 pool
-$ vim /usr/local/php-fpm/etc/php-fpm.conf
-// 在 [global] 部分增加
- include = etc/php-fpm.d/*.conf
-$ mkdir /usr/local/php/etc/php-fpm.d/
-$ cd /usr/local/php-fpm/etc/php-fpm.d/
-$ vim www.conf
- [www]
- listen = /tmp/www.sock
- listen.mode = 666
- user = php-fpm
- group = php-fpm
- pm = dynamic
- pm.max_children = 50
- pm.start_servers = 20
- pm.min_spare_servers = 5
- pm.max_spare_servers = 35
- pm.max_requests = 500
- rlimit_files = 1024
-每个站点隔离开，单独写一个 pool 在 nignx 配置文件中可以根据不同站点配置不同的 socket
+
 
 21、php-fpm 慢执行日志
 $ vim /usr/local/php-fpm/etc/php-fpm.d/www.conf
