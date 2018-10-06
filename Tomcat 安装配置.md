@@ -14,7 +14,7 @@
 $ cd /usr/local/src/
 $ wget http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jdk-8u181-linux-x64.tar.gz?AuthParam=1538813426_02ed11d13fc1a3ea7e89c540bd596435
 $ tar zxvf jdk-8u181-linux-x64.tar.gz
-$ mv jdk1.8.0_111 /usr/local/jdk1.8
+$ mv jdk1.8.0_181 /usr/local/jdk1.8
 $ vim /etc/profile.d/java.sh
 $ vim /etc/profile
  JAVA_HOME=/usr/local/jdk1.8
