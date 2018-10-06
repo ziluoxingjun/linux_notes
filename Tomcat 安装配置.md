@@ -84,10 +84,10 @@ $ netstat -lnp|grep java //80端口
 ```bash
 $ vim /usr/local/tomcat/conf/server.xml
 # 最后一个 Host 下 添加：
-<Host name="www.xtest.com" appBase="/data/tomcatweb"
+<Host name="www.ccc.com" appBase=""
             unpackWARs="true" autoDeploy="true"
-            mlValidation="false" xmlNamespaceAware="false">
-    <Context path="" docBase="/data/www/test.com/" debug="0" reloadable="true" crossContext="true"/>
+            xmlValidation="false" xmlNamespaceAware="false">
+    <Context path="" docBase="/data/wwwroot/ccc.com/" debug="0" reloadable="true" crossContext="true"/>
 </Host>
     
 $ curl -xlocalhost:80 www.xtest.com/1.txt（可以访问到文件）
