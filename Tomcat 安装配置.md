@@ -1,7 +1,7 @@
 ## Tomcat 介绍
 > java 程序写的网站用 tomcat + jdk 来运行
 
-> tomcat 是一个中间件，真正起作用解析 java 脚本的是 jdk
+> tomcat 是一个中间件，是 webserver,依赖 jdk，真正起作用解析 java 脚本的是 jdk
 
 > jdk(java development kit) 是整个 java 的核心，它包含了 java 运行环境和一堆 java 相关的工具以及 java 基础库
 
@@ -27,6 +27,7 @@ $ source /etc/profile
 # $ . /etc/profile.d/java.sh //初始化；source 也可以
 $ java -version //验证是否生效
 ```
+
 ## 2、下载安装 tomcat
 ```bash
 wget http://124.205.69.169/files/2015000004DD3C07/apache.fayea.com/tomcat/tomcat-7/v7.0.73/bin/apache-tomcat-7.0.73.tar.gz
@@ -59,31 +60,34 @@ $ netstat -lntp | grep java
 
 8005：管理端口
 
-- 配置 tomcat 监听端口为 80
 
-    cd /usr/local/tomcat/conf/
-    $ vim /usr/local/tomcat/conf/server.xml
-     <Connector port="80" protocol="HTTP/1.1"（改为 80）
+## 3、配置 tomcat 监听端口为 80
+```bash
+$ cd /usr/local/tomcat/conf/
+$ vim /usr/local/tomcat/conf/server.xml
+<Connector port="80" protocol="HTTP/1.1"（改为 80）
     
-    $ /usr/local/tomcat/bin/shutdown.sh
-    $ /usr/local/tomcat/bin/startup.sh
+$ /usr/local/tomcat/bin/shutdown.sh
+$ /usr/local/tomcat/bin/startup.sh
+   
+$ netstat -lnp|grep java（80端口）
+浏览器 192.168.95.145 //不用输入 80
+```
+
+
+## 4、配置 tomcat 的虚拟主机
+> <Host> 和 </Host> 之前的配置为虚拟主机配置部分，name 定义域名，appBase 定义应用的目录，Java 的应用通常是一个 jar 格式的压缩包，只要将压缩包放到  appBase 目录下即可。
+
+```bash
+$ vim /usr/local/tomcat/conf/server.xml
+最后一个 Host 下 添加：
+<Host name="www.xtest.com" appBase="/data/tomcatweb"
+            unpackWARs="true" autoDeploy="true"
+            mlValidation="false" xmlNamespaceAware="false">
+    <Context path="" docBase="/data/www/test.com/" debug="0" reloadable="true" crossContext="true"/>
+</Host>
     
-    netstat -lnp|grep java（80端口）
-    浏览器 192.168.1.11（不用输入 80）
-
-- 配置 tomcat 的虚拟主机
-
-<Host> 和 </Host> 之前的配置为虚拟主机配置部分，name 定义域名，appBase 定义应用的目录，Java 的应用通常是一个 jar 格式的压缩包，只要将压缩包放到  appBase 目录下即可。
-
-    $ vim /usr/local/tomcat/conf/server.xml
-    最后一个 Host 下 添加：
-    <Host name="www.xtest.com" appBase="/data/tomcatweb"
-                  unpackWARs="true" autoDeploy="true"
-                  xmlValidation="false" xmlNamespaceAware="false">
-       <Context path="" docBase="/data/www/test.com/" debug="0" reloadable="true" crossContext="true"/>
-    </Host>
-    
-    curl -xlocalhost:80 www.xtest.com/1.txt（可以访问到文件）
+$ curl -xlocalhost:80 www.xtest.com/1.txt（可以访问到文件）
     vim 2.jsp 
     <html>
        <body>
@@ -93,30 +97,34 @@ $ netstat -lntp | grep java
        </body>
     </html>
     
-    curl -xlocalhost:80 www.xtest.com/2.jsp
+$ curl -xlocalhost:80 www.xtest.com/2.jsp
+```
+> appBase : 应用存放目录，需要把 war 包直接放入该目录，会自动解压为一个程序目录
 
-appBase : 应用存放目录，需要把 war 包直接放入该目录，会自动解压为一个程序目录
+> unpackWARs : 自动解压
 
-unpackWARs : 自动解压
+> docBase : 定义网站的文件存放路径，和 appBase 二选一，另一个留空，如果定义了此参数就默认以该目录为主
 
-docBase : 定义网站的文件存放路径，和 appBase 二选一，另一个留空，如果定义了此参数就默认以该目录为主
 
-- 通过实例，部署一个 java 网站
-
-    $ cd /usr/local/src/
-    $ http -d http://dl.zrlog.com/release/zrlog-1.10.0-f3c522d-release.war
-    $ mv zrlog-1.10.0-f3c522d-release.war /usr/local/tomcat/webapps/
-    $ cd /usr/local/tomcat/webapps/
-    $ mv zrlog-1.10.0-f3c522d-release zrlog
-    # 浏览器 ip:8080/zrlog/install
-    $ mysql -uroot -p
-    mysql> create database zrlog;
-    mysql> grant all on arlog.* to zrlog@127.0.0.1 identified by 'password'
+## 5、java 网站
+> 通过实例，部署一个 java 网站
+```bash
+$ cd /usr/local/src/
+$ http -d http://dl.zrlog.com/release/zrlog-1.10.0-f3c522d-release.war
+$ mv zrlog-1.10.0-f3c522d-release.war /usr/local/tomcat/webapps/
+$ cd /usr/local/tomcat/webapps/
+$ mv zrlog-1.10.0-f3c522d-release zrlog
+# 浏览器 ip:8080/zrlog/install
+$ mysql -uroot -p
+mysql> create database zrlog;
+mysql> grant all on arlog.* to zrlog@127.0.0.1 identified by 'password'
     
-    $ mv /usr/local/tomcat/webapps/zrlog/* /data/www/log.com/
-    # 浏览器 ip:8080 直接访问
+$ mv /usr/local/tomcat/webapps/zrlog/* /data/www/log.com/
+# 浏览器 ip:8080 直接访问
+```
 
-9、tomcat 日志
+
+## 6、tomcat 日志
 
     $ ls /usr/local/tomcat/logs
 
