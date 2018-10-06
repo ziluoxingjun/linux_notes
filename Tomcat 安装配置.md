@@ -85,8 +85,8 @@ $ netstat -lnp|grep java //80端口
 $ vim /usr/local/tomcat/conf/server.xml
 # 最后一个 Host 下 添加：
 <Host name="www.ccc.com" appBase=""
-            unpackWARs="true" autoDeploy="true"
-            xmlValidation="false" xmlNamespaceAware="false">
+      unpackWARs="true" autoDeploy="true"
+      xmlValidation="false" xmlNamespaceAware="false">
     <Context path="" docBase="/data/wwwroot/ccc.com/" debug="0" reloadable="true" crossContext="true"/>
 </Host>
     
@@ -129,26 +129,32 @@ $ mv /usr/local/tomcat/webapps/zrlog/* /data/www/ccc.com/
 ## 6、tomcat 日志
 ```bash
 $ ls /usr/local/tomcat/logs
+catalina.2018-10-06.log      localhost.2018-10-06.log
+catalina.out                 localhost_access_log.2018-10-06.txt
+host-manager.2018-10-06.log  manager.2018-10-06.log
+```
 
-catalina 开头的日志为 tomcat 的综合日志，它记录 tomcat 服务相关信息，也会记录错误日志。
+> catalina 开头的日志为 tomcat 的综合日志，它记录 tomcat 服务相关信息，也会记录错误日志。
 
-catalina.xxxx-xx-xx.log 和 catalina.out 内容相同，前者会每天生成一个新的日志。
+> catalina.xxxx-xx-xx.log 和 catalina.out 内容相同，前者会每天生成一个新的日志。
 
-host-manager 和 manager 为管理相关的日志，前者为虚拟主机的管理日志。
+> host-manager 和 manager 为管理相关的日志，前者为虚拟主机的管理日志。
 
-localhost 和 localhost_access 为虚拟主机相关日志，前者为默认虚拟主机的错误日志，后者为访问日志。
+> localhost 和 localhost_access 为虚拟主机相关日志，前者为默认虚拟主机的错误日志，后者为访问日志。
 
-访问日志不会自动生成，需要在 server.xml 中配置一下。
+> 访问日志不会自动生成，需要在 server.xml 中配置一下。
 
-    <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
-           prefix="log.com_access" suffix=".log"
-           pattern="%h %l %u %t &quot;%r&quot; %s %b" />
+```bash
+$ vim /usr/local/tomcat/conf/server.xml
+<Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
+       prefix="ccc.com_access_log" suffix=".log"
+       pattern="%h %l %u %t &quot;%r&quot; %s %b" />
+```
+> prefix 访问日志的前缀
 
-prefix 访问日志的前缀
+> suffix 访问日志的后缀
 
-suffix 访问日志的后缀
+> pattern 访问日志的格式
 
-pattern 访问日志的格式
-
-错误日志会统一记录在 catalina.out 中，出现问题时，第一时间要想到查看它。
+> 错误日志会统一记录在 catalina.out 中，出现问题时，第一时间要想到查看它。
 ```
