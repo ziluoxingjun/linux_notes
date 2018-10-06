@@ -846,12 +846,11 @@ $ cat /usr/local/php-fpm/var/log/www-slow.log
 
 > 在 Apache 虚拟主机配置文件中定义 open_basedir
 
-> 在 php-fpm 中根据不同的不同的网站不同的 pool 定义不同的open_basedir
+> 在 php-fpm 中根据不同的网站不同的 pool 定义不同的 open_basedir
 
 ```bash
 $ vim /usr/local/php-fpm/etc/php-fpm.d/www.conf
-php_admin_value[open_basedir]=/data/www/:/tmp/（针对不同的域名进行限制）
- php_admin_value[open_basedir]=/data/www/test.com:/tmp/
+ php_admin_value[open_basedir]=/data/wwwroot/bbb.com:/tmp/
 $ vim /usr/local/php-fpm/etc/php.ini
 //定义 php-fpm 错误日志和日志级别
  error_log = /usr/local/php-fpm/var/log/php-fpm_errors.log
