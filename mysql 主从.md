@@ -4,7 +4,8 @@
 
 > mysql 主从是基于 binlog(Binary log) 的，主上需要开启 binlog 才能进行主从。
 
-主从过程大致有 3 个步骤：
+#### 主从过程大致有 3 个步骤：
+
 １.　主将更改操作记录到 binlog 中。
 ２.　从将主的 binlog (sql语句) 同步到从本机上并记录在relay log 中，为中继日志。
 ３.　从根据 relay log里面的 sql 语句按顺序执行。
