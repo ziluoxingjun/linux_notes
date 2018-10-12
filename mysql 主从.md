@@ -164,11 +164,11 @@ mysql> unlock tables;（解锁）
 
 ## 测试主从
 ```bash
-    # 主
-    mysql> select count(*) from db;
-    mysql> truncate table db;
-    mysql> drop table db;
-    # 从
-    mysql> select count(*1) from db;
+# 主
+mysql> select count(*) from db;
+mysql> truncate table db;
+mysql> drop table db;
+# 从
+mysql> select count(*) from db;
 ```
 
