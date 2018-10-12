@@ -115,6 +115,7 @@ mysql> unlock tables;（解锁）
     | zilo-01.000001 |   659371 |              |                  |                   |
     +----------------+----------+--------------+------------------+-------------------+
     1 row in set (0.00 sec)
+    $ mysql> show processlist; //state 状态应该为 Has sent all binlog to slave; waiting for binlog to be updated
 ```
 
 #### 配置从
@@ -133,11 +134,13 @@ mysql> unlock tables;（解锁）
     # master_log_file 和 master_log_pos 为主上执行 show master status 所得
     mysql> start slave;
     mysql> show slave status\G;
+    mysql> show processlist; //应该有两行state值为：Waiting for master to send event.Has read all relay log; waiting for the slave I/O thread to update it
+
     # 到主上执行 unlock tables
 
     # 重要：下面两项都为 yes 才成功，如果第一项为 connecting 检查防火墙
-    Slave_IO_Running: Connecting
-    Slave_SQL_Running: Yes
+    Slave_IO_Running: Connecting //连接到主库，并读取主库的日志到本地，生成本地日志文件
+    Slave_SQL_Running: Yes //读取本地日志文件，并执行日志里的SQL命令
     Seconds_Behind_Master: NULL //主从延迟的时间
     Last_IO_Errno: 1130
     Last_IO_Error: error connecting to master 'repl@192.168.95.11:3306' - retry-time: 60  retries: 1
