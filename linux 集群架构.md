@@ -262,6 +262,7 @@ test4:开启 master 上的 keepalived 服务
 ```
 
 #### LVS 的 DR 配置（用的比较多）
+- director 和 real server 之间形成一个 internal network（内网）
 - 需要有一个公共的 ip 配置在分发器上和所有 rs 上，也就是 vip
 - 和 ip tunnel 不同，它会把数据包的 mac 地址改为 rs 的 mac 地址，这样数据包就到了 rs 上
 - rs 接收到数据包后会还原原始数据包，里面有源 ip，直接通过公网 ip 返回到客户端，不经过分发器
