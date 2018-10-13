@@ -210,18 +210,19 @@ test4:开启 master 上的 keepalived 服务
 - rs 需要设定网关为分发器的内网 ip，用户请求的数据和返回给用户的数据包全部经过分发器，所以分发器成为瓶颈。一般10台左右，不能太多，否则影响效率。
 - 在 nat 模式中，只需要分发器有公网 ip 即可，所以比较节省公网 ip 资源。
 
-```bash
-    # director 内网 ip : 95.13 外网 ip : 106.128
-    # rs1 ip : 95.11
-    # rs2 ip : 95.12
-    
+准备三台机器：
+- director（分发器，调度器） 内网 ip : 95.13 外网 ip : 106.128 （vmware 仅主机模式）
+- rs1 ip : 95.11 设置网关为 95.13
+- rs2 ip : 95.12 设置网关为 95.13
+
+```bash   
     NAT
     hostname director
     $ yum install iptables-services
     $ systemctl stop firewalld
     $ systemctl disable firewalld
     $ systemctl start iptables
-    $ iptables -F && services iptables save
+    $ iptables -F && service iptables save
     yum install -y ipvsadm
     vim /usr/local/sbin/lvs_nat.sh
      #! /bin/bash
