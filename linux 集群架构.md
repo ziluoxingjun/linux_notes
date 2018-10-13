@@ -174,7 +174,7 @@ test4:开启 master 上的 keepalived 服务
 ```
 
 
-## 1.3、LB 集群之 LVS 介绍
+## 2、LB 集群之 LVS 介绍
 
 > LB ＝ Load Balancing （负载均衡）
 
@@ -210,6 +210,7 @@ test4:开启 master 上的 keepalived 服务
 - rs 需要设定网关为分发器的内网 ip，用户请求的数据和返回给用户的数据包全部经过分发器，所以分发器成为瓶颈。一般10台左右，不能太多，否则影响效率。
 - 在 nat 模式中，只需要分发器有公网 ip 即可，所以比较节省公网 ip 资源。
 
+```bash
     # director 内网 ip : 95.13 外网 ip : 106.128
     # rs1 ip : 95.11
     # rs2 ip : 95.12
@@ -258,13 +259,14 @@ test4:开启 master 上的 keepalived 服务
     hostname rs2
     vim /etc/sysconfig/network-scripts/ifcfg-eth0 
      GATEWAY=192.168.1.147（网关设置为 director 的 ip）
+```
 
-LVS 的 DR 设置（用的比较多）
-
+#### LVS 的 DR 配置（用的比较多）
 - 需要有一个公共的 ip 配置在分发器上和所有 rs 上，也就是 vip
 - 和 ip tunnel 不同，它会把数据包的 mac 地址改为 rs 的 mac 地址，这样数据包就到了 rs 上
 - rs 接收到数据包后会还原原始数据包，里面有源 ip，直接通过公网 ip 返回到客户端，不经过分发器
 
+```bash
     # director ip : 95.13
     # rs1 ip : 95.11
     # rs2 ip : 95.12
@@ -314,22 +316,23 @@ LVS 的 DR 设置（用的比较多）
     echo "2" > /proc/sys/net/ipv4/conf/all/arp_announce
     
     sh /usr/local/sbin/lvs_rs.sh
+```
 
-LVS IP Tunnel 模式
-
+#### LVS IP Tunnel 模式
 - 需要有一个公共的 ip 配置在分发器和所有 rs 上，叫做 vip
 - 客户端请求的目标 ip 为 vip，分发器接收到请求数据包后，会对数据包做一个加工，会把目标 ip 改为 rs 的 ip，数据包就到了 rs 上
 - rs 接收到数据包后会还原原始数据包，里面有源 ip，直接通过公网 ip 返回到客户端，不经过分发器
 
-3、LVS结合keepalived配置
+## 3、LVS 结合 keepalived 配置
 
-keeplived = HA + LB
+> keeplived = HA + LB
 
 - 一般为 4 台机器，两台 director,master slave,分别安装 keepalived，作为高可用，两台 rs1 rs2
 - 但 keepalived 本身有负载均衡的功能，实验时可以只安装一台 keepalived
 - keepalived 内置 ipvsadm 功能，所以不需要再安装 ipvsadm 包，也不用再编写执行 lvs_dr 脚本
 - keepalived 能够在一台宕机的时候，不再把请求转发过去
 
+```bash
 第一次
 
     在 master 上
@@ -386,9 +389,12 @@ keeplived = HA + LB
     ip addr（ifconfig 看不到）
     /etc/init.d/keepalived start
     ipvsadm -ln
+```
 
-http://ask.apelearn.com/question/8071
+> http://ask.apelearn.com/question/8071
 
+
+```bash
 第二次
 
     $ vim /etc/keepalived/keepalived.conf
@@ -447,13 +453,14 @@ http://ask.apelearn.com/question/8071
     $ systemctl start keepalived
     $ ipvsadm -ln
     ### 两台 rs 上，依然要执行 lvs_rs.sh 脚本
+```
 
 
+## 4、nginx 的负载均衡集群
 
-4、nginx 的负载均衡集群
+> LVS 针对 IP 做转发，nginx 可以针对域名做转发
 
-LVS 针对 IP 做转发，nginx 可以针对 域名做转发
-
+```bash
     cd /etc/nginx/conf/vhosts
     vim lb.conf
      upstream aming {
@@ -480,7 +487,7 @@ LVS 针对 IP 做转发，nginx 可以针对 域名做转发
     
     在 192.168.1.138 上 service nginx stop
     curl -xlocalhost www.123.com
-
-根据目录来做代理：http://ask.apelearn.com/question/920
+```
+> 根据目录来做代理：http://ask.apelearn.com/question/920
 
 lvs无法做到
