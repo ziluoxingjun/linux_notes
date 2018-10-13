@@ -157,6 +157,9 @@ if [ $n -eq "0" ]; then
 fi
 $ chmod 755 /usr/local/sbin/check_nginx.sh
 $ systemctl start keepalived
+$ ps aux | grep nginx
+$ /etc/init.d/nginx stop
+$ ps aux | grep nginx //对比两次时间
 $ vim /var/log/messages #日志
 # ip add 看 vip,ifconfig 看不到
 $ ip add
