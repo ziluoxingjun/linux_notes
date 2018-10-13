@@ -195,7 +195,7 @@ test4:开启 master 上的 keepalived 服务
 
 > lvs 架构中有一个核心角色叫做分发器（load balancer），用来分发用户请求，还有诸多处理用户请求的服务器（Real Server,rs）
 
-#### LVS 的算法:
+#### LVS 的调度算法:
 - 轮询 Round-Robin rr
 - 加权轮询 Wight Round-Robin wrr
 - 最小连接 Least-Connection lc
