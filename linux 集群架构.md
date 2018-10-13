@@ -90,7 +90,9 @@ HA = High Availability
 
 ## 1.2 keepalived 配置 HA
 
-> keepalived 通过 VRRP (Virtual Router Redundancy Protocol 虚拟路由冗余协议) 来实现，防止单点故障
+> keepalived 通过 VRRP (Virtual Router Redundancy Protocol 虚拟路由冗余协议) 来实现高可用，防止单点故障；在这个协议里会将多台功能相同的路由器组成一个小组，这个小组里会有一个 master 和 n(n>=1) 个 backup
+
+> master 会通过组播的形式向各个 backup 发送 vrrp 协议的数据包，当 backup 接收不到 master 发来的 vrrp 数据包时就会认为 master 宕机了。此时就要根据 各个 backup 的优先级来决定谁成为新的 master
 
 #### keepalived 有三个模块：
 - core：核心模块，负责主进程的启动，维护以及全局配置文件的加载和解析
