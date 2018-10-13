@@ -98,74 +98,68 @@ HA = High Availability
 - vrrp：实现 VRRP 协议
 
 ```bash
-    # 准备两台机器 11 12，11作为 master，12作为 backup
-    $ yum install keepalived
-    $ yum install nginx // 11已编译安装
-    # yum 安装 nginx 路径：/usr/share/nginx
-    # 编辑配置文件
-    $ vim /etc/keepalived/keepalived.conf
-    global_defs {
-       notification_email {
-            admin@admin.com
-       }   
-       notification_email_from root@admin.com
-       smtp_server 127.0.0.1
-       smtp_connect_timeout 30
-       router_id LVS_DEVEL
+# 准备两台机器 11 12，11作为 master，12作为 backup
+$ yum install keepalived
+$ yum install nginx // 11已编译安装
+# yum 安装 nginx 路径：/usr/share/nginx
+# 编辑配置文件
+$ vim /etc/keepalived/keepalived.conf
+global_defs {
+   notification_email {
+        admin@admin.com
+   }   
+   notification_email_from root@admin.com
+   smtp_server 127.0.0.1
+   smtp_connect_timeout 30
+   router_id LVS_DEVEL
+}
+
+vrrp_script chk_nginx {
+    script "/usr/local/sbin/check_nginx.sh"
+    interval 3
+}
+
+vrrp_instance VI_1 {
+    state MASTER //从为 BACKUP
+    interface ens33
+    virtual_router_id 51 //主从要一致
+    priority 100 //从为90 权重
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass zilo>com
     }
-    
-    vrrp_script chk_nginx {
-        script "/usr/local/sbin/check_nginx.sh"
-        interval 3
-    }
-    
-    vrrp_instance VI_1 {
-        state MASTER //从为 BACKUP
-        interface ens33
-        virtual_router_id 51 //主从要一致
-        priority 100 //从为90 权重
-        advert_int 1
-        authentication {
-            auth_type PASS
-    		auth_pass zilo>com
-        }
-    	virtual_ipaddress {
-    		192.168.95.100 //主从一致
-    	}   
-    	track_script {
-    		chk_nginx
-    	}   
-    }
-    # 监控脚本
-    $ vim /usr/local/sbin/check_nginx.sh
-    #!/bin/bash
-    #时间变量，用于记录日志
-    d=`date --date today +%Y%m%d_%H:%M:%S`
-    #计算nginx进程数量
-    n=`ps -C nginx --no-heading|wc -l`
-    #如果进程为0，则启动nginx，并且再次检测nginx进程数量，
-    #如果还为0，说明nginx无法启动，此时需要关闭keepalived
-    if [ $n -eq "0" ]; then
-    	/etc/init.d/nginx start
-        n2=`ps -C nginx --no-heading|wc -l`
-        if [ $n2 -eq "0"  ]; then
-    	    echo "$d nginx down,keepalived will stop" >> /var/log/check_nginx.log
-    	    systemctl stop keepalived
-    	fi
+    virtual_ipaddress {
+        192.168.95.100 //主从一致
+    }   
+    track_script {
+        chk_nginx
+    }   
+}
+# 监控脚本
+$ vim /usr/local/sbin/check_nginx.sh
+#!/bin/bash
+#时间变量，用于记录日志
+d=`date --date today +%Y%m%d_%H:%M:%S`
+#计算nginx进程数量
+n=`ps -C nginx --no-heading|wc -l`
+#如果进程为0，则启动nginx，并且再次检测nginx进程数量，
+#如果还为0，说明nginx无法启动，此时需要关闭keepalived
+if [ $n -eq "0" ]; then
+    /etc/init.d/nginx start
+    n2=`ps -C nginx --no-heading|wc -l`
+    if [ $n2 -eq "0"  ]; then
+        echo "$d nginx down,keepalived will stop" >> /var/log/check_nginx.log
+        systemctl stop keepalived
     fi
-    $ chmod 755 /usr/local/sbin/check_nginx.sh
-
-    # 日志
-    $ vim /var/log/messages
-    # ip add 看 vip,ifconfig 看不到
-    $ ip add
-
-# 配置完成，服务启动，检查防火墙，可以在浏览器中分别访问主ip 从ip vip 测试
-
-    test1:关闭 master 上的 nginx 服务
-    test2:在 master 上增加 iptables 规则：iptables -I OUTPUT -p vrrp -j DROP
-    test3:关闭 master 上的 keepalived 服务
-    test4:开启 master 上的 keepalived 服务
+fi
+$ chmod 755 /usr/local/sbin/check_nginx.sh# 日志
+$ vim /var/log/messages
+# ip add 看 vip,ifconfig 看不到
+$ ip add# 配置完成，服务启动，检查防火墙，可以在浏览器中分别访问主ip 从ip vip 测试test1:关闭 master 上的 nginx 服务
+test2:在 master 上增加 iptables 规则：iptables -I OUTPUT -p vrrp -j DROP
+test3:关闭 master 上的 keepalived 服务
+test4:开启 master 上的 keepalived 服务
 ```
 
 
