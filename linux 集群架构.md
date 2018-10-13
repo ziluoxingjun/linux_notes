@@ -174,31 +174,27 @@ test4:开启 master 上的 keepalived 服务
 ```
 
 
-2、LB 集群之 LVS 介绍
+## 1.3、LB 集群之 LVS 介绍
 
-LB ＝ Load Balancing （负载均衡）
+> LB ＝ Load Balancing （负载均衡）
 
-10000/s （10000请求量，并发） 每台机器 1000/s *10
+> 10000/s （10000请求量，并发） 每台机器 1000/s *10
 
 - nginx 7层（应用层） lvs 4层（网络层 网络OSI7层模型） keeplived 的负载均衡其实就是 lvs
 - lvs 这种4层的负载均衡可以分发除80外的其它端口通信，如 mysql ,haproxy 也支持 mysql 这种
 - nginx 仅仅支持 https https mail
 - 相比较来说 lvs 这种4层的更稳定，能承受更多的请求，而 nginx 这种7层的更加灵活，能实现更多的个性化需求
 
-LVS ＝Linux Virtual Server 由国人章文嵩开发，流行度不亚于 httpd ，基于tcp/ip 做路由转发，稳定性和效率都很高。
+> LVS ＝Linux Virtual Server 由国人章文嵩开发，流行度不亚于 httpd ，基于tcp/ip 做路由转发，稳定性和效率都很高。
 
-LVS的三种转发模式
+#### LVS的三种转发模式:
+- LVS-NAT：网络地址转换 Network address translation
+- LVS-DR：直接路由 Direct routing
+- LVS-TUN：IP隧道 IP tunneling
 
-LVS-NAT：网络地址转换 Network address translation
+> lvs 架构中有一个核心角色叫做分发器（load balancer），用来分发用户请求，还有诸多处理用户请求的服务器（Real Server,rs）
 
-LVS-DR：直接路由 Direct routing
-
-LVS-TUN：IP隧道 IP tunneling
-
-lvs 架构中有一个核心角色叫做分发器（load balancer），用来分发用户请求，还有诸多处理用户请求的服务器（Real Server,rs）
-
-LVS 的算法
-
+#### LVS 的算法:
 - 轮询 Round-Robin rr
 - 加权轮询 Wight Round-Robin wrr
 - 最小连接 Least-Connection lc
@@ -208,8 +204,7 @@ LVS 的算法
 - 目标地址散列调度 Destination Hashing dh
 - 源地址散列调度 Source Hashing sh
 
-LVS 的 NAT 模式
-
+#### LVS 的 NAT 模式
 - 这种模式借助 iptables 的 nat 表实现，用户的请求到分发器后，通过预设的 iptables 规则，把请求的数据包转发到后端的 rs 上。
 - rs 需要设定网关为分发器的内网 ip，用户请求的数据和返回给用户的数据包全部经过分发器，所以分发器成为瓶颈。一般10台左右，不能太多，否则影响效率。
 - 在 nat 模式中，只需要分发器有公网 ip 即可，所以比较节省公网 ip 资源。
