@@ -1,15 +1,15 @@
-Linux 集群
+# Linux 集群
 
-集群从功能划分两大类：高可用和负载均衡
+#### 集群从功能划分两大类：高可用和负载均衡
 
 - 高可用集群通常为两台服务器，一台工作，另一台作为冗余，当提供服务的机器宕机，另一台则接替继续提供服务。
 - 负载均衡集群需要一台服务器作为分发器，它负责把用户的请求分发给后端的服务器处理，后端服务器至少为两台。
 
-实现高可用的开源软件：heartbeat , keepalived
+> 实现高可用的开源软件：heartbeat , keepalived
 
-实现负载均衡的开源软件：LVS , keepalived , haproxy , nginx, 商业软件有 F5 , Netscaler
+> 实现负载均衡的开源软件：LVS , keepalived , haproxy , nginx, 商业软件有 F5 , Netscaler
 
-1.1 HA 集群配置（heartbeat 弃用）
+## 1.1 HA 集群配置（heartbeat 弃用）
 
 HA = High Availability
 
@@ -88,12 +88,11 @@ HA = High Availability
     service network restart
     ifconfig
 
-1.2 keepalived 配置 HA
+## 1.2 keepalived 配置 HA
 
-keepalived 通过 VRRP (Virtual Router Redundancy Protocol 虚拟路由冗余协议) 来实现，防止单点故障
+> keepalived 通过 VRRP (Virtual Router Redundancy Protocol 虚拟路由冗余协议) 来实现，防止单点故障
 
-keepalived 有三个模块：
-
+#### keepalived 有三个模块：
 - core：核心模块，负责主进程的启动，维护以及全局配置文件的加载和解析
 - check：负责健康检查
 - vrrp：实现 VRRP 协议
