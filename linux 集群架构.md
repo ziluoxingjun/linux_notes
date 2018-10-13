@@ -97,9 +97,10 @@ HA = High Availability
 - check：负责健康检查
 - vrrp：实现 VRRP 协议
 
+```bash
     # 准备两台机器 11 12，11作为 master，12作为 backup
     $ yum install keepalived
-    $ yum install nginx //11已编译安装
+    $ yum install nginx // 11已编译安装
     # yum 安装 nginx 路径：/usr/share/nginx
     # 编辑配置文件
     $ vim /etc/keepalived/keepalived.conf
@@ -159,13 +160,13 @@ HA = High Availability
     # ip add 看 vip,ifconfig 看不到
     $ ip add
 
-配置完成，服务启动，检查防火墙，可以在浏览器中分别访问主ip 从ip vip 测试
+# 配置完成，服务启动，检查防火墙，可以在浏览器中分别访问主ip 从ip vip 测试
 
     test1:关闭 master 上的 nginx 服务
     test2:在 master 上增加 iptables 规则：iptables -I OUTPUT -p vrrp -j DROP
     test3:关闭 master 上的 keepalived 服务
     test4:开启 master 上的 keepalived 服务
-
+```
 
 
 2、LB 集群之 LVS 介绍
