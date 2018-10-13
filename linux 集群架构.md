@@ -193,7 +193,7 @@ test4:开启 master 上的 keepalived 服务
 - LVS-DR：直接路由 Direct routing
 - LVS-TUN：IP隧道 IP tunneling
 
-> lvs 架构中有一个核心角色叫做分发器（load balancer），用来分发用户请求，还有诸多处理用户请求的服务器（Real Server,rs）
+> lvs 架构中有一个核心角色叫做分发器（load runner），用来分发用户请求，还有诸多处理用户请求的服务器（Real Server,rs）
 
 #### LVS 的算法:
 - 轮询 Round-Robin rr
