@@ -155,10 +155,15 @@ if [ $n -eq "0" ]; then
         systemctl stop keepalived
     fi
 fi
-$ chmod 755 /usr/local/sbin/check_nginx.sh# 日志
-$ vim /var/log/messages
+$ chmod 755 /usr/local/sbin/check_nginx.sh
+$ systemctl start keepalived
+$ vim /var/log/messages #日志
 # ip add 看 vip,ifconfig 看不到
-$ ip add# 配置完成，服务启动，检查防火墙，可以在浏览器中分别访问主ip 从ip vip 测试test1:关闭 master 上的 nginx 服务
+$ ip add
+# 配置完成，服务启动，检查防火墙，可以在浏览器中分别访问主ip 从ip vip 
+
+测试:
+test1:关闭 master 上的 nginx 服务
 test2:在 master 上增加 iptables 规则：iptables -I OUTPUT -p vrrp -j DROP
 test3:关闭 master 上的 keepalived 服务
 test4:开启 master 上的 keepalived 服务
