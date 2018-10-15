@@ -262,6 +262,7 @@ $ vim /etc/sysconfig/network-scripts/ifcfg-eth0
 GATEWAY=192.168.95.13（网关设置为 director 的 ip）
 $ route -n
 ```
+> 两台 rs 上都安装 nginx，curl rs1 rs2 ip，浏览器访问外网 ip
 
 #### LVS 的 DR 配置（用的比较多）
 - director 和 real server 之间形成一个 internal network（内网）
