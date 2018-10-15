@@ -258,8 +258,9 @@ test4:开启 master 上的 keepalived 服务
     
     hostname rs1
     hostname rs2
-    vim /etc/sysconfig/network-scripts/ifcfg-eth0 
-     GATEWAY=192.168.1.147（网关设置为 director 的 ip）
+$ vim /etc/sysconfig/network-scripts/ifcfg-eth0 
+GATEWAY=192.168.95.13（网关设置为 director 的 ip）
+$ route -n
 ```
 
 #### LVS 的 DR 配置（用的比较多）
