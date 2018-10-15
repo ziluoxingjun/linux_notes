@@ -243,16 +243,16 @@ test4:开启 master 上的 keepalived 服务
     
      # director 设置 ipvsadm
      IPVSADM='/usr/sbin/ipvsadm'
-     $IPVSADM -C
+     $IPVSADM -C //清空规则
     # $IPVSADM -A -t 192.168.106.128:80 -s rr（rr 为算法）
     # $IPVSADM -a -t 192.168.106.128:80 -r 192.168.95.11:80 -m
     # $IPVSADM -a -t 192.168.106.128:80 -r 192.168.95.12:80 -m（-m 代表 NAT 模式）
     # $IPVSADM -A -t 192.168.106.128:80 -s wrr（rr 为算法）
     # $IPVSADM -a -t 192.168.106.128:80 -r 192.168.95.11:80 -m -w 2（w weight 权重 为 1）
     # $IPVSADM -a -t 192.168.106.128:80 -r 192.168.95.12:80 -m -w 1
-      $IPVSADM -A -t 192.168.106.128:80 -s wlc -p 3 // -p 超时时间
+      $IPVSADM -A -t 192.168.106.128:80 -s wlc -p 3 // -p 超时时间 3秒之内分发到同一台机器上
       $IPVSADM -a -t 192.168.106.128:80 -r 192.168.95.11:80 -m -w 1
-      $IPVSADM -a -t 192.168.106.128:80 -r 192.168.95.12:80 -m -w 1
+      $IPVSADM -a -t 192.168.106.128:80 -r 192.168.95.12:80 -m -w 1 /-m nat模式
     sh /usr/local/sbin/lvs_nat.sh 
     ipvsadm -ln
     
