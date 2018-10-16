@@ -402,9 +402,9 @@ $ route -n
 > http://ask.apelearn.com/question/8071
 
 
+#### 第二次
 ```bash
-第二次
-
+    $ echo 1 > /proc/sys/net/ipv4/ip_forward //此条命令要执行，lvs_dr.sh 脚本不用执行
     $ vim /etc/keepalived/keepalived.conf
     vrrp_instance VI_1 {
         #备用服务器上为 BACKUP
@@ -417,7 +417,7 @@ $ route -n
         advert_int 1
         authentication {
             auth_type PASS
-            auth_pass aminglinux
+            auth_pass xingxing
         }
         virtual_ipaddress {
             192.168.95.200
