@@ -331,6 +331,8 @@ $ route -n
 
 ## 3、LVS 结合 keepalived 配置 DR
 
+![Keepalived+lvs](https://images.gitee.com/uploads/images/2018/1016/130926_a3c88a4a_922657.png "keepalived+lvs.png")
+
 > keeplived = HA + LB
 
 - 一般为 4 台机器，两台 director,master slave,分别安装 keepalived，作为高可用，两台 rs1 rs2
