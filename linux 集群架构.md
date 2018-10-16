@@ -281,12 +281,11 @@ $ route -n
     ipvsadm -C
     iptables -t nat -F
     
-    将 rs1 rs1 gateway 改回
-    将 eth1 down 掉
+    # 将 rs1 rs1 gateway 改回
+    # 将 eth1 down 掉
     
-    需要三个 vip
-    vim /usr/local/sbin/lvs_dr.sh
-    
+    # 需要三个 vip
+    $ vim /usr/local/sbin/lvs_dr.sh
     #! /bin/bash
     echo 1 > /proc/sys/net/ipv4/ip_forward
     ipv=/usr/sbin/ipvsadm
@@ -302,10 +301,10 @@ $ route -n
     $ipv -a -t $vip:80 -r $rs1:80 -g -w 1 //-g 代表 dr 模式
     $ipv -a -t $vip:80 -r $rs2:80 -g -w 1
     
-    sh /usr/local/sbin/lvs_dr.sh
-    ipvsadm -ln
+    $ sh /usr/local/sbin/lvs_dr.sh
+    $ ipvsadm -ln
     
-    # rs
+    # rs 上需要写脚本
     vim /usr/local/sbin/lvs_rs.sh
     #! /bin/bash
     vip=192.168.95.200
@@ -319,7 +318,7 @@ $ route -n
     echo "1" > /proc/sys/net/ipv4/conf/all/arp_ignore
     echo "2" > /proc/sys/net/ipv4/conf/all/arp_announce
     
-    sh /usr/local/sbin/lvs_rs.sh
+    $ sh /usr/local/sbin/lvs_rs.sh
 ```
 
 #### LVS IP Tunnel 模式
