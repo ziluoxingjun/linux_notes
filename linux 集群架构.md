@@ -309,6 +309,8 @@ $ route -n
     #! /bin/bash
     vip=192.168.95.200
     # 把 vip 绑定在 lo 上，是为了实现 rs 直接把结果返回给客户端
+    ifdown lo
+    ifup lo
     ifconfig lo:0 $vip broadcast $vip netmask 255.255.255.255 up
     route add -host $vip lo:0
     # 以下操作为更改 arp 内核参数，目的是让 rs 顺利发送 mac 地址给客户端
