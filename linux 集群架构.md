@@ -329,7 +329,7 @@ $ route -n
 - 客户端请求的目标 ip 为 vip，分发器接收到请求数据包后，会对数据包做一个加工，会把目标 ip 改为 rs 的 ip，数据包就到了 rs 上
 - rs 接收到数据包后会还原原始数据包，里面有源 ip，直接通过公网 ip 返回到客户端，不经过分发器
 
-## 3、LVS 结合 keepalived 配置
+## 3、LVS 结合 keepalived 配置 DR
 
 > keeplived = HA + LB
 
