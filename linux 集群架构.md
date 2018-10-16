@@ -321,6 +321,7 @@ $ route -n
     echo "2" > /proc/sys/net/ipv4/conf/all/arp_announce
     
     $ sh /usr/local/sbin/lvs_rs.sh
+    # 浏览器访问 192.168.95.200
 ```
 
 #### LVS IP Tunnel 模式
