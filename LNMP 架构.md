@@ -186,6 +186,8 @@ $ /usr/local/php-fpm/sbin/php-fpm -t
 ## 3、nginx 安装
 > Nignx 应用场景：web 服务器、反向代理、负载均衡
 
+> nginx使用基于事件的模型和依赖于操作系统的机制来高效地在工作进程间分配请求。工作进程的数量在配置文件中定义，并且可以针对给定配置进行修复或自动调整为可用CPU核心的数量。
+
 ```bash
 $ cd /usr/local/src
 $ wget http://nginx.org/download/nginx-1.14.0.tar.gz
