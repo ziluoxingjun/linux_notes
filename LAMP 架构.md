@@ -315,6 +315,10 @@ $ cat /usr/local/apache2/build/config.nice apache //配置编译参数
 > configure: error: mcrypt.h not found. Please reinstall libmcrypt.
 > $ yum install epel-release
 > $ yum install libmcrypt-devel
+>
+> error: rpmdbNextIterator: skipping h# 415 Header V3 RSA/SHA256 Signature, key ID f4a80eb5: BAD
+> $ ls /var/lib/rpm //如果显示有 __db.任意数字的文件,使用 rm -f __db.* 删掉所有数据库文件,然后使用这个命令重建 rpm 数据库
+> $ rpm -vv --rebuilddb
 > ```
 
 ## 4、Apache 和 php 结合
