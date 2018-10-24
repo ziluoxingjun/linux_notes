@@ -134,6 +134,10 @@ $ make && make install
 >
 > configure: error: PDO_MYSQL configure failed, MySQL 4.1 needed. Please check config.log for more information.
 >> 将 --with-pdo-mysql 后面的路径删掉重新 configure
+>
+> configure: error: Please reinstall the libcurl distribution -
+>    easy.h should be in <curl-dir>/include/curl/
+> $ yum install libcurl-devel
 > ```
 
 #### 3、拷贝配置和启动脚本
