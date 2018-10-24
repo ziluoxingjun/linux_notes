@@ -202,6 +202,8 @@ $ /usr/local/nginx/sbin/nginx -t
 ```
 
 ## 4、nginx 启动脚本
+> https://www.nginx.com/resources/wiki/start/topics/examples/initscripts/
+
 ```bash
 $ vim /etc/init.d/nginx
 #!/bin/bash
