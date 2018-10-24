@@ -226,9 +226,9 @@ $ tar jxvf php-5.6.37.tar.bz2
 $ cd php-5.6.37
 $ ./configure \
 --prefix=/usr/local/php \
---with-apxs2=/usr/local/apache2.4/bin/apxs \ //自动帮助我们安装拓展模块的
+--with-apxs2=/usr/local/apache2.4/bin/apxs \
 --with-config-file-path=/usr/local/php/etc  \
---with-mysql=/usr/local/mysql \ //依赖于mysql,php7 不需要此参数
+--with-mysql=/usr/local/mysql \
 --with-pdo-mysql=/usr/local/mysql \
 --with-mysqli=/usr/local/mysql/bin/mysql_config \
 --with-libxml-dir \
@@ -245,9 +245,12 @@ $ ./configure \
 --enable-gd-native-ttf \
 --enable-mbstring \
 --enable-sockets \
---enable-exif \
+--enable-exif
 $ make && make install
 ```
+> --with-apxs2=/usr/local/apache2.4/bin/apxs \ //自动帮助我们安装拓展模块的
+>
+> --with-mysql=/usr/local/mysql \ //依赖于mysql,php7 不需要此参数
 
 ##### 3、php7 编译安装
 ```bash
