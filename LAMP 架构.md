@@ -226,7 +226,7 @@ $ tar jxvf php-5.6.37.tar.bz2
 $ cd php-5.6.37
 $ ./configure \
 --prefix=/usr/local/php \
---with-apxs2=/usr/local/apache2.4/bin/apxs \
+--with-apxs2=/usr/local/apache/bin/apxs \
 --with-config-file-path=/usr/local/php/etc  \
 --with-mysql=/usr/local/mysql \
 --with-pdo-mysql=/usr/local/mysql \
