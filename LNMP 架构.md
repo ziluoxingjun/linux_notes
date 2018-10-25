@@ -202,6 +202,7 @@ $ /usr/local/nginx/sbin/nginx -t
 ```
 
 ## 4、nginx 启动脚本
+> http://wiki.nginx.org/RedHatNginxInitScript
 > https://www.nginx.com/resources/wiki/start/topics/examples/initscripts/
 
 ```bash
