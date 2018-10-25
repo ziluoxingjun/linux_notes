@@ -645,6 +645,32 @@ $ /usr/local/nginx/sbin/nginx -s reload
 
 > 还有一种情况，就是 php-fpm 进程资源耗尽了，也是报502错误
 
+## 如何正确配置 Nginx+PHP
+> 用PHP实现了一个前端控制器，就是统一入口：把 PHP 请求都发送到同一个文件上，然后在此文件里通过解析「REQUEST_URI」实现路由。
+```bash
+server {
+    listen       80;
+    server_name  abc.com;
+
+    root /data/wwwroot/sex.com;
+    index index.html index.htm index.php;
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+        try_files $uri = 404; //要考虑一个安全问题：在PHP开启「cgi.fix_pathinfo」的情况下，PHP可能会把错误的文件类型当作PHP文件来解析。如果Nginx和PHP安装在同一台服务器上的话，那么最简单的解决方法是用「try_files」指令做一次过滤
+
+        include fastcgi.conf
+        fastcgi_pass unix:/tmp/php-fcgi.sock;
+        #fastcgi_pass 127.0.0.1:9000;
+    }
+}
+```
+> Nginx有两份fastcgi配置文件，分别是「fastcgi_params」和「fastcgi.conf」，它们没有太大的差异，唯一的区别是后者比前者多了一行「SCRIPT_FILENAME」的定义：
+> `fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;`
+> 因为「location」已经做了限定，所以「fastcgi_index」其实也没有必要
 
 ## nginx & php-fpm
 ```bash
