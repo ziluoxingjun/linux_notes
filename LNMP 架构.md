@@ -656,7 +656,7 @@ server {
     index index.html index.htm index.php;
 
     location / {
-        try_files $uri $uri/ /index.php?$args;
+        try_files $uri $uri/ /index.php?$args; //try_files 重定向功能，假如访问abc.com/info,会匹配到此三行，匹配到此项就开始执行try_files,nginx 会去找有没有info这个文件（$uri）,如果没有就继续找info这个目录（$uri/），如果也没有的就直接重定向到 /index.php?$args,$args 就是url问号后边的参数
     }
 
     location ~ \.php$ {
