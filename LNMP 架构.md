@@ -669,7 +669,9 @@ server {
 }
 ```
 > Nginx有两份fastcgi配置文件，分别是「fastcgi_params」和「fastcgi.conf」，它们没有太大的差异，唯一的区别是后者比前者多了一行「SCRIPT_FILENAME」的定义：
+>
 > `fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;`
+>
 > 因为「location」已经做了限定，所以「fastcgi_index」其实也没有必要
 
 ## nginx & php-fpm
