@@ -397,10 +397,10 @@ $ vim /usr/local/nginx/conf/vhost/bbb.com.conf
 server
 {
     listen 80;
-    server_name bbb.com
-    index index.html index.htm index.php
-    root /data/wwwroot/bbb.com
-    #location /admin/
+    server_name bbb.com;
+    index index.html index.htm index.php;
+    root /data/wwwroot/bbb.com;
+    #location /admin/;
     location ~ admin.php
     {
         auth_basic 			"Auth";
@@ -437,12 +437,12 @@ server|
 {
     listen 80;
     server_name bbb.com bbb1.com bbb2.com;//支持写多个域名
-    index index.html index.htm index.php
-    root /data/www/bbb.com
+    index index.html index.htm index.php;
+    root /data/www/bbb.com;
  	if ($host != 'bbb.com')
      {
           #rewrite ^/(.*)$ http://bbb.com/$1 permanent;
-          rewrite http://$host/(.*)$ http://bbb.com/$1 permanent //permanent 301 redirect 302
+          rewrite http://$host/(.*)$ http://bbb.com/$1 permanent; //permanent 301 redirect 302
      }
 }
 $ /usr/local/nginx/sbin/nginx -t
@@ -459,7 +459,7 @@ $ vim /usr/local/nginx/conf/nginx.conf
  21     ' "$http_referer" "$http_user_agent"';
 
 $ vim /usr/local/nginx/conf/vhosts/bbb.com.conf
-access_log /usr/local/nginx/logs/bbb.com.log log_name
+access_log /usr/local/nginx/logs/bbb.com.log log_name;
 $ /usr/local/nginx/sbin/nginx -t
 $ /usr/local/nginx/sbin/nginx -s reload
 ```
