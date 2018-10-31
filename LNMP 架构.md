@@ -875,6 +875,7 @@ $ vim /usr/local/php-fpm/etc/php-fpm.d/www.conf
 $ vim /usr/local/nginx/conf/vhosts/bbb.com.conf
  unix:/tmp/php-fcgi.sock --> unix:/tmp/www.sock
 $ /etc/init.d/nginx -s reload
+$ /etc/init.d/php-fpm restart
 
 $ vim /data/www/bbb.com/sleep.php
  <?php echo "test slow log";sleep(3); echo "done"; ?>
