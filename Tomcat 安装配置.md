@@ -43,7 +43,7 @@ $ /usr/local/tomcat/bin/startup.sh //启动
 $ vim /etc/init.d/tomcat //加入以下几行
  # chkconfig: 2345 63 37 //第63个启动，第37个关闭
  . /etc/init.d/functions
- JAVA_HOME=/usr/local/jdk1.8.0_111
+ JAVA_HOME=/usr/local/jdk1.8
  CATALINA_HOME=/usr/local/tomcat //tomcat 的家目录
 
 $ chkconfig --add tomcat
@@ -67,7 +67,7 @@ $ netstat -lntp | grep java
 ## 3、配置 tomcat 监听端口为 80
 ```bash
 $ vim /usr/local/tomcat/conf/server.xml
-<Connector port="80" protocol="HTTP/1.1" //改为 80
+69 <Connector port="80" protocol="HTTP/1.1" //改为 80
     
 $ /usr/local/tomcat/bin/shutdown.sh
 $ /usr/local/tomcat/bin/startup.sh
@@ -79,7 +79,7 @@ $ netstat -lnp|grep java //80端口
 
 ## 4、配置 tomcat 的虚拟主机
 
-> \<Host\> 和 \<\/Host\> 之前的配置为虚拟主机配置部分，name 定义域名，appBase 定义应用的目录，Java 的应用通常是一个 jar 格式的压缩包，只要将压缩包放到  appBase 目录下即可。
+> \<Host\> 和 \<\/Host\> 之间的配置为虚拟主机配置部分，name 定义域名，appBase 定义应用的目录，Java 的应用通常是一个 jar 格式的压缩包，只要将压缩包放到  appBase 目录下即可。
 
 ```bash
 $ vim /usr/local/tomcat/conf/server.xml
