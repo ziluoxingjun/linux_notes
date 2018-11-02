@@ -64,7 +64,53 @@ $ netstat -lntp | grep java
 > 8005：管理端口
 
 
-## 3、配置 tomcat 监听端口为 80
+## 4、tomcat 启动脚本
+```bash
+$ vim /etc/init.d/tomcat
+$ chmod 755 /etc/init.d/tomcat
+$ chkconfig --add tomcat
+$ chkconfig tomcat on
+```
+```bash
+#!/bin/bash 
+# 
+# tomcat startup script for the Tomcat server 
+# 
+# chkconfig: 345 80 20 
+# description: start the tomcat deamon 
+# 
+# Source function library 
+. /etc/init.d/functions 
+prog=tomcat 
+JAVA_HOME=/usr/local/jdk1.8
+export JAVA_HOME 
+CATALINA_HOME=/usr/local/tomcat/
+export CATALINA_HOME 
+case "$1" in 
+start) 
+  echo "Starting Tomcat..." 
+  $CATALINA_HOME/bin/startup.sh 
+  ;; 
+stop) 
+  echo "Stopping Tomcat..." 
+  $CATALINA_HOME/bin/shutdown.sh 
+  ;; 
+restart) 
+  echo "Stopping Tomcat..." 
+  $CATALINA_HOME/bin/shutdown.sh 
+  sleep 2 
+  echo 
+  echo "Starting Tomcat..." 
+  $CATALINA_HOME/bin/startup.sh 
+  ;; 
+*) 
+  echo "Usage: $prog {start|stop|restart}" 
+  ;; 
+esac 
+exit 0
+```
+
+## 4、配置 tomcat 监听端口为 80
 ```bash
 $ vim /usr/local/tomcat/conf/server.xml
 69 <Connector port="80" protocol="HTTP/1.1" //改为 80
@@ -77,7 +123,7 @@ $ netstat -lnp|grep java //80端口
 ```
 
 
-## 4、配置 tomcat 的虚拟主机
+## 5、配置 tomcat 的虚拟主机
 
 > \<Host\> 和 \<\/Host\> 之间的配置为虚拟主机配置部分，name 定义域名，appBase 定义应用的目录，Java 的应用通常是一个 jar 格式的压缩包，只要将压缩包放到  appBase 目录下即可。
 
@@ -108,7 +154,7 @@ $ curl -xlocalhost:80 www.ccc.com/1.jsp
 > docBase : 定义网站的文件存放路径，如果定义了此参数就默认以该目录为主,如果不定义默认是在 appBase/ROOT 下，docBase,appBase 二选一，另一个留空，也可以一样。
 
 
-## 5、java 网站
+## 6、java 网站
 > 通过实例，部署一个 java 网站
 ```bash
 $ cd /usr/local/src/
@@ -126,7 +172,7 @@ $ mv /usr/local/tomcat/webapps/zrlog/* /data/www/ccc.com/
 ```
 
 
-## 6、tomcat 日志
+## 7、tomcat 日志
 ```bash
 $ ls /usr/local/tomcat/logs
 catalina.2018-10-06.log      localhost.2018-10-06.log
