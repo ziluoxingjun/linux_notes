@@ -488,17 +488,17 @@ $ vim /usr/local/sbin/nginx_logrotate1.sh
  gzip -f $date.log（如果日志太大进行压缩 -f 强制覆盖）
 
 vim /usr/local/sbin/nginx_logrotate2.sh
- #！/bin/bash
- # nginx 日志存放路径为 /usr/local/nginx/logs/
- d=`date -d "-1 day" +%Y%m%d`
- log_dir="/usr/local/nginx/logs"
- nginx_pid="/usr/local/nginx/logs/nginx.pid"
- cd $log_dir
- for log in `ls *.log`
- do
- 	mv $log $log-$d
- done
- /bin/kill -HUP `cat $nginx_pid` //-HUP 让进程挂起，睡眠；动态更新配置，重新加载配置而不用重启服务：更改日志名称后，重新生成新的日志文件 相当于 -s reload
+#！/bin/bash
+# nginx 日志存放路径为 /usr/local/nginx/logs/
+olddate=$(date -d "-1 day" +%Y%m%d)
+log_path="/usr/local/nginx/logs"
+nginx_pid="/usr/local/nginx/logs/nginx.pid"
+cd $log_path
+for log i$(ls *.log)
+do
+    mv $log $log-$olddate
+done
+/bin/kill -HUP $(cat $nginx_pid） //-HUP -USR1 让进程挂起，睡眠；动态更新配置，重新加载配置而不用重启服务：更改日志名称后，重新生成新的日志文件 相当于 -s reload
 
 $ sh -x /usr/local/sbin/nginx_logrotate.sh //-x 能看到执行过程; 应加入 cron 里，每天 0 点执行切割脚本
 清理：
