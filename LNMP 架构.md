@@ -209,7 +209,7 @@ $ /usr/local/nginx/sbin/nginx -t
 $ vim /etc/init.d/nginx
 #!/bin/bash
 # chkconfig: - 30 21
-# description: http service.
+# description: startup script for nginx http service.
 # Source Function Library
 . /etc/init.d/functions
 # Nginx Settings
