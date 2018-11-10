@@ -183,7 +183,7 @@ test4:开启 master 上的 keepalived 服务
 - 主流开源软件 LVS,keepalived,haproxy,nginx 等
 - nginx 7层（应用层） lvs 4层（网络层 网络OSI7层模型） keeplived 的负载均衡其实就是 lvs，haproxy 既可以是4层也可以当做7层用
 - lvs 这种4层的负载均衡可以分发除80外的其它端口通信，如 mysql ,haproxy 也支持 mysql 这种
-- nginx 仅仅支持 https https mail
+- nginx 仅仅支持 http https mail
 - 相比较来说 lvs 这种4层的更稳定，能承受更多的请求，而 nginx 这种7层的更加灵活，能实现更多的个性化需求
 
 > LVS ＝Linux Virtual Server 由国人章文嵩开发，流行度不亚于 httpd ，基于tcp/ip 做路由转发，稳定性和效率都很高。
