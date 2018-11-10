@@ -270,6 +270,16 @@ $ route -n
 - 和 ip tunnel 不同，它会把数据包的 mac 地址改为 rs 的 mac 地址，这样数据包就到了 rs 上
 - rs 接收到数据包后会还原原始数据包，里面有源 ip，直接通过公网 ip 返回到客户端，不经过分发器
 
+![lvs-dr](https://images.gitee.com/uploads/images/2018/1110/183215_caf1aa37_922657.png "屏幕截图.png")
+
+![lvs-dr](https://images.gitee.com/uploads/images/2018/1110/183235_22dec52d_922657.png "屏幕截图.png")
+
+①.客户端将请求发往前端的负载均衡器，请求报文源地址是CIP，目标地址为VIP。
+
+②.负载均衡器收到报文后，发现请求的是在规则里面存在的地址，那么它将客户端请求报文的源MAC地址改为自己DIP的MAC地址，目标MAC改为了RIP的MAC地址，并将此包发送给RS。
+
+③.RS发现请求报文中的目的MAC是自己，就会将次报文接收下来，处理完请求报文后，将响应报文通过lo接口送给eth0网卡直接发送给客户端。
+
 ```bash
     # director ip : 95.13
     # rs1 ip : 95.11
