@@ -434,11 +434,11 @@ $ route -n
         }
     }
     virtual_server 192.168.95.200 80 {
-        #(每隔10秒查询realserver状态)
+        #(每隔10秒查询realserver状态，健康检查时间)
         delay_loop 10
-        #(lvs 算法)
+        #(lvs 调度算法)
         lb_algo wlc
-        #(DR模式)
+        #(实现负载均衡的机制 DR模式)
         lb_kind DR
         #(同一IP的连接60秒内被分配到同一台realserver)
         persistence_timeout 0
