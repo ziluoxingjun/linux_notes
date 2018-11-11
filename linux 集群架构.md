@@ -302,7 +302,7 @@ $ route -n
     vip=192.168.95.200
     rs1=192.168.95.11
     rs2=192.168.95.12
-    ifconfig ens33 down
+    ifdown ens33
     ifup ens33
     ifconfig ens33:1 $vip broadcast $vip netmask 255.255.255.255 up
     route add -host $vip dev ens33:1
