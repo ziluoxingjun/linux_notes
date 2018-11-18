@@ -13,8 +13,19 @@
 
 早期版本叫做 portmap ，后面版本叫做 rpcbind 其实是一个东西
 
-## NFS 服务安装
-
+## NFS 服务端安装配置
+```bash
+$ yum install nfs-utils //同时会安装好 rpcbind
+$ vim /etc/exports
+/home/nfs 192.168.95.0/24(rw,sync,all_squash,anonuid=1000,anongid=1000)
+$ mkdir -p /home/nfs
+$ chmod 777 /home/nfs
+$ systemctl start rpcbind
+$ systemctl start nfs
+$ systemctl enable rpcbind
+$ systemctl enable nfs
+```
+客户端只需安装好 nfs-utils 并启动即可
 
 ## exportfs 命令
 
