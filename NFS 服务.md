@@ -25,9 +25,35 @@ $ systemctl start nfs
 $ systemctl enable rpcbind
 $ systemctl enable nfs
 ```
-客户端只需安装好 nfs-utils 并启动即可
+## 客户端安装
+```bash
+$ yum install nfs-utils
+$ showmount -e 192.168.95.191 //NFS 服务端 ip
+$ mount -t nfs 192.168.95.191:/home/nfs /mnt
+$ df -h
+$ touch /mnt/test
+$ ll /mnt/test //可以看到属主属组都为 1000
+```
+
+## NFS 配置选项
+> rw：可读写的权限
+
+> ro：只读的权限
+
+> sync：内存数据实时写入磁盘
+
+> async：非同步模式，数据先会存入内存中，不会写入磁盘
+
+> no_root_squash：客户端挂载 NFS 共享目录后，root 用户不受约束，权限很大，此参数很不安全，建议不要使用
+
+> root_squash：与上面选项相对，客户端上的 root 用户受到约束，会被限定为某个普通用户
+
+> all_squash：客户端上所有用户在使用 NFS 共享目录时都被限定为一个普通用户
+
+> anonuid/anongid：定义被限定用户的 uid gid,uid 必须存在于 /etc/passwd 中，和上面几个选项搭配使用
 
 ## exportfs 命令
+exportfs 命令可以使 NFS 配置立刻生效而不用重启 NFS 服务
 
 常用选项：
 - -a 全部挂载或者全部卸载
