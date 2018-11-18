@@ -13,3 +13,14 @@ $ vim /etc/exports //增加一行
 /tmp/ 192.168.95.190(rw,sync,no_root_squash)
 $ exportfs -arv //不用重启 nfs 服务，配置就会生效
 ```
+
+## 客户端问题
+
+1. 客户端挂共享目录后，不管是 root 还是普通用户，创建新文件时属主和属组都为 nobody
+2. nfs 4 版本上会有该问题
+
+解决方法：
+在客户端挂载时
+```bash
+$ mount -t nfs -oremount,nfsvers=3 192.168.95.191:/tmp /mnt //remount 不用卸载，重新挂载，nfsvers 指定版本为3
+```bash
