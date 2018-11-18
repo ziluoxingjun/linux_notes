@@ -23,7 +23,7 @@ $ exportfs -arv //不用重启 nfs 服务，配置就会生效
 在客户端挂载时
 ```bash
 $ mount -t nfs -oremount,nfsvers=3 192.168.95.191:/tmp /mnt //remount 不用卸载，重新挂载，nfsvers 指定版本为3
-```bash
+```
 
 解决方案2：
 在服务端和客户端修改 Domain 后，重启 idmapd 服务
