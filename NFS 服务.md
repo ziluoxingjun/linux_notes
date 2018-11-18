@@ -26,9 +26,9 @@ $ mount -t nfs -oremount,nfsvers=3 192.168.95.191:/tmp /mnt //remount 不用卸�
 ```
 
 解决方案2：
-在服务端和客户端修改 Domain 后，重启 idmapd 服务
+在服务端和客户端修改 Domain 后，重启 idmapd(rpcbind) 服务
 ```bash
 $ vim /etc/idmapd.conf
-5 #Domain = local.domain.edu //改为下面
+5 #Domain = local.domain.edu //去掉 # 号或者改为下面
 6 Domain = xxx.com //随意定义一个域名
 ```
