@@ -1,3 +1,8 @@
+### NFS 介绍
+> NFS == Network File System
+> NFS 是由 Sun 开发并发展起来的一项用于在不同机器，不同操作系统之间通过网络互相分享各自的文件。可以让你的 PC 通过网络将远端的目录 MOUNT 到自己的系统中，使用 NFS 的远端文件就像是在使用本地文件一样。
+> 有 2 3 4 三个版本，4.0版本开始 Netapp 公司参与并主导开发
+> NFS 数据传输基于 RPC(Remote Procedure Call 远程过程调用) 协议
 
 ## exportfs 命令
 
