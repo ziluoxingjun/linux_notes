@@ -1,4 +1,4 @@
-### NFS 介绍
+## NFS 介绍
 > NFS == Network File System
 
 > NFS 是由 Sun 开发并发展起来的一项用于在不同机器，不同操作系统之间通过网络互相分享各自的文件。可以让你的 PC 通过网络将远端的目录 MOUNT 到自己的系统中，使用 NFS 的远端文件就像是在使用本地文件一样。
@@ -11,7 +11,7 @@
 
 ![NFS 原理](https://images.gitee.com/uploads/images/2018/1118/180948_370cb8f0_922657.png "屏幕截图.png")
 
-早期版本叫做 portmap ，后面版本叫做 rpcbind 其实是一个东西
+早期版本叫做 portmap ，后面版本叫做 rpcbind 其实是一个东西，默认监听 111 端口
 
 ## NFS 服务端安装配置
 ```bash
