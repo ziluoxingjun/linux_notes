@@ -20,7 +20,7 @@ $ exportfs -arv //不用重启 nfs 服务，配置就会生效
 2. nfs 4 版本上会有该问题
 
 解决方案1：
-在客户端挂载时
+在客户端挂载时执行以下命令
 ```bash
 $ mount -t nfs -oremount,nfsvers=3 192.168.95.191:/tmp /mnt //remount 不用卸载，重新挂载，nfsvers 指定版本为3
 ```
