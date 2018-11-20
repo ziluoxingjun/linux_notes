@@ -1,7 +1,7 @@
 ## FTP 服务介绍
 > FTP(File Transfer Protocol) 文件传输协议，用于在 Internet 上控制文件双向传输
 
-## vsftpd
+## vsftpd 搭建 FTP 服务
 ```bash
 $ yum install vsftpd
 $ useradd -s /sbin/nologin virftp
@@ -15,8 +15,8 @@ $ chmod 600 /etc/vsftpd/vsftpd_login
 $ db_load -T -t hash -f /etc/vsftpd/vsftpd_login /etc/vsftpd/vsftpd_login.db // -T 允许应用程序能够将文本文件转译载入数据库。-t 使用 hash 码加密
 
 
-数据库文件
 ```
 
-## pure-ftp
+## pure-ftp 搭建 FTP 服务
+
 
