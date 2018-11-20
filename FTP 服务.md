@@ -25,17 +25,16 @@ $ vim user1 //与 vsftpd_login 里同名文件
  idle_session_timeout=600
  data_connection_timeout=120
  max_clients=10
- max_per_ip=5
- local_max_rate=50000
+ #max_per_ip=5
+ #local_max_rate=50000
 $ mkdir /home/virftp/user1
-$ chown -R virftp:virftp !$
-vim /etc/pam.d/vsftpd （认证方式，用虚拟用户登录，否则会用系统用户登录）
- auth sufficient /lib/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login（32位 上面 db_load 就和 pam_userdb.so（认证的模块） 有关）
- account sufficient /lib/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login（32 位）
- auth sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login
+$ touch /home/virftp/user1/demo.txt
+$ chown -R virftp:virftp /home/virftp
+$ vim /etc/pam.d/vsftpd //认证方式，用虚拟用户登录，否则会用系统用户登录
+ auth sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login //上面 db_load 就和 pam_userdb.so（认证的模块）有关
  account sufficient /lib64/security/pam_userdb.so db/etc/vsftpd/vsftpd_login
 
-vim /etc/vsftpd/vsftpd.conf
+$ vim /etc/vsftpd/vsftpd.conf
  anonymous_enable=NO
  local_enable=YES
  anon_upload_enable=NO
