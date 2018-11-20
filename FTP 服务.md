@@ -31,23 +31,25 @@ $ mkdir /home/virftp/user1
 $ touch /home/virftp/user1/demo.txt
 $ chown -R virftp:virftp /home/virftp
 $ vim /etc/pam.d/vsftpd //认证方式，用虚拟用户登录，否则会用系统用户登录
- auth sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login //上面 db_load 就和 pam_userdb.so（认证的模块）有关
- account sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login
+auth sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login //上面 db_load 就和 pam_userdb.so（认证的模块）有关
+account sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login
 
 $ vim /etc/vsftpd/vsftpd.conf
- anonymous_enable=NO
- local_enable=YES
- anon_upload_enable=NO
- anon_mkdir_write_enable=NO
-最下面加入
- guest_enable=YES（设为 NO 虚拟用户无法登录）
- guest_username=virftp
- virtual_use_local_privs=YES
- user_config_dir=/etc/vsftpd/vsftpd_user_conf
+anonymous_enable=NO
+anon_upload_enable=NO
+anon_mkdir_write_enable=NO
+# 最下面加入
+chroot_local_user=YES
+guest_enable=YES //设为 NO 虚拟用户无法登录
+guest_username=virftp
+virtual_use_local_privs=YES
+user_config_dir=/etc/vsftpd/vsftpd_user_conf
+allow_writeable_chroot=YES
 
 vim /var/log/secure（查看日志）
 下载：mirror rdir ldir　　// 将远程目录rdir下载到本地目录ldir
 上传：mirror -R ldir rdir　　// 将本地目录ldir上传到远程目录rdir
+```
 
 VSFTP virtual_use_local_privs 参数
  
@@ -71,7 +73,6 @@ anon_mkdir_write_enable=YES时，虚拟用户只能下载文件和创建文件�
 当virtual_use_local_privs=NO，write_enable=YES，anon_world_readable_only=NO，
 anon_other_write_enable=YES时，虚拟用户只能下载、删除和重命名文件，无其他权限。
 
-```
 
 ## pure-ftp 搭建 FTP 服务
 
