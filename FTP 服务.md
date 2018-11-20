@@ -46,9 +46,10 @@ virtual_use_local_privs=YES
 user_config_dir=/etc/vsftpd/vsftpd_user_conf
 allow_writeable_chroot=YES
 
-vim /var/log/secure（查看日志）
-下载：mirror rdir ldir　　// 将远程目录rdir下载到本地目录ldir
-上传：mirror -R ldir rdir　　// 将本地目录ldir上传到远程目录rdir
+# 查看日志
+$ vim /var/log/secure
+$ vim /var/log/messages
+
 ```
 
 VSFTP virtual_use_local_privs 参数
