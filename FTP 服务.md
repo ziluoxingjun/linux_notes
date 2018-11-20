@@ -76,6 +76,9 @@ anon_other_write_enable=YES时，虚拟用户只能下载、删除和重命名�
 
 
 ## pure-ftp 搭建 FTP 服务
+> www.pureftpd.org
+
+yum 安装配置 pure-ftpd
 ```bash
 $ yum install epel-release
 $ yum install pure-ftpd
@@ -91,3 +94,61 @@ $ pure-pw mkdb
 $ pure-pw list/userdel/usermod/passwd
 ```
 
+编译安装配置 pure-ftpd
+```bash
+$ tar -xvf pure-ftpd-1.0.44.tar.bz2
+$ cd pure-ftpd-1.0.44
+$ ./configure \
+--prefix=/usr/local/pureftpd \
+--without-inetd \
+--with-altlog \
+--with-puredb \
+--with-throttling \
+--with-peruserlimits  \
+--with-tls
+$ make && make install 
+$ mkdir /usr/local/pureftpd/etc
+$ cd configuration-file/
+$ cp pure-ftpd.conf /usr/local/pureftpd/etc/pure-ftpd.conf 
+$ cp pure-config.pl /usr/local/pureftpd/sbin/ //启动文件
+$ chmod 755 /usr/local/pureftpd/sbin/pure-config.pl 
+$ vim /usr/local/pureftpd/etc/pure-ftpd.conf //删除原来的配置，重新配置
+ ChrootEveryone              yes
+BrokenClientsCompatibility  no
+MaxClientsNumber            50
+Daemonize                   yes
+MaxClientsPerIP             8
+VerboseLog                  no
+DisplayDotFiles             yes
+AnonymousOnly               no
+NoAnonymous                 no
+SyslogFacility              ftp
+DontResolve                 yes
+MaxIdleTime                 15
+PureDB                        /usr/local/pureftpd/etc/pureftpd.pdb //存放用户名和密码的 密码库文件
+LimitRecursion              3136 8
+AnonymousCanCreateDirs      no
+MaxLoad                     4
+AntiWarez                   yes
+Umask                       133:022
+MinUID                      100 //不能映射 uid 小于 100 的
+AllowUserFXP                no
+AllowAnonymousFXP           no
+ProhibitDotFilesWrite       no
+ProhibitDotFilesRead        no
+AutoRename                  no
+AnonymousCantUpload         no
+PIDFile                     /usr/local/pureftpd/var/run/pure-ftpd.pid
+MaxDiskUsage               99
+CustomerProof              yes
+
+$ mkdir /tmp/ftpdir/（测试文件夹）
+$ chown -R user1 /tmp/ftpdir/（映射 user1 ）
+$ /usr/local/pureftpd/bin/pure-pw useradd ftpuser1 -uuser1 -d /tmp/fptdir/ //在 ftp 中添加用户 ftpuser1 在 ftp 中登录的用户 -uuser1 是系统用户 -d 共享文件夹
+/usr/local/pureftpd/bin/pure-pw mkdb //生成密码库文件
+/usr/local/pureftpd/bin/pure-pw list
+/usr/local/pureftpd/bin/pure-pw userdel ftpuser1 //删除用户
+ /usr/local/pureftpd/sbin/pure-config.pl /usr/local/pureftpd/etc/pure-ftpd.conf //启动 ftp 前面是脚本，后面是配置文件
+
+$ tail /var/log/messages
+```
