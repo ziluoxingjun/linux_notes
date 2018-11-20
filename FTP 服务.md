@@ -96,8 +96,9 @@ $ pure-pw list/userdel/usermod/passwd
 
 编译安装配置 pure-ftpd
 ```bash
-$ tar -xvf pure-ftpd-1.0.44.tar.bz2
-$ cd pure-ftpd-1.0.44
+$ wget https://download.pureftpd.org/pub/pure-ftpd/releases/pure-ftpd-1.0.47.tar.gz
+$ tar -zxvf pure-ftpd-1.0.47.tar.gz
+$ cd pure-ftpd-1.0.47
 $ ./configure \
 --prefix=/usr/local/pureftpd \
 --without-inetd \
