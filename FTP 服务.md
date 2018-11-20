@@ -80,6 +80,7 @@ anon_other_write_enable=YES时，虚拟用户只能下载、删除和重命名�
 $ yum install epel-release
 $ yum install pure-ftpd
 $ vim /etc/pure-ftpd/pure-ftpd.conf
+126  PureDB                        /etc/pure-ftpd/pureftpd.pdb //将注释去掉
 $ systemctl start pure-ftpd
 $ mkdir /home/pureftp
 $ useradd -u 1010 pure-ftp
