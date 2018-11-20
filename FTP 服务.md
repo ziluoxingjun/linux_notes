@@ -145,10 +145,10 @@ CustomerProof              yes
 $ mkdir /tmp/ftpdir/（测试文件夹）
 $ chown -R user1 /tmp/ftpdir/（映射 user1 ）
 $ /usr/local/pureftpd/bin/pure-pw useradd ftpuser1 -uuser1 -d /tmp/fptdir/ //在 ftp 中添加用户 ftpuser1 在 ftp 中登录的用户 -uuser1 是系统用户 -d 共享文件夹
-/usr/local/pureftpd/bin/pure-pw mkdb //生成密码库文件
-/usr/local/pureftpd/bin/pure-pw list
-/usr/local/pureftpd/bin/pure-pw userdel ftpuser1 //删除用户
- /usr/local/pureftpd/sbin/pure-config.pl /usr/local/pureftpd/etc/pure-ftpd.conf //启动 ftp 前面是脚本，后面是配置文件
+$ /usr/local/pureftpd/bin/pure-pw mkdb //生成密码库文件
+$ /usr/local/pureftpd/bin/pure-pw list
+$ /usr/local/pureftpd/bin/pure-pw userdel ftpuser1 //删除用户
+$ /usr/local/pureftpd/sbin/pure-config.pl /usr/local/pureftpd/etc/pure-ftpd.conf //启动 ftp 前面是脚本，后面是配置文件
 
 $ tail /var/log/messages
 ```
