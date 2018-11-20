@@ -16,7 +16,7 @@ security = share //修改为 share
 comment = share all
 path = /tmp/sambadir
 browseable = yes //为 no 的话，在电脑中看不到，需要从指定地址访问
-public = yes //是否所有人可见
+public = yes //是否允许 guest 账户访问
 writable = no
 $ mkdir /tmp/sambadir
 $ systemctl start smb
