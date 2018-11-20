@@ -11,9 +11,66 @@ $ vim /etc/vsftpd/vsftpd_login //虚拟用户密码文件
 user1
 passwd1
 $ chmod 600 /etc/vsftpd/vsftpd_login
-# 保存虚拟帐号和密码的文本文件无法被系统帐号直接调用。我们需要使用 db_load 命令生成 二进制 db 文件
+# 保存虚拟帐号和密码的文本文件无法被系统帐号直接调用。需要生成 vsftp 可以识别的二进制 db 的库文件，如果更改了 vsftpd_login 文件，需要重新执行此命令
 $ db_load -T -t hash -f /etc/vsftpd/vsftpd_login /etc/vsftpd/vsftpd_login.db // -T 允许应用程序能够将文本文件转译载入数据库。-t 使用 hash 码加密
+$ mkdir /etc/vsftpd/vsftpd_user_conf //虚拟用户配置文件
+$ cd !$
+$ vim user1 //与 vsftpd_login 里同名文件
+ local_root=/home/virftp/user1
+ anonymous_enable=NO
+ write_enable=YES
+ local_umask=022
+ anon_upload_enable=NO
+ anon_mkdir_write_enable=NO
+ idle_session_timeout=600
+ data_connection_timeout=120
+ max_clients=10
+ max_per_ip=5
+ local_max_rate=50000
+$ mkdir /home/virftp/user1
+$ chown -R virftp:virftp !$
+vim /etc/pam.d/vsftpd （认证方式，用虚拟用户登录，否则会用系统用户登录）
+ auth sufficient /lib/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login（32位 上面 db_load 就和 pam_userdb.so（认证的模块） 有关）
+ account sufficient /lib/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login（32 位）
+ auth sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login
+ account sufficient /lib64/security/pam_userdb.so db/etc/vsftpd/vsftpd_login
 
+vim /etc/vsftpd/vsftpd.conf
+ anonymous_enable=NO
+ local_enable=YES
+ anon_upload_enable=NO
+ anon_mkdir_write_enable=NO
+最下面加入
+ guest_enable=YES（设为 NO 虚拟用户无法登录）
+ guest_username=virftp
+ virtual_use_local_privs=YES
+ user_config_dir=/etc/vsftpd/vsftpd_user_conf
+
+vim /var/log/secure（查看日志）
+下载：mirror rdir ldir　　// 将远程目录rdir下载到本地目录ldir
+上传：mirror -R ldir rdir　　// 将本地目录ldir上传到远程目录rdir
+
+VSFTP virtual_use_local_privs 参数
+ 
+当virtual_use_local_privs=YES时，虚拟用户和本地用户有相同的权限；
+当virtual_use_local_privs=NO时，虚拟用户和匿名用户有相同的权限，默认是NO。
+ 
+当virtual_use_local_privs=YES，write_enable=YES时，虚拟用户具有写权限（上传、下载、删除、重命名）。
+ 
+当virtual_use_local_privs=NO，write_enable=YES，anon_world_readable_only=YES，
+anon_upload_enable=YES时，虚拟用户不能浏览目录，只能上传文件，无其他权限。
+ 
+当virtual_use_local_privs=NO，write_enable=YES，anon_world_readable_only=NO，
+anon_upload_enable=NO时，虚拟用户只能下载文件，无其他权限。
+ 
+当virtual_use_local_privs=NO，write_enable=YES，anon_world_readable_only=NO，
+anon_upload_enable=YES时，虚拟用户只能上传和下载文件，无其他权限。
+ 
+当virtual_use_local_privs=NO，write_enable=YES，anon_world_readable_only=NO，
+anon_mkdir_write_enable=YES时，虚拟用户只能下载文件和创建文件夹，无其他权限。
+ 
+当virtual_use_local_privs=NO，write_enable=YES，anon_world_readable_only=NO，
+anon_other_write_enable=YES时，虚拟用户只能下载、删除和重命名文件，无其他权限。
 
 ```
 
