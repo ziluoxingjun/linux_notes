@@ -29,7 +29,7 @@ $ vim user1 //与 vsftpd_login 里同名文件
  #local_max_rate=50000
 $ mkdir /home/virftp/user1
 $ touch /home/virftp/user1/demo.txt
-$ chown -R virftp:virftp /home/virftp
+$ chown -R virftp:virftp /home/virftp/user1
 $ vim /etc/pam.d/vsftpd //认证方式，用虚拟用户登录，否则会用系统用户登录
 auth sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login //上面 db_load 就和 pam_userdb.so（认证的模块）有关
 account sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login
@@ -38,8 +38,8 @@ $ vim /etc/vsftpd/vsftpd.conf
 anonymous_enable=NO
 anon_upload_enable=NO
 anon_mkdir_write_enable=NO
+chroot_local_user=YES //限制用户只能访问家目录，不能访问其它目录
 # 最下面加入
-chroot_local_user=YES
 guest_enable=YES //设为 NO 虚拟用户无法登录
 guest_username=virftp
 virtual_use_local_privs=YES
