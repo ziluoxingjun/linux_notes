@@ -76,5 +76,17 @@ anon_other_write_enable=YES时，虚拟用户只能下载、删除和重命名�
 
 
 ## pure-ftp 搭建 FTP 服务
-
+```bash
+$ yum install epel-release
+$ yum install pure-ftpd
+$ vim /etc/pure-ftpd/pure-ftpd.conf
+$ systemctl start pure-ftpd
+$ mkdir /home/pureftp
+$ useradd -u 1010 pure-ftp
+$ chown -R pure-ftp:pure-ftp /home/pureftp
+$ pure-pw useradd ftp_usera -u pure-ftp -d /home/pureftp
+$ pure-pw mkdb
+# 用法
+$ pure-pw list/userdel/usermod/passwd
+```
 
