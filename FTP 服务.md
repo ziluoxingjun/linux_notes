@@ -32,7 +32,7 @@ $ touch /home/virftp/user1/demo.txt
 $ chown -R virftp:virftp /home/virftp
 $ vim /etc/pam.d/vsftpd //认证方式，用虚拟用户登录，否则会用系统用户登录
  auth sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login //上面 db_load 就和 pam_userdb.so（认证的模块）有关
- account sufficient /lib64/security/pam_userdb.so db/etc/vsftpd/vsftpd_login
+ account sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login
 
 $ vim /etc/vsftpd/vsftpd.conf
  anonymous_enable=NO
