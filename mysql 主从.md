@@ -201,3 +201,15 @@ mysql> select uuid();
 
 $ vim /data/mysql/auto.cnf //修改为上面新生成的 uuid 重启 mysql
 ```
+
+从上出现 connecting 错误，原因有3：
+1、网络不通
+2、密码不对
+3、pos不对
+```bash
+Slave_IO_Running: Connecting
+Slave_SQL_Running: Yes
+
+Last_IO_Errno: 1045
+Last_IO_Error: error connecting to master 'repl@192.168.6.178:3306' - retry-time: 60  retries: 1
+```
