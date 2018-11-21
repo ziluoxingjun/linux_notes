@@ -172,3 +172,32 @@ mysql> drop table db;
 mysql> select count(*) from db;
 ```
 
+## 报错
+从上报错，两个服务器 /data/mysql/auto.cnf uuid 不能一样
+```bash
+Slave_IO_Running: No
+Slave_SQL_Running: Yes
+
+Last_IO_Errno: 1593
+Last_IO_Error: Fatal error: The slave I/O thread stops because master and slave have equal MySQL server UUIDs; these UUIDs must be different for replication to work.
+```
+解决方案：
+```bash
+mysql> show variables like 'datadir';
++---------------+--------------+
+| Variable_name | Value        |
++---------------+--------------+
+| datadir       | /data/mysql/ |
++---------------+--------------+
+1 row in set (0.00 sec)
+
+mysql> select uuid();
++--------------------------------------+
+| uuid()                               |
++--------------------------------------+
+| ec7232c5-ed61-11e8-bdb0-000c299ad2d3 |
++--------------------------------------+
+1 row in set (0.01 sec)
+
+$ vim /data/mysql/auto.cnf //修改为上面新生成的 uuid 重启 mysql
+```
