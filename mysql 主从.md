@@ -213,3 +213,12 @@ Slave_SQL_Running: Yes
 Last_IO_Errno: 1045
 Last_IO_Error: error connecting to master 'repl@192.168.6.178:3306' - retry-time: 60  retries: 1
 ```
+
+mysql 忘记 root 密码,使用 --skip-grant-tables --skip-networking 选项启动MySQL服务
+```bash
+$ mysqld --skip-grant-tables --skip-networking --user=mysql
+
+# --skip-grant-tables：跳过授权表认证
+# --skip-networking：加了跳过授权表选项后所有的人都可以无密码登录，这是很不安全的，此选项不监听网络，防止恶意登录。
+
+```
