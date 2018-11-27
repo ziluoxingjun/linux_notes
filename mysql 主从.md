@@ -214,7 +214,7 @@ Last_IO_Errno: 1045
 Last_IO_Error: error connecting to master 'repl@192.168.6.178:3306' - retry-time: 60  retries: 1
 ```
 
-mysql 忘记 root 密码,使用 --skip-grant-tables --skip-networking 选项启动MySQL服务
+mysql 忘记 root 密码，使用 --skip-grant-tables --skip-networking 选项启动MySQL服务
 ```bash
 $ mysqld --skip-grant-tables --skip-networking --user=mysql
 
