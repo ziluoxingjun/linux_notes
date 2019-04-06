@@ -500,6 +500,18 @@ $ curl -x127.0.0.1:80 www.xyz.com -I
 HTTP/1.1 301 Moved Permanently // 301 永久重定向
 ```
 
+
+## Apache 通过 rewrite 限制某个目录
+```bash
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteCond %{REQUEST_URI} ^.*/tmp/.* [NC]（www 下 tmp 目录不能访问）
+    RewriteRule .* - [F]
+</IfModule>
+$ curl -x 127.0.0.1:80 123.com/tmp/flag.php -I
+403 forbidden
+```
+
 ## 8、Apache 访问日志
 > 访问日志记录用户的每一个请求
 ```bash
