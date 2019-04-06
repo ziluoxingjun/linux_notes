@@ -289,7 +289,8 @@ $ cp php.ini-production /usr/local/php/etc/php.ini //php.ini-production 是线�
 $ ls /usr/local/apache2.4/modules/libphp5.so
 $ /usr/local/php/bin/php -m //查看所加载模块，静态
 $ /usr/local/php/bin/php -i //查看相关配置
-$ cat /usr/local/apache2/build/config.nice apache //配置编译参数
+$ cat /usr/local/apache2/build/config.nice //apache 配置编译参数
+$ cat /usr/local/mysql/bin/mysqlbug |grep -i config //mysql 配置编译参数
 ```
 
 ##### 报错
