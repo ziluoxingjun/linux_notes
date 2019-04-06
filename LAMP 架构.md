@@ -374,6 +374,46 @@ $ /usr/local/apache2.4/bin/apachectl graceful
 $ curl -x192.168.95.10:80 xing.com
 ```
 
+
+## 安装 Discuz!
+```
+$ mkdir /data/www/discuz //存放 Discuz 程序的根目录
+$ cd /data/www/discuz
+$ wget Discuz.zip
+$ unzip Discuz.zip
+$ mv upload/* ./
+$ rm -rfv upload/ readme/ utility/ Discuz.zip
+$ vim /usr/local/apache2.4/conf/extra/httpd-vhosts.conf
+ 23 <VirtualHost *:80>
+ 24     DocumentRoot "/data/wwwroot/discuz"
+ 25     ServerName www.disc.com
+ 26     ServerAlias disc.com
+ 27     ErrorLog "logs/disc.com-error_log"
+ 28     CustomLog "logs/disc.com-access_log" common
+ 29 </VirtualHost>
+
+$ /usr/local/apache2.4/bin/apachectl -t
+
+# 在 windows 下：C:\Windows\System32\drivers\etc\hosts 写入
+192.168.6.165 www.disc.com disc.com
+
+$ /usr/local/apache2.4/bin/apachectl start
+
+# 在浏览器里访问 disc.com, 如果是 403 forbidden 修改配置文件：
+$ vim /usr/local/apache2.4/conf/httpd.conf
+$ /usr/local/apache2.4/bin/apachectl restart
+
+# 有红叉，需要更改权限:
+$ chown -R daemon config data uc_client/data uc_server/data
+
+$ mysql
+$ mysql> create database discuz;
+Query OK, 1 row affected (0.02 sec)
+
+$ mysql> grant all（所有权限） on discuz.*（数据库下的所有表） to 'xing'@'localhost' identified by 'xing/'（密码）;
+Query OK, 0 rows affected (0.05 sec)
+```
+
 ## 6、Apache 用户认证
 
 #### 1、针对目录认证
