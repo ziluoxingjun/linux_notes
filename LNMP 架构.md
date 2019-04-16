@@ -191,7 +191,7 @@ $ /usr/local/php-fpm/sbin/php-fpm -t
 ```bash
 $ cd /usr/local/src
 $ wget http://nginx.org/download/nginx-1.14.0.tar.gz
-$ tar xvf nginx-1.14.0.tar.gz
+$ tar zxvf nginx-1.14.0.tar.gz
 $ cd nginx-1.14.0
 $ ./configure --prefix=/usr/local/nginx (# --with-pcre //做正则的)
 # $ yum install -y pcre-devel
@@ -203,6 +203,7 @@ $ /usr/local/nginx/sbin/nginx -t
 
 ## 4、nginx 启动脚本
 > http://wiki.nginx.org/RedHatNginxInitScript
+
 > https://www.nginx.com/resources/wiki/start/topics/examples/initscripts/
 
 ```bash
