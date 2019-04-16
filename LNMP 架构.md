@@ -144,9 +144,9 @@ $ make && make install
 ```bash
 $ cp php.ini-production /usr/local/php-fpm/etc/php.ini //php 全局配置
 $ vim php.ini
-display_errors = Off
-error_log = /var/log/php_errors.log
-error_reporting = E_ALL & ~E_NOTICE
+466 display_errors = Off
+575 error_log = /var/log/php_errors.log
+449 error_reporting = E_ALL & ~E_NOTICE
 
 $ cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
 $ chmod 755 /etc/init.d/php-fpm 
