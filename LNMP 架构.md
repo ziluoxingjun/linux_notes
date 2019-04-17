@@ -279,6 +279,7 @@ $ chkconfig --add nginx
 $ chkconfig nginx on
 $ firewall-cmd --add-port=80/tcp //不建议关闭 firewalld ，临时增加80端口，重启会消失
 $ firewall-cmd --add-port=80/tcp --permanent //永久增加80端口
+$ firewall-cmd --reload
 ```
 
 ## 5、nginx 配置文件
