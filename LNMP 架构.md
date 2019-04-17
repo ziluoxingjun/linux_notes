@@ -1,7 +1,7 @@
 
 # LNMP 架构
 
-![LNMP 架构图](https://ww1.sinaimg.cn/large/005BYqpgly1frj6bxzho9j30cs07waa8.jpg)
+![LNMP 架构图](https://images.gitee.com/uploads/images/2019/0417/173705_cb79e054_922657.jpeg)
 
 ### 架构原理
 - 提供 web 服务的是 Nginx,php 是作为独立服务存在的，名字叫做 php-fpm，Nginx 直接处理静态请求，动态请求会转发给 php-fpm。Nginx 静态处理能力比 Apache 强得多。
@@ -277,6 +277,8 @@ exit $RETVAL
 $ chmod 755 /etc/init.d/nginx
 $ chkconfig --add nginx
 $ chkconfig nginx on
+$ firewall-cmd --add-port=80/tcp //不建议关闭 firewalld ，临时增加80端口，重启会消失
+$ firewall-cmd --add-port=80/tcp --permanent //永久增加80端口
 ```
 
 ## 5、nginx 配置文件
