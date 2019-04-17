@@ -20,7 +20,7 @@ au BufRead,BufNewFile /etc/nginx/*,/usr/local/nginx/conf/* if &ft == '' | setfil
 > 根据自己安装的 Nginx 目录修改配置
 
 ### 自动化脚本
-```
+```bash
 $ vim nginxSyntaxHightlight.sh
 #!/bin/bash
 mkdir -p ~/.vim/syntax && cd ~/.vim/syntax
