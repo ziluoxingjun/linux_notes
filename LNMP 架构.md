@@ -363,26 +363,45 @@ http
     include vhosts/*.conf;
 }
 $ mkdir /usr/local/nginx/conf/vhosts
-$ vim /usr/local/nginx/conf/vhosts/aaa.com.conf
+$ vim /usr/local/nginx/conf/vhosts/blog.wd.cc.conf
 server
 {
     listen 80 default_server; //也可以 default ,这个就是默认虚拟主机
-    server_name aaa.com;
+    server_name blog.wd.cc;
     index index.html index.htm index.php;
-    root /data/wwwroot/aaa.com;
+    root /data/wwwroot/blog.wd.cc;
 }
-$ mkdir /data/wwwroot/aaa.com -p
-$ vim /data/wwwroot/aaa.com/index.php
+$ mkdir /data/wwwroot/blog.wd.cc -p
+$ vim /data/wwwroot/blog.wd.cc/index.php
 $ /usr/local/nginx/sbin/nginx -t
 $ /usr/local/nginx/sbin/nginx -s reload
 $ curl localhost
-$ curl -x127.0.0.1:80 abc.com
+$ curl -x127.0.0.1:80 blog.wd.cc
 $ curl -x127.0.0.1:80 111.com/forum.php -I
 200 ok
 
 # 如果用第 10 行 sock 监听：
 $ curl -x127.0.0.1:80 111.com/forum.php -I
 502 Bad Gateway
+```
+
+## 安装 WordPress
+```
+$ wget https://cn.wordpress.org/wordpress-5.0.3-zh_CN.tar.gz
+$ tar zxvf wordpress-5.0.3-zh_CN.tar.gz
+$ mv wordpress/*  /data/wwwroot/blog.wd.cc/
+# 浏览器访问 blog.wd.cc 进行安装
+
+$ yum install expect -y
+$ mkpasswd -s 0 -l 12
+4iWyrAe0qoim
+# 创建数据库
+$ mysql -uroot -p
+$ mysql> create database blog;
+$ mysql> grant all on blog.* to 'root'@'localhost' identified by '4iWyrAe0qoim';
+
+# 安装 wordpress 过程中，需要设定网站程序目录的权限，属主设定为 php-fpm 服务的那个用户
+$ chown -R php-fpm  /data/wwwroot/blog.wd.cc
 ```
 
 ## 7、nginx 用户认证
