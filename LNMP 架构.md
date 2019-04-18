@@ -465,6 +465,7 @@ server|
  	if ($host != 'bbb.com')
      {
           #rewrite ^/(.*)$ http://bbb.com/$1 permanent;
+          #rewrite /(.*)  http://www.blog.com/$1 permanent;
           rewrite http://$host/(.*)$ http://bbb.com/$1 permanent; //permanent 301 redirect 302
      }
 }
