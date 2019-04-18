@@ -474,6 +474,7 @@ $ /usr/local/nginx/sbin/nginx -s reload
 $ curl -x 127.0.0.1:80 bbb1.com/index.html -I
 301 Moved Permanently
 ```
+> 如果是域名跳转，用301； 如果不涉及域名跳转用302 例：rewrite /1.txt  /2.txt  redirect;
 
 ## 9、nginx 访问日志
 ```bash
