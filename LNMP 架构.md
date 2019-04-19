@@ -549,7 +549,7 @@ $ crontab -e
  0 0 * * * /bin/bash /usr/local/sbin/nginx_logrotate.sh
 ```
 
-## 11、nginx 静态文件不记录日志和过期时间
+## 11、nginx 日志不记录静态文件和过期时间
 ```bash
 $ vim /usr/local/nginx/conf/vhosts/bbb.com.conf
 server
@@ -559,7 +559,7 @@ server
     index index.html index.htm index.php;
     root /data/wwwroot/bbb.com;
     access_log /usr/local/nginx/logs/bbb.com.log log_name;
-    location ~ .*\.(gif|jpg|jpeg|png|ico|bmp|swf)$ // \脱意
+    location ~* .*\.(gif|jpg|jpeg|png|ico|bmp|swf)$ // \脱意
     {
         expires 7d; //配置静态文件缓存
         access_log off;
