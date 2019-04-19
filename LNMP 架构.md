@@ -511,6 +511,9 @@ $ /usr/local/nginx/sbin/nginx -s reload
 | $status               | 状态码             |
 | $http_referer         | referer            |
 | $http_user_agent      | user_agent         |
+| $remote_user          | 记录远程客户端用户名称  |
+| $request              | 记录用户的 http 请求起始行信息  |
+| $body_bytes_sent      | 记录服务器发送给客户端的响应 body 字节数  |
 
 
 ## 10、nginx 日志切割
