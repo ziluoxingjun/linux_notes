@@ -461,7 +461,7 @@ $ curl -x 127.0.0.1:80 test.com/admin/ -I
 >
 > 第一条无效
 >
-> nginx location 文档： https://github.com/aminglinux/nginx/tree/master/location
+> nginx location 文档： https://github.com/ziluoxingjun/nginx/tree/master/location
 
 ## 8、nginx 域名跳转
 > 目的是为了对搜索引擎友好，加重网站权重,在搜索引擎：site:www.apelearn.com site:ithome.com 检查权重
@@ -514,6 +514,8 @@ $ /usr/local/nginx/sbin/nginx -s reload
 | $remote_user          | 记录远程客户端用户名称  |
 | $request              | 记录用户的 http 请求起始行信息  |
 | $body_bytes_sent      | 记录服务器发送给客户端的响应 body 字节数  |
+
+> Nginx 内置变量：https://github.com/ziluoxingjun/nginx/blob/master/rewrite/variable.md
 
 
 ## 10、nginx 日志切割
