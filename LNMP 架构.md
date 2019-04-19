@@ -519,6 +519,7 @@ $ /usr/local/nginx/sbin/nginx -s reload
 
 
 ## 10、nginx 日志切割
+### One
 ```bash
 $ vim /usr/local/sbin/nginx_logrotate1.sh
  #!/bin/bash
@@ -547,6 +548,36 @@ $ sh -x /usr/local/sbin/nginx_logrotate.sh //-x 能看到执行过程; 应加入
 $ find /tmp/ -name *.log-* -type f -mtime +30 |xargs rm
 $ crontab -e
  0 0 * * * /bin/bash /usr/local/sbin/nginx_logrotate.sh
+```
+
+### Two
+```bash
+logrotate 工具 每天会定时检查配置文件并执行，不用人工干预
+配置文件：/etc/logrotate.conf
+子配置文件：/etc/logrotate.d/*
+
+Nginx的日志切割配置文件：/etc/logrotate.d/nginx
+
+$ vim /etc/logrotate.d/nginx
+/usr/local/nginx/logs/*.log {
+    daily
+    dateext
+    missingok
+    rotate 7
+    compress
+    delaycompress
+    notifempty
+    create 640 nginx adm
+    sharedscripts
+    postrotate
+        if [ -f /var/run/nginx.pid ]; then
+            kill -USR1 $(cat /var/run/nginx.pid)
+        fi
+    endscript
+}
+
+$ logrotate -vf /etc/logrotate.d/nginx
+# -f 强制执行 
 ```
 
 ## 11、nginx 日志不记录静态文件和过期时间
