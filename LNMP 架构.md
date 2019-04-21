@@ -632,13 +632,16 @@ HTTP/1.1 200 OK
 - 禁止非法 ip 访问，限制 ip 访问，比如后台只需要管理员登录即可。
 - 需求：访问 /admin/ 目录的请求，只允许某几个 IP 访问，其它 deny
 ```bash
-$ vim /usr/local/nginx/conf/vhosts/bbb.com.conf 
+$ vim /usr/local/nginx/conf/vhosts/bbb.com.conf
+ # 黑名单
  deny 127.0.0.1 //加入黑名单,如果匹配到此条规则，以下再有 127.0.0.1 的忽略，从上向下匹配
  deny 192.168.1.0/24 //禁掉此网段
+ # 白名单
+ allow 127.0.0.1;
+ deny all;
+
  location ~ .*admin\.php$ {
            #auth_basic "star auth";
-          allow 127.0.0.1;
-          deny all;
            auth_basic_user_file /usr/local/nginx/conf/.htpasswd;
            include fastcgi_params;
            fastcgi_pass unix:/tmp/www.sock;
