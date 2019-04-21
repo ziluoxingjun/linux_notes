@@ -448,14 +448,10 @@ $ curl -x 127.0.0.1:80 test.com/admin/ -I
  $ curl -x 127.0.0.1:80 test.com/admin.php -I
  : 401
 ```
-> nginx location优先级:
->
-> location /  优先级比 location ~ 要低，也就是说，如果一个请求（如，admin.php）同时满足两个location
->
-> location /admin.php
->
-> location ~ *.php$
->
+> nginx location优先级:  
+> location /  优先级比 location ~ 要低，也就是说，如果一个请求（如，admin.php）同时满足两个location  
+> location /admin.php  
+> location ~ *.php$  
 > 第一条无效  
 > nginx location 文档： https://github.com/ziluoxingjun/nginx/tree/master/location
 
