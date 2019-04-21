@@ -184,9 +184,8 @@ $ /usr/local/php-fpm/sbin/php-fpm -t
 ```
 
 ## 3、nginx 安装
-> Nignx 应用场景：web 服务器、反向代理、负载均衡
-
-> nginx使用基于事件的模型和依赖于操作系统的机制来高效地在工作进程间分配请求。工作进程的数量在配置文件中定义，并且可以针对给定配置进行修复或自动调整为可用CPU核心的数量。
+- Nignx 应用场景：web 服务器、反向代理、负载均衡
+- nginx使用基于事件的模型和依赖于操作系统的机制来高效地在工作进程间分配请求。工作进程的数量在配置文件中定义，并且可以针对给定配置进行修复或自动调整为可用CPU核心的数量。
 
 ```bash
 $ cd /usr/local/src
@@ -202,9 +201,8 @@ $ /usr/local/nginx/sbin/nginx -t
 ```
 
 ## 4、nginx 启动脚本
-> http://wiki.nginx.org/RedHatNginxInitScript
-
-> https://www.nginx.com/resources/wiki/start/topics/examples/initscripts/
+- http://wiki.nginx.org/RedHatNginxInitScript
+- https://www.nginx.com/resources/wiki/start/topics/examples/initscripts/
 
 ```bash
 $ vim /etc/init.d/nginx
@@ -451,17 +449,12 @@ $ curl -x 127.0.0.1:80 test.com/admin/ -I
  : 401
 ```
 
-> nginx location优先级:
->
-> location /  优先级比 location ~ 要低，也就是说，如果一个请求（如，admin.php）同时满足两个location
->
-> location /admin.php
->
-> location ~ *.php$
->
-> 第一条无效
->
-> nginx location 文档： https://github.com/ziluoxingjun/nginx/tree/master/location
+- nginx location优先级:
+- location /  优先级比 location ~ 要低，也就是说，如果一个请求（如，admin.php）同时满足两个location
+- location /admin.php
+- location ~ *.php$
+- 第一条无效
+- nginx location 文档： https://github.com/ziluoxingjun/nginx/tree/master/location
 
 ## 8、nginx 域名跳转
 > 目的是为了对搜索引擎友好，加重网站权重,在搜索引擎：site:www.apelearn.com site:ithome.com 检查权重
@@ -637,9 +630,8 @@ HTTP/1.1 200 OK
 - blocked 非法域名：不以 http https 开头的
 
 ## 13、nginx 访问控制
-> 禁止非法 ip 访问，限制 ip 访问，比如后台只需要管理员登录即可。
-
-> 需求：访问 /admin/ 目录的请求，只允许某几个 IP 访问，其它 deny
+- 禁止非法 ip 访问，限制 ip 访问，比如后台只需要管理员登录即可。
+- 需求：访问 /admin/ 目录的请求，只允许某几个 IP 访问，其它 deny
 ```bash
 $ vim /usr/local/nginx/conf/vhosts/bbb.com.conf 
  deny 127.0.0.1 //加入黑名单,如果匹配到此条规则，以下再有 127.0.0.1 的忽略，从上向下匹配
@@ -959,12 +951,9 @@ $ cat /usr/local/php-fpm/var/log/www-slow.log
 ```
 
 ## 21、php-fpm 定义 open_basedir
-
-> 有多个网站不适合在 php.ini 中定义
-
-> 在 Apache 虚拟主机配置文件中定义 open_basedir
-
-> 在 php-fpm 中根据不同的网站不同的 pool 定义不同的 open_basedir
+- 有多个网站不适合在 php.ini 中定义
+- 在 Apache 虚拟主机配置文件中定义 open_basedir
+- 在 php-fpm 中根据不同的网站不同的 pool 定义不同的 open_basedir
 
 ```bash
 $ vim /usr/local/php-fpm/etc/php-fpm.d/www.conf
