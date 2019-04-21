@@ -696,7 +696,7 @@ if ($request_uri ~ (force|sex))
     return 404;
 }
 ```
-> https://github.com/aminglinux/nginx/blob/master/rewrite/variable.md
+> https://github.com/ziluoxingjun/nginx/blob/master/rewrite/variable.md
 
 ## 14、nginx 解析 php 的配置
 ```bash
