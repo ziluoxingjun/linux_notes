@@ -612,7 +612,7 @@ $ vim /usr/local/nginx/conf/vhosts/bbb.com.conf
                 valid_referers none blocked server_names *.bbb.com;
                 if ($invalid_referer)
                 {
-                        resturn 403;
+                        return 403;
                 }
                 access_log off;
         }
