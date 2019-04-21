@@ -633,6 +633,8 @@ HTTP/1.1 403 Forbidden
 $ curl -x 127.0.0.1:80 -I bbb.com/1.jpg -e "http://www.bbb.com" 
 HTTP/1.1 200 OK
 ```
+> none 空 referer
+> blocked 非法域名：不以 http https 开头的
 
 ## 13、nginx 访问控制
 > 禁止非法 ip 访问，限制 ip 访问，比如后台只需要管理员登录即可。
