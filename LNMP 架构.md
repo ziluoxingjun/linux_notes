@@ -811,6 +811,35 @@ $ dig www.baidu.com //之前的 IP 地址可能失效，可以挖出更多最新
 $ dig ask.apelearn.com
 ```
 
+## 反向代理
+场景设置：
+1. A B 两台机器，A 只有内网，B 有内网和外网
+2. A 的内网 ip 是 192.168.6.165
+3. B 的内网 ip 是 192.168.6.129 B 的外网IP是 192.168.50.129
+4. C 为客户端，C 只能访问B的外网 IP，不能访问 A 或者 B 的内网 IP
+需求目的：C 要访问到 A 的内网上的网站
+```
+# 在客户端 hosts 文件里写入 A j里域名
+192.168.50.129 blog.zi.cc
+
+# 在 B 中 写入配置
+$ vim conf/vhosts/proxy.conf
+server {
+    listen 80;
+    server_name blog.zi.cc;
+    location / {
+        proxy_pass http://192.168.6.165;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real_IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+$ nginx -t && nginx -s reload
+$ irewall-cmd --add-port=80/tcp --permanent
+$ firewall-cmd --reload
+$ iptables -nvL |grep 80
+```
+
 ## 16、nginx 负载均衡
 > 多个 ip 相当于负载均衡
 
