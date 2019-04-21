@@ -648,6 +648,8 @@ $ vim /usr/local/nginx/conf/vhosts/bbb.com.conf
            fastcgi_index index.php;
            fastcgi_param SCRIPT_FILENAME /data/www$fastcgi_script_name;
 }
+
+ # 限制某个目录
  location /admin/
  {
      allow 192.168.95.1;
@@ -665,7 +667,7 @@ HTTP/1.1 200 OK
 $ curl -x 192.168.95.145:80 test.com/admin/ -I
 HTTP/1.1 403 Forbidden
 
-# 匹配正则
+# 限制某个目录下的某类文件
 location ~ .*(upload|image)/.*\.php$ //禁止解析 upload|image 目录里的 php
 {
     deny all;
@@ -674,7 +676,7 @@ location ~ .*(upload|image)/.*\.php$ //禁止解析 upload|image 目录里的 ph
 $ curl -x 127.0.0.1:80 test.com/upload/1.php
 HTTP/1.1 403 Forbidden
 
-# 根据 user_agent 限制,nginx 禁止指定 user_agent 访问
+# 限制 user_agent,nginx 禁止指定 user_agent 访问
 if ($http_user_agent ~* 'curl|baidu|qq|360|sogou') //~* 不区分大小写的正则匹配
 if ($http_user_agent ~ 'Spider/3.0|YoudaoBot|Tomato')
 if ($http_user_agent ~* "python|curl|wget|httpclient|okhttp")
@@ -687,7 +689,14 @@ $  /usr/local/nginx/sbin/nginx -t
 $  /usr/local/nginx/sbin/nginx -s reload
 $ curl -x127.0.0.1:80 -A "Spider/3.0" bbb.com
 HTTP/1.1 403 Forbidden
+
+# 限制uri
+if ($request_uri ~ (force|sex))
+{
+    return 404;
+}
 ```
+> https://github.com/aminglinux/nginx/blob/master/rewrite/variable.md
 
 ## 14、nginx 解析 php 的配置
 ```bash
