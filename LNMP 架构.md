@@ -980,11 +980,11 @@ $ vim www.conf
   user = php-fpm
   group = php-fpm
   pm = dynamic
-  pm.max_children = 50（子进程）
-  pm.start_servers = 20（开始有50个）
-  pm.min_spare_servers = 5（最小空闲）
+  pm.max_children = 50 //最大子进程数
+  pm.start_servers = 20 //启动几个子进程
+  pm.min_spare_servers = 5 //空闲时，最少几个子进程
   pm.max_spare_servers = 35
-  pm.max_requests = 500（一个子进程在一个生命周期之内处理多少个请求）
+  pm.max_requests = 500 //一个子进程在一个生命周期之内处理多少个请求
   rlimit_files = 1024
   [www1]
   listen = /tmp/php-fcgi1.sock
@@ -997,6 +997,10 @@ $ vim www.conf
   pm.max_spare_servers = 35
   pm.max_requests = 500
   rlimit_files = 1024
+  php_flag[display_errors] = off //出现错误时，错误是否显示在网页中
+  php_admin_value[error_log] = /var/log/fpm-php.www.log
+  php_admin_flag[log_errors] = on
+  php_admin_value[error_reporting] = E_ALL
 ```
 
 > 如果 pm=static,只有这一条配置生效 pm.max_children = 50
