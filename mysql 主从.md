@@ -214,7 +214,7 @@ Last_IO_Errno: 1045
 Last_IO_Error: error connecting to master 'repl@192.168.6.178:3306' - retry-time: 60  retries: 1
 ```
 
-## mysql 忘记 root 密码
+## mysql 重置 root 密码
 > 使用 --skip-grant-tables --skip-networking 选项启动MySQL服务
 ```bash
 $ mysqld --skip-grant-tables --skip-networking --user=mysql
@@ -240,3 +240,22 @@ $ mysql> update user set authentication_string=password("violet") where user='ro
 # 然后删除 my.cnf 里 skip-grant,并重启服务
 ```
 > mysql 在 5.7.36 版本之后把密码字段存到了 authentication_string 字段里，在之前版本存在 password 字段里。
+
+## mysql 慢查询日志
+```bash
+$ mysql -uroot -p
+$ mysql> show variables like 'slow%';
+$ mysql> show variables like 'datadir';
+$ mysql> show variables like 'long%';
+$ mysql> show processlist;
+$ mysql> show full processlist;
+
+$ vim /etc/my.cnf
+slow_query_log = ON
+slow_query_log_file = /data/mysql/violet-slow.log
+long_query_time = 2
+
+$ service mysqld restart
+$ mysql> select sleep(5);
+$ cat /data/mysql/violet-slow.log
+```
