@@ -933,6 +933,8 @@ $ -t && -s reload
 $ /etc/init.d/nginx restart
 $ netstat -lntp
 :443
+$ firewall-cmd --add-port=443/tcp --permanent
+$ firewall-cmd --reload
 $ vim /etc/hosts
 :127.0.0.1 bbb.com
 $ curl https://bbb.com/
