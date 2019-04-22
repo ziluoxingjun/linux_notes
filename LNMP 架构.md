@@ -939,6 +939,11 @@ $ curl https://bbb.com/
 ```
 > 在 windows hosts 中添加： 192.168.95.145 bbb.com 用浏览器访问 https://bbb.com
 
+> 申请证书：  
+> 网站：www.wosign.com （沃通）  
+> 免费：freessl.org   
+>  注册账号，输入域名，开始申请，在这个过程中需要去加一条TXT的记录
+
 ## 19、php-fpm 的 pool
 ```bash
 $ vim /usr/local/php-fpm/etc/php-fpm.conf
