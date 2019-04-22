@@ -866,6 +866,7 @@ server
 }
 
 $ curl -x 127.0.0.1:80 www.qq.com
+# 在 windows hosts 里写入: 192.168.6.165 www.qq.com 然后在浏览器访问 www.qq.com
 ```
 ```
 $ vim /usr/local/nginx/conf/vhosts/load2.conf
