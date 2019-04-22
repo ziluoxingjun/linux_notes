@@ -938,6 +938,7 @@ $ firewall-cmd --reload
 $ vim /etc/hosts
 :127.0.0.1 bbb.com
 $ curl https://bbb.com/
+$ curl -k -H "host:blog.zi.cc" https://192.168.6.165/index.php
 ```
 > 在 windows hosts 中添加： 192.168.95.145 bbb.com 用浏览器访问 https://bbb.com
 
