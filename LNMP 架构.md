@@ -947,6 +947,8 @@ $ curl -k -H "host:blog.zi.cc" https://192.168.6.165/index.php
 > 免费：freessl.org   
 >  注册账号，输入域名，开始申请，在这个过程中需要去加一条TXT的记录
 
+> https://github.com/ziluoxingjun/nginx/tree/master/ssl
+
 ## 19、php-fpm 的 pool
 ```bash
 $ vim /usr/local/php-fpm/etc/php-fpm.conf
