@@ -867,6 +867,29 @@ server
 
 $ curl -x 127.0.0.1:80 www.qq.com
 ```
+```
+$ vim /usr/local/nginx/conf/vhosts/load2.conf
+upstream apelearn
+    {
+        ip_hash;
+        server 115.159.51.96:80 weight=100;
+        server 47.104.7.242:80;
+
+    }
+    server
+    {
+        listen 80;
+        server_name www.apelearn.com;
+        location /
+        {
+            proxy_pass http://apelearn;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+    }
+```
+
 > nginx 不支持 https 443
 
 ## 17、生成 SSL 密钥对
