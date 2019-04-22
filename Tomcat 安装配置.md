@@ -59,9 +59,9 @@ $ netstat -lntp | grep java
 >
 > 8080：提供 web 服务的端口
 >
-> 8009：第三方服务调用端口，比如 httpd 和 tomcat 结合时会用到
+> 8009：AJP端口 第三方的应用连接这个接口，和 Tomcat 结合起来，第三方服务调用端口，比如 httpd 和 tomcat 结合时会用到
 >
-> 8005：管理端口
+> 8005：管理端口 shutdown
 
 
 ## 4、tomcat 启动脚本
