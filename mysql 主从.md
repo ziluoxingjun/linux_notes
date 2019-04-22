@@ -245,8 +245,24 @@ $ mysql> update user set authentication_string=password("violet") where user='ro
 ```bash
 $ mysql -uroot -p
 $ mysql> show variables like 'slow%';
++---------------------+---------------------------+
+| Variable_name       | Value                     |
++---------------------+---------------------------+
+| slow_launch_time    | 2                         |
+| slow_query_log      | OFF                       |
+| slow_query_log_file | /data/mysql/lamp-slow.log |
++---------------------+---------------------------+
+3 rows in set (0.00 sec)
+
 $ mysql> show variables like 'datadir';
 $ mysql> show variables like 'long%';
++-----------------+-----------+
+| Variable_name   | Value     |
++-----------------+-----------+
+| long_query_time | 10.000000 |
++-----------------+-----------+
+1 row in set (0.00 sec)
+
 $ mysql> show processlist;
 $ mysql> show full processlist;
 
