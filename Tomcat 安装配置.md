@@ -322,7 +322,7 @@ $ vim conf/tomcat-user.xml
 <user username="tomcat" password="s3cret" roles="admin-script,admin-gui"/>
 
 $ vim webapps/host-manager/META-INF/context.xml 
-allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|192\.16\8.6\.\d+*" //在allow那一行增加白名单IP，如果是网段用*表示，例如192.168.6.*
+allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|192\.168\.6\.\d+*" //在allow那一行增加白名单IP，如果是网段用*表示，例如192.168.6.*
 ```
 > admin-gui 和 admin-script 是 Tomcat 内置的角色，host-manager 功能需要这两个角色的支持。
 - admin-gui - allows access to the HTML GUI
