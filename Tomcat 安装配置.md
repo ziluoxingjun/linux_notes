@@ -289,3 +289,20 @@ $ vim /usr/local/tomcat/conf/server.xml
 > pattern 访问日志的格式
 
 > 错误日志会统一记录在 catalina.out 中，出现问题时，第一时间要想到查看它。
+
+## 8、Nginx 反向代理 Tomcat
+为什么要为Tomcat配置反向代理？
+1. 同一台机器同时开启 Nginx 和 Tomcat，则会产生端口冲突。
+2. Nginx 对于静态的请求速度上要优于 Tomcat，Tomcat 不擅长做高并发的静态文件请求处理。
+```bash
+$ vim /usr/local/nginx/conf/vhosts/zr.org.conf
+server {
+    server_name zr.org;
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real_IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+```
