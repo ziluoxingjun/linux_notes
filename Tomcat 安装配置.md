@@ -329,3 +329,28 @@ allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|192\.16\8.6\.\d+*" //在allow那�
 - admin-script - allows access to the text interface
 
 > Tomcat 有一个安全设置，默认不允许这个客户端 IP 访问 host-manager 页面
+
+> 增加 virtualhost，会在 conf/Catalina/ 目录下生成一个目录，目录永久存在，但 virtualhost 临时的，重启服务后会消失，如让其永久保存到server.xml，需要在 server.xml 里增加配置
+```bash
+$ vim conf/server.xml
+33 <Listener className="org.apache.catalina.storeconfig.StoreConfigLifecycleListener"/>
+```
+
+### Manager //部署
+> 在浏览器访问 192.168.6.165,右方灰色按钮：Server Status 或者 http://192.168.6.165/manager/status  
+> 进入页面会显示 403 Access Denied，需要修改配置文件
+```bash
+$ vim conf/tomcat-user.xml
+<role rolename="manager-gui"/>
+<role rolename="manager-script"/>
+<role rolename="manager-jmx"/>
+<role rolename="manager-status"/>
+<user username="tomcat" password="s3cret" roles="manager-gui,manager-script,manager-jmx,manager-status"/>
+
+$ vim webapps/manager/META-INF/context.xml
+allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|192\.168\.6\.*" />
+```
+- manager-gui - allows access to the HTML GUI and the status pages
+- manager-script - allows access to the text interface and the status pages
+- manager-jmx - allows access to the JMX proxy and the status pages
+- manager-status - allows access to the status pages only
