@@ -267,13 +267,13 @@ catalina.out                 localhost_access_log.2018-10-06.txt
 host-manager.2018-10-06.log  manager.2018-10-06.log
 ```
 
-> catalina 开头的日志为 tomcat 的综合日志，它记录 tomcat 服务相关信息，也会记录错误日志。
+> catalina 开头的日志为 tomcat 的核心日志，它记录 tomcat 服务相关信息，也会记录错误日志。
 
-> catalina.xxxx-xx-xx.log 和 catalina.out 内容相同，前者会每天生成一个新的日志。
+> catalina.xxxx-xx-xx.log 和 catalina.out 内容相同，前者是 catalina 引擎相关日志，会每天生成一个新的日志。
 
 > host-manager 和 manager 为管理相关的日志，前者为虚拟主机的管理日志。
 
-> localhost 和 localhost_access 为虚拟主机相关日志，前者为默认虚拟主机的错误日志，后者为访问日志。
+> localhost 和 localhost_access 为虚拟主机相关日志，前者为默认虚拟主机的错误日志，后者为访问日志。主要是应用初始化(listener, filter, servlet)未处理的异常最后被 tomcat 捕获而输出的日志
 
 > 访问日志不会自动生成，需要在 server.xml 中配置一下。
 
@@ -283,13 +283,29 @@ $ vim /usr/local/tomcat/conf/server.xml
        prefix="ccc.com_access_log" suffix=".log"
        pattern="%h %l %u %t &quot;%r&quot; %s %b" />
 ```
-> prefix 访问日志的前缀
+> prefix 访问日志的前缀  
+> suffix 访问日志的后缀  
+> pattern 访问日志的格式  
+> 错误日志会统一记录在 catalina.out 中，出现问题时，第一时间要想到查看它。  
+> 日志配置文件 onf/logging.properties，主要定义了非访问日志的属性，比如日志路径、哪些日志记录到哪个文件（名字）、日志级别、存储周期等信息，这个配置文件我们一般都不会更改，保持默认即可。
 
-> suffix 访问日志的后缀
+### tomcat 日志切割
+```bash
+$ vim /etc/logrotate.d/tomcat  //写入如下内容
+/usr/local/tomcat/logs/catalina.out  {
+    copytruncate    # 创建新的catalina.out副本后，截断源catalina.out文件
+    daily    # 每天进行catalina.out文件的轮转
+    rotate 7     # 至多保留7个副本
+    missingok    # 如果要轮转的文件丢失了，继续轮转而不报错
+    compress     # 使用压缩的方式（节省硬盘空间）
+    size 16M     # 当catalina.out文件大于16MB时，就轮转
+}
 
-> pattern 访问日志的格式
+# 定时清空日志
+$ crontab -e
+0 0 */5 * * echo "" > /usr/local/tomcat/logs/catalina.out
+```
 
-> 错误日志会统一记录在 catalina.out 中，出现问题时，第一时间要想到查看它。
 
 ## 8、Nginx 反向代理 Tomcat
 为什么要为Tomcat配置反向代理？
