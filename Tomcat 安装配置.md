@@ -293,7 +293,8 @@ $ vim /usr/local/tomcat/conf/server.xml
 ## 8、Nginx 反向代理 Tomcat
 为什么要为Tomcat配置反向代理？
 1. 同一台机器同时开启 Nginx 和 Tomcat，则会产生端口冲突。
-2. Nginx 对于静态的请求速度上要优于 Tomcat，Tomcat 不擅长做高并发的静态文件请求处理。
+2. 需要把 8080 端口变成 80 端口。
+3. Nginx 对于静态的请求速度上要优于 Tomcat，Tomcat 不擅长做高并发的静态文件请求处理。
 ```bash
 $ vim /usr/local/nginx/conf/vhosts/zr.org.conf
 server {
@@ -305,4 +306,5 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 }
+# 在 windows hosts 里配置 192.168.6.165 zr.org 即可在浏览器访问 zr.org/zrlog
 ```
