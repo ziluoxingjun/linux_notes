@@ -197,6 +197,7 @@ exit 0
 ```
 
 ## 4、配置 tomcat 监听端口为 80
+> 如果使用 nginx 代理 tomcat 监听端口可不用修改
 ```bash
 $ vim /usr/local/tomcat/conf/server.xml
 69 <Connector port="80" protocol="HTTP/1.1" //改为 80
