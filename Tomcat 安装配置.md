@@ -309,3 +309,23 @@ server {
 }
 # 在 windows hosts 里配置 192.168.6.165 zr.org 即可在浏览器访问 zr.org/zrlog
 ```
+
+## 9、Tomcat的管理功能
+### host-manager //管理虚拟主机管理
+> 这个功能主要用来管理虚拟主机的，可以通过这个WEB界面，来停止、启动以及增加虚拟主机  
+> 在浏览器访问 192.168.6.165,右方灰色按钮：Host Manager 或者 http://192.168.6.165/host-manager/html
+> 进入页面会显示 403 Access Denied，需要修改配置文件
+```bash
+$ vim conf/tomcat-user.xml
+<role rolename="admin-gui"/>
+<role rolename="admin-script"/>
+<user username="tomcat" password="tomcat123" roles="admin-script,admin-gui"/>
+
+$ vim webapps/host-manager/META-INF/context.xml 
+allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|192.168.6.*" //在allow那一行增加白名单IP，如果是网段用*表示，例如192.168.6.*
+```
+> admin-gui 和 admin-script 是 Tomcat 内置的角色，host-manager 功能需要这两个角色的支持。
+- admin-gui - allows access to the HTML GUI
+- admin-script - allows access to the text interface
+
+> Tomcat 有一个安全设置，默认不允许这个客户端 IP 访问 host-manager 页面
