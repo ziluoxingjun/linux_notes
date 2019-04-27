@@ -430,6 +430,7 @@ $ vim uc_server/data/config.inc.php
 $ mysql -
 $ mysql> show grants for 'root'@'127.0.0.1';
 $ mysql> grant all on discuz.* to 'root'@'192.168.6.166' identified by 'xing/*-';
+$ mysql> flush priviveges;
 ```
 
 ## 6、Apache 用户认证
