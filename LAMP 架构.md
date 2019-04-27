@@ -376,9 +376,9 @@ $ curl -x192.168.95.10:80 xing.com
 
 
 ## 安装 Discuz!
-```
-$ mkdir /data/www/discuz //存放 Discuz 程序的根目录
-$ cd /data/www/discuz
+```bash
+$ mkdir /data/wwwroot/discuz //存放 Discuz 程序的根目录
+$ cd /data/wwwroot/discuz
 $ wget Discuz.zip
 $ unzip Discuz.zip
 $ mv upload/* ./
@@ -412,6 +412,24 @@ Query OK, 1 row affected (0.02 sec)
 
 $ mysql> grant all（所有权限） on discuz.*（数据库下的所有表） to 'xing'@'localhost' identified by 'xing/'（密码）;
 Query OK, 0 rows affected (0.05 sec)
+```
+在负载均衡里共用数据库操作
+```bash
+# 负载均衡需要共用一个数据库，所以 rs2 里 host 要改为 rs1 的 ip，在 rs2 上操作
+$ cd /data/wwwroot/discuz
+$ vim config/config_global.php
+7 $_config['db']['1']['dbhost'] = '192.168.6.165';
+
+$ vim config/config_ucenter.php
+6 define('UC_DBHOST', '192.168.6.165');
+
+$ vim uc_server/data/config.inc.php
+2 define('UC_DBHOST', '192.168.6.166');
+
+# 无法登录，授权问题，在 rs1 上 授权给 rs2
+$ mysql -
+$ mysql> show grants for 'root'@'127.0.0.1';
+$ mysql> grant all on discuz.* to 'root'@'192.168.6.166' identified by 'xing/*-';
 ```
 
 ## 6、Apache 用户认证
