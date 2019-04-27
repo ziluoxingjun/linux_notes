@@ -10,86 +10,9 @@
 
 > 实现负载均衡的开源软件：LVS , keepalived , haproxy , nginx, 商业软件有 F5 , Netscaler
 
-## 1.1 HA 集群配置（heartbeat 弃用）
+## 1.2 keepalived 配置 HA
 
 HA = High Availability
-
-在主从机上：
-
-    iptables -F
-    iptables -nvL
-    setenforce 0
-    getenforce
-    vim /etc/hosts
-     192.168.1.11 star
-     192.168.1.10 xing 
-    
-    yum install -y heartbeat
-    yum install -y libnet
-
-配置
-
-    cd /usr/share/doc/heartbeat-3.0.4
-    cp authkeys ha.cf haresources /etc/ha.d/
-    cd /etc/ha.d/
-    vim authkeys
-     #auth 3
-     #1 crc（最简单）
-     #2 sha1 HI!（最复杂）
-     #3 md5 Hello!
-    
-    chmod 600 authkeys 
-    vim haresources
-     #node-name resource1 resource2 ... resourceN
-     star 192.168.1.100/24/eth0:0 nginx
-    
-    vim ha.cf
-    debugfile       /var/log/ha-debug
-    logfile         /var/log/ha-log
-    logfacility     local0
-    keepalive       2（多长时间探测一次，需要知道是否活着，2s）
-    deadtime        30（30s 不通 死掉）
-    warntime        10（10s 发出警告，记入logfile）
-    initdead        60（重启需要预留出时间）
-    udpport         694（心跳线通信端口）
-    ucast eth0      192.168.1.10
-    auto_failback   on（当主再次激活的时候，备自动沉寂）
-    node            star（主）
-    node            xing（从）
-    ping            192.168.1.1
-    respawn hacluster /usr/lib64/heartbeat/ipfail（此脚本用来检测网络连通性；respawn 当此脚本死掉时，自动拉起）
-    
-    yum install -y openssh-clients
-    scp authkeys ha.cf haresources xing:/etc/ha.d/
-    在从机上 authkeys haresources 不需要改，需要改 ha.cf
-    vim ha.cf
-     ucast eth0      192.168.1.11
-    
-    测试
-    iptables -A INPUT -p icmp -j DROP
-
-同一块网卡可以有多个 IP 地址
-
-    cd /etc/sysconfig/network-scripts/
-    cp ifcfg-eth0 ifcfg-eth0\:1
-     
-    DEVICE=eth0:1
-    #HWADDR=00:0C:29:40:CC:5F
-    TYPE=Ethernet
-    #UUID=760e05fd-db50-4396-99a0-c6df923b06f5
-    ONBOOT=yes
-    NM_CONTROLLED=yes
-    BOOTPROTO=static
-    IPADDR=192.168.1.111
-    NETMASK=255.255.255.0
-    #GATEWAY=192.168.1.1
-    #DNS1=192.168.1.1
-    #DNS2=8.8.8.8
-    
-    service network restart
-    ifconfig
-
-## 1.2 keepalived 配置 HA
 
 > keepalived 通过 VRRP (Virtual Router Redundancy Protocol 虚拟路由冗余协议) 来实现高可用，防止单点故障；在这个协议里会将多台功能相同的路由器组成一个小组，这个小组里会有一个 master 和 n(n>=1) 个 backup
 
@@ -215,6 +138,7 @@ test4:开启 master 上的 keepalived 服务
 - director（分发器，调度器） 内网 ip : 95.13 外网 ip : 106.128 （vmware 仅主机模式网卡，总共两块网卡）
 - rs1 ip : 95.11 设置网关为 95.13
 - rs2 ip : 95.12 设置网关为 95.13
+- rs1 rs2 共用一个 mysql，
 
 ```bash   
     NAT
