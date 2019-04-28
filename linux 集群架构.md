@@ -206,58 +206,64 @@ $ route -n
 ③.RS发现请求报文中的目的MAC是自己，就会将次报文接收下来，处理完请求报文后，将响应报文通过lo接口送给eth0网卡直接发送给客户端。
 
 ```bash
-    # director ip : 95.13
-    # rs1 ip : 95.11
-    # rs2 ip : 95.12
-    # vip 95.200
+# director ip : 95.13
+# rs1 ip : 95.11
+# rs2 ip : 95.12
+# vip 95.200
     
-    # DR diretor
-    先清空：
-    ipvsadm -C
-    iptables -t nat -F
+# DR diretor
+先清空：
+ipvsadm -C
+iptables -t nat -F
     
-    # 将 rs1 rs1 gateway 改回
-    # 将 eth1 down 掉
+# 将 rs1 rs1 gateway 改回
+# 将 eth1 down 掉
     
-    # 需要三个 vip
-    $ vim /usr/local/sbin/lvs_dr.sh
-    #! /bin/bash
-    echo 1 > /proc/sys/net/ipv4/ip_forward
-    ipv=/usr/sbin/ipvsadm
-    vip=192.168.95.200
-    rs1=192.168.95.11
-    rs2=192.168.95.12
-    ifdown ens33 //重启ens33网卡，是为了防止脚本重复执行时和之前的配置冲突
-    ifup ens33
-    ifconfig ens33:1 $vip broadcast $vip netmask 255.255.255.255 up //增加ens33:1虚拟网卡，并把vip配置在ens33:1上
-    route add -host $vip dev ens33:1 //增加路由
-    $ipv -C //-C表示清空之前的规则,-A表示增加规则,-t指定vip以及port，-s指定调度算法,这里还有一个-p选项，后面跟时间（单位s），表示保持长连接
-    $ipv -A -t $vip:80 -s rr
-    $ipv -a -t $vip:80 -r $rs1:80 -g -w 1 //-a表示增加rs，-r指定具体的rsip和port，-g表示dr模式(-i表示ip tunnel模式，-m表示NAT模式),-w指定权重
-    $ipv -a -t $vip:80 -r $rs2:80 -g -w 1
+# 需要三个 vip
+$ vim /usr/local/sbin/lvs_dr.sh
+#! /bin/bash
+echo 1 > /proc/sys/net/ipv4/ip_forward
+ipv=/usr/sbin/ipvsadm
+vip=192.168.95.200
+rs1=192.168.95.11
+rs2=192.168.95.12
+ifdown ens33 //重启ens33网卡，是为了防止脚本重复执行时和之前的配置冲突
+ifup ens33
+ifconfig ens33:1 $vip broadcast $vip netmask 255.255.255.255 up //增加ens33:1虚拟网卡，并把vip配置在ens33:1上
+route add -host $vip dev ens33:1 //增加路由
+$ipv -C //-C表示清空之前的规则,-A表示增加规则,-t指定vip以及port，-s指定调度算法,这里还有一个-p选项，后面跟时间（单位s），表示保持长连接
+$ipv -A -t $vip:80 -s rr
+$ipv -a -t $vip:80 -r $rs1:80 -g -w 1 //-a表示增加rs，-r指定具体的rsip和port，-g表示dr模式(-i表示ip tunnel模式，-m表示NAT模式),-w指定权重
+$ipv -a -t $vip:80 -r $rs2:80 -g -w 1
     
-    $ sh /usr/local/sbin/lvs_dr.sh
-    $ ipvsadm -ln
+$ sh /usr/local/sbin/lvs_dr.sh
+$ ipvsadm -ln
     
-    # rs 上需要写脚本
-    vim /usr/local/sbin/lvs_rs.sh
-    #! /bin/bash
-    vip=192.168.95.200
-    # 把 vip 绑定在 lo 上，是为了实现 rs 直接把结果返回给客户端
-    ifdown lo
-    ifup lo
-    ifconfig lo:0 $vip broadcast $vip netmask 255.255.255.255 up
-    route add -host $vip lo:0
-    # 以下操作为更改 arp 内核参数，目的是让 rs 顺利发送 mac 地址给客户端
-    # 参考：www.cnblogs.com/lgfeng/archive/2012/10/16/2726308.html
-    # https://www.imooc.com/article/79661
-    echo "1" > /proc/sys/net/ipv4/conf/lo/arp_ignore
-    echo "2" > /proc/sys/net/ipv4/conf/lo/arp_announce
-    echo "1" > /proc/sys/net/ipv4/conf/all/arp_ignore
-    echo "2" > /proc/sys/net/ipv4/conf/all/arp_announce
+# rs 上需要写脚本
+vim /usr/local/sbin/lvs_rs.sh
+#! /bin/bash
+vip=192.168.95.200
+# 把 vip 绑定在 lo 上，是为了实现 rs 直接把结果返回给客户端
+ifdown lo
+ifup lo
+ifconfig lo:0 $vip broadcast $vip netmask 255.255.255.255 up
+route add -host $vip lo:0
+  # 以下操作为更改 arp 内核参数，目的是让 rs 顺利发送 mac 地址给客户端
+# 参考：www.cnblogs.com/lgfeng/archive/2012/10/16/2726308.html # https://www.imooc.com/article/79661
+echo "1" > /proc/sys/net/ipv4/conf/lo/arp_ignore
+echo "2" > /proc/sys/net/ipv4/conf/lo/arp_announce
+echo "1" > /proc/sys/net/ipv4/conf/all/arp_ignore
+echo "2" > /proc/sys/net/ipv4/conf/all/arp_announce
     
-    $ sh /usr/local/sbin/lvs_rs.sh
-    # 浏览器访问 192.168.95.200
+$ sh /usr/local/sbin/lvs_rs.sh
+# 浏览器访问 192.168.95.200 //在 windows hosts vip 和域名绑定
+
+# dir
+$ ipvsadm -l
+$ ipvsadm -ln
+
+$ yum install tcpdump
+$ tcpdump -i ens33 -nn port 80
 ```
 
 #### LVS IP Tunnel 模式
