@@ -33,9 +33,19 @@ $ systemctl enable nfs
 $ yum install nfs-utils
 $ showmount -e 192.168.95.191 //NFS 服务端 ip
 $ mount -t nfs 192.168.95.191:/home/nfs /mnt
+
+$ cd /data/wwwroot/discuz
+$ mv data data_local
+$ mkdir data;chown php-fpm data
+$ mount 192.168.6.165:/data/wwwroot/discuz/data/ /data/wwwroot/discuz/data
+
 $ df -h
 $ touch /mnt/test
 $ ll /mnt/test //可以看到属主属组都为 1000
+
+# 开机自动挂载
+$ vim /etc/fstab
+192.168.6.165:/data/wwwroot/discuz/data  /data/wwwroot/discuz/data  nfs  defaults,nfsvers=3 0 0
 ```
 
 ## NFS 配置选项
