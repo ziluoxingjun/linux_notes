@@ -289,6 +289,7 @@ $ tcpdump -i ens33 -nn port 80
 
     在 master 上
     ipvsadm -C
+    ifdown ens33 && ifup ens33
     yum install -y keepalived（主从都安装）
     vim /etc/keepalived/keepalived.conf
      vrrp_instance VI_1 {
