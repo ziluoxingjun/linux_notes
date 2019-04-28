@@ -46,6 +46,9 @@ $ ll /mnt/test //可以看到属主属组都为 1000
 # 开机自动挂载
 $ vim /etc/fstab
 192.168.6.165:/data/wwwroot/discuz/data  /data/wwwroot/discuz/data  nfs  defaults,nfsvers=3 0 0
+
+$vim /etc/rc.local
+mount -o nfsvers=3 192.168.6.165:/data/wwwroot/discuz/data/ /data/wwwroot/discuz/data
 ```
 
 ## NFS 配置选项
