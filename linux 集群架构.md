@@ -406,6 +406,7 @@ $ tcpdump -i ens33 -nn port 80
     $ systemctl start keepalived
     $ ipvsadm -ln
     ### 两台 rs 上，依然要执行 lvs_rs.sh 脚本
+    $ vim /var/log/message //keepalived 日志
 ```
 lvs_rs.sh 脚本
 ```bash
