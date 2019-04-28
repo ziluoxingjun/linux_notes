@@ -13,11 +13,14 @@
 
 早期版本叫做 portmap ，后面版本叫做 rpcbind 其实是一个东西，默认监听 111 端口
 
+> 负载均衡时 A 机器上传了一张图片，结果 B 机器访问的时候就提示 404. 需要做 NFS 保证访问正常，rs1 作为服务端，rs2 为客户端
+
 ## NFS 服务端安装配置
 ```bash
 $ yum install nfs-utils //同时会安装好 rpcbind
 $ vim /etc/exports
 /home/nfs 192.168.95.0/24(rw,sync,all_squash,anonuid=1000,anongid=1000)
+/data/wwwroot/discuz/data/ 192.168.6.0/24(rw,sync,no_root_squash)
 $ mkdir -p /home/nfs
 $ chmod 777 /home/nfs
 $ systemctl start rpcbind
