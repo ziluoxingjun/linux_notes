@@ -227,13 +227,13 @@ $ route -n
     vip=192.168.95.200
     rs1=192.168.95.11
     rs2=192.168.95.12
-    ifdown ens33
+    ifdown ens33 //重启ens33网卡，是为了防止脚本重复执行时和之前的配置冲突
     ifup ens33
-    ifconfig ens33:1 $vip broadcast $vip netmask 255.255.255.255 up
-    route add -host $vip dev ens33:1
-    $ipv -C
+    ifconfig ens33:1 $vip broadcast $vip netmask 255.255.255.255 up //增加ens33:1虚拟网卡，并把vip配置在ens33:1上
+    route add -host $vip dev ens33:1 //增加路由
+    $ipv -C //-C表示清空之前的规则,-A表示增加规则,-t指定vip以及port，-s指定调度算法,这里还有一个-p选项，后面跟时间（单位s），表示保持长连接
     $ipv -A -t $vip:80 -s rr
-    $ipv -a -t $vip:80 -r $rs1:80 -g -w 1 //-g 代表 dr 模式
+    $ipv -a -t $vip:80 -r $rs1:80 -g -w 1 //-a表示增加rs，-r指定具体的rsip和port，-g表示dr模式(-i表示ip tunnel模式，-m表示NAT模式),-w指定权重
     $ipv -a -t $vip:80 -r $rs2:80 -g -w 1
     
     $ sh /usr/local/sbin/lvs_dr.sh
