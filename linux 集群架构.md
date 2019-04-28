@@ -250,6 +250,7 @@ $ route -n
     route add -host $vip lo:0
     # 以下操作为更改 arp 内核参数，目的是让 rs 顺利发送 mac 地址给客户端
     # 参考：www.cnblogs.com/lgfeng/archive/2012/10/16/2726308.html
+    # https://www.imooc.com/article/79661
     echo "1" > /proc/sys/net/ipv4/conf/lo/arp_ignore
     echo "2" > /proc/sys/net/ipv4/conf/lo/arp_announce
     echo "1" > /proc/sys/net/ipv4/conf/all/arp_ignore
