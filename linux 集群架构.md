@@ -275,7 +275,7 @@ $ tcpdump -i ens33 -nn port 80
 
 ![Keepalived+lvs](https://images.gitee.com/uploads/images/2018/1016/130926_a3c88a4a_922657.png "keepalived+lvs.png")
 
-> 当 RS 的某一台机器宕机后，LB 依然还会把请求发送到宕机的机器上去，这样就会影响到用户的体验。lvs 无法处理，需要 keepalived
+> 当 RS 的某一台机器宕机后，LB 依然还会把请求发送到宕机的机器上去，这样就会影响到用户的体验。lvs 无法处理，需要在 LB 安装 keepalived
 
 > keepalived = HA + LB
 
