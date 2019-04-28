@@ -290,14 +290,14 @@ $ tcpdump -i ens33 -nn port 80
     在 master 上
     ipvsadm -C
     ifdown ens33 && ifup ens33
-    yum install -y keepalived（主从都安装）
+    yum install -y keepalived //主从都安装
     vim /etc/keepalived/keepalived.conf
      vrrp_instance VI_1 {
-        state MASTER #备用服务器上为 BACKUP
+        state MASTER //备用服务器上为 BACKUP
         interface eth0
         virtual_router_id 51
-        priority 100 #优先级 备用服务器上为 90
-        advert_int 1
+        priority 100 //优先级 备用服务器上为 90
+        advert_int 1 //发送 vrrp 包的间隔时间
         authentication {
             auth_type PASS
             auth_pass 1111
@@ -307,19 +307,19 @@ $ tcpdump -i ens33 -nn port 80
         }
      }
      virtual_server 192.168.1.147 80 {
-        delay_loop 6 #每隔6秒查询realserver状态
-        lb_algo rr #lvs 算法 
-        lb_kind DR #Direct Route 模式
+        delay_loop 6 //每隔6秒查询realserver状态
+        lb_algo rr //vs 算法 
+        lb_kind DR //Direct Route 模式
         nat_mask 255.255.255.0
-        persistence_timeout 0 #留存时间
-        protocol TCP #用 TCP 协议检查 realserver 状态
+        persistence_timeout 0 //留存时间，同一IP的连接60秒内被分配到同一台realserver
+        protocol TCP //用 TCP 协议检查 realserver 状态
     
         real_server 192.168.1.138 80 {
-            weight 100 #权重
+            weight 100 //权重
             TCP_CHECK { 
-                connect_timeout 10 #10 秒无响应超时，超时就踢除
-                nb_get_retry 3
-                delay_before_retry 3
+                connect_timeout 10 //10 秒无响应超时，超时就踢除
+                nb_get_retry 3 //重新检测3次
+                delay_before_retry 3 //每次检测间隔时间
                 connect_port 80
             }
         }
