@@ -122,8 +122,49 @@ server
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 }
+
+$ nginx -t
+nginx: [warn] conflicting server name "www.disc.com" on 0.0.0.0:80, ignored //80端口冲突
+
+# Nginx1 Nginx2 安装配置 keepalived
+$ yum install keepalived
+$ vim /etc/keepalived/keepalived.conf
+global_defs {
+    notification_email {
+    xxxx@126.com //定义接收邮件人
+}
+notification_email_from //定义发邮件地址（实际没有）
+    smtp_server 127.0.0.1
+    smtp_connect_timeout 30
+    router_id 001
+}
+
+vrrp_script chk_nginx {
+    script "/usr/local/sbin/check_ng.sh" //此脚本为监控nginx服务的
+    interval 3
+}
+
+vrrp_instance violet {
+    state MASTER //备机为 BACKUP
+    interface ens33 //网卡
+    virtual_router_id 001
+    priority 100 //权重100，此数值要大于backup
+    advert_int 1
+    authentication {
+	auth_type PASS
+	auth_pass violet //定义密码
+    }
+    virtual_ipaddress {
+	192.168.6.100 //定义VIP
+    }
+
+    track_script {
+	chk_nginx //定义监控脚本，这里和上面vrr_script后面的字符串保持一致
+    }
+}
 ```
-> https://blog.csdn.net/zwhfyy/article/details/70856035
+> https://blog.csdn.net/zwhfyy/article/details/70856035  
+> keepalived 配置第三方邮件告警 https://blog.csdn.net/HzSunshine/article/details/62052398
 
 ## 2、LB 集群之 LVS 介绍
 
