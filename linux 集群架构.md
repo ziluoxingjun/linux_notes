@@ -98,6 +98,32 @@ test3:关闭 master 上的 keepalived 服务
 test4:开启 master 上的 keepalived 服务
 ```
 
+Nginx + Keepalived 搭建高可用集群
+```bash
+# test3 为 Nginx1 负载均衡器，test2 为 Nginx2 负载均衡器，test1 为 web1，test2 为 web2
+
+# Nginx1 Nginx2 负载均衡配置
+$ vim /usr/local/nginx/conf/vhosts/web_lb.conf
+upstream disc
+{
+    ip_hash; 
+    server 192.168.6.165:80;   
+    server 192.168.6.166:8080;// 80端口为负载均衡角色，8080端口为web角色
+}
+server
+{
+    listen 80;
+    server_name www.disc.com;
+    location /
+    {
+        proxy_pass http://disc;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+```
+> https://blog.csdn.net/zwhfyy/article/details/70856035
 
 ## 2、LB 集群之 LVS 介绍
 
