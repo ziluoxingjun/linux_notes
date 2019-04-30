@@ -14,6 +14,13 @@
 
 > A --> change data --> bin_log --transfer--> B --> repl_log --> change data
 
+#### mysql主从使用场景：
+1. 数据备份，主机器宕机，从机器还能随时对web提供服务
+2. 读写分离，作为一个从库，读的库，减轻主库的压力，数据备份且可以分担主机器被调用数据时的压力，写的操作只能在主库，不能在从库，如果从库写数据就会导致主从不同步。
+
+> https://blog.csdn.net/xiaoyi23000/article/details/80521423  
+> https://www.cnblogs.com/abobo/p/4242417.html  
+> http://blog.itpub.net/15498/viewspace-2125085/
 
 ## 配置主从 1
 
