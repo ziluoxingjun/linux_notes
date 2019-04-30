@@ -162,6 +162,27 @@ vrrp_instance violet {
 	chk_nginx //定义监控脚本，这里和上面vrr_script后面的字符串保持一致
     }
 }
+
+# 编写监控脚本
+$ vim /usr/local/sbin/check_ng.sh
+#!/bin/bash
+#时间变量，用于记录日志
+d=`date --date today +%Y%m%d_%H:%M:%S`
+#计算nginx进程数量
+n=`ps -C nginx --no-heading|wc -l`
+#如果进程为0，则启动nginx，并且再次检测nginx进程数量，#如果还为0，说明nginx无法启动，此时需要关闭keepalived
+if [ $n -eq 0 ]
+then
+    systemctl start nginx  #启动命令
+    n2=`ps -C nginx --no-heading|wc -l`
+    if [ $n2 -eq "0" ]; then
+	echo "$d nginx down,keepalived will stop" >> /var/log/check_ng.log
+	systemctl stop keepalived
+    fi
+fi
+$ chmod 755 /usr/local/sbin/check_ng.sh
+$ iptables -A INPUT -p vrrp -j ACCEPT
+$ setenforce 0
 ```
 > https://blog.csdn.net/zwhfyy/article/details/70856035  
 > keepalived 配置第三方邮件告警 https://blog.csdn.net/HzSunshine/article/details/62052398
