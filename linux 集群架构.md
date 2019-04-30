@@ -181,8 +181,10 @@ then
     fi
 fi
 $ chmod 755 /usr/local/sbin/check_ng.sh
-$ iptables -A INPUT -p vrrp -j ACCEPT
+$ iptables -I INPUT -p vrrp -j ACCEPT
 $ setenforce 0
+
+$ systemctl start keepalived
 ```
 > https://blog.csdn.net/zwhfyy/article/details/70856035  
 > keepalived 配置第三方邮件告警 https://blog.csdn.net/HzSunshine/article/details/62052398
