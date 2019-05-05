@@ -4,4 +4,14 @@ Redis是一个键值对存储数据库，属于一种NoSQL，其数据存储在�
 
 类似键值对数据库还有Memcached，但Redis比Memcached支持更多类型的数据。Mecached只支持string类型的数据，但Redis除了支持string外，还支持hash，set，list，zset(有序集合)
 
-## Redis 安装
+## Redis 安装启动服务
+```bash
+$ wget http://download.redis.io/releases/redis-5.0.4.tar.gz
+$ tar zxf redis-5.0.4.tar.gz
+$ cd redis-5.0.4
+$ make && make install
+
+$ cp redis.conf /etc/
+$ vim /etc/redis.conf  #将daemonize no改为daemonize yes
+$ redis-server /etc/redis.conf
+```
