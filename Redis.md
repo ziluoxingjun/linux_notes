@@ -310,3 +310,16 @@ aof-load-truncated yes
 aof-use-rdb-preamble yes
 # 为了让用户能够同时拥有RDB和AOF两种持久化的优点， 从Redis 4.0版本开始，就推出了一个能够“鱼和熊掌兼得”的持久化方案 —— RDB-AOF 混合持久化： 这种持久化能够通过 AOF 重写操作创建出一个同时包含RDB数据和AOF数据的AOF文件， 其中RDB数据位于AOF文件的开头， 它们储存了服务器开始执行重写操作时的数据库状态：至于那些在重写操作执行之后执行的Redis命令，则会继续以AOF格式追加到AOF文件的末尾，也即是RDB数据之后。
 ```
+
+#### slow log
+```bash
+slowlog-log-slower-than 10000
+# Redis也有跟MySQL类似的慢查询日志，该参数定义一个查询执行时间超过10000微秒则会记录日志。其中1秒=1000000微秒。
+
+slowlog-max-len 128
+# 该参数定义慢查询日志最大的条数。其实，Redis的slow log也是保存在内存中，也是一种k/v形态的数据。
+
+$ slowlog get //列出所有的慢查询日志
+$ slowlog get 2 //只列出2条
+$ slowlog len //查看慢查询日志条数
+```
