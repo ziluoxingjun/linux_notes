@@ -50,3 +50,11 @@ $ redis-cli -a 'password'
 ```
 
 ## Redis 数据类型
+#### string
+```bash
+$ 127.0.0.1:6379> set key1 "violet"
+$ 127.0.0.1:6379> get key1
+$ 127.0.0.1:6379> mset key1 1  key2 'a'  key3 'lambo'
+$ 127.0.0.1:6379> mget key1 key2
+$ 127.0.0.1:6379> keys *
+```
