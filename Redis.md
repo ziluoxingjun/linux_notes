@@ -123,28 +123,28 @@ $ 127.0.0.1:6379> HLEN
 
 ## Redis常见操作
 ```bash
-keys *    //取出所有key
-keys my* //模糊匹配
-exists name  //有name键 返回1 ，否则返回0；
-del  key1 // 删除一个key    //成功返回1 ，否则返回0；
-EXPIRE key1 100  //设置key1 100s后过期
-ttl key // 查看键 还有多长时间过期，单位是s,当 key 不存在时，返回 -2 。 当 key 存在但没有设置剩余生存时间时，返回 -1 。 否则，返回 key 的剩余生存时间。
-select  0  //代表选择当前数据库，默认进入0 数据库
-move age 1  // 把age 移动到1 数据库
-persist key1   //取消key1的过期时间
-randomkey //随机返回一个key
-rename oldname newname //重命名key
-type key1 //返回键的类型
-dbsize  //返回当前数据库中key的数目
-info  //返回redis数据库状态信息
-flushdb //清空当前数据库中所有的键
-flushall    //清空所有数据库中的所有的key
-bgsave //保存数据到 rdb文件中，在后台运行
-save //作用同上，但是在前台运行
-config get * //获取所有配置参数
-config get dir  //获取配置参数
-config set dir  //更改配置参数
-数据恢复： 首先定义或者确定dir目录和dbfilename，然后把备份的rdb文件放到dir目录下面，重启redis服务即可恢复数据
+$ keys *    //取出所有key
+$ keys my* //模糊匹配
+$ exists name  //有name键 返回1 ，否则返回0；
+$ del  key1 // 删除一个key    //成功返回1 ，否则返回0；
+$ EXPIRE key1 100  //设置key1 100s后过期
+$ ttl key // 查看键 还有多长时间过期，单位是s,当 key 不存在时，返回 -2 。 当 key 存在但没有设置剩余生存时间时，返回 -1 。 否则，返回 key 的剩余生存时间。
+$ select  0  //代表选择当前数据库，默认进入0 数据库
+$ move age 1  // 把age 移动到1 数据库
+$ persist key1   //取消key1的过期时间
+$ randomkey //随机返回一个key
+$ rename oldname newname //重命名key
+$ type key1 //返回键的类型
+$ dbsize  //返回当前数据库中key的数目
+$ info  //返回redis数据库状态信息
+$ flushdb //清空当前数据库中所有的键
+$ flushall    //清空所有数据库中的所有的key
+$ bgsave //保存数据到 rdb文件中，在后台运行
+$ save //作用同上，但是在前台运行
+$ config get * //获取所有配置参数
+$ config get dir  //获取配置参数
+$ config set dir  //更改配置参数
+# 数据恢复： 首先定义或者确定dir目录和dbfilename，然后把备份的rdb文件放到dir目录下面，重启redis服务即可恢复数据
 ```
 
 ## 配置文件讲解
