@@ -43,4 +43,10 @@ WantedBy=multi-user.target
 $ ln -s /usr/lib/systemd/system/redis.service /etc/systemd/system/multi-user.target.wants/redis.service
 $ systemctl daemon-reload
 $ systemctl start redis
+
+$ redis-cli  
+$ redis-cli -h ip -p port
+$ redis-cli -a 'password'
 ```
+
+## Redis 数据类型
