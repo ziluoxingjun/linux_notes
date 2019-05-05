@@ -101,5 +101,22 @@ $ 127.0.0.1:6379> ZADD set3 24 "123-aaa"
 $ 127.0.0.1:6379> ZADD set3 4 "a123a"
 $ 127.0.0.1:6379> ZRANGE set3 0 -1
 $ 127.0.0.1:6379> ZREVRANGE set3 0 -1  //倒序
-$ 127.0.0.1:6379> ZSCORE
+$ 127.0.0.1:6379> ZSCORE z1 abc
+```
+
+#### hash
+散列类型,可以认为是多维度string
+```bash
+$ 127.0.0.1:6379> hset hash1 name zizi
+$ 127.0.0.1:6379> hget hash1 name
+$ 127.0.0.1:6379> hset hash1  age 30
+$ 127.0.0.1:6379> hget hash1 age
+$ 127.0.0.1:6379> hgetall hash1
+$ 127.0.0.1:6379> hmset
+$ 127.0.0.1:6379> hmget 
+$ 127.0.0.1:6379> HEXISTS 
+$ 127.0.0.1:6379> HDEL
+$ 127.0.0.1:6379> HKEYS
+$ 127.0.0.1:6379> HVALS
+$ 127.0.0.1:6379> HLEN
 ```
