@@ -91,3 +91,15 @@ $ 127.0.0.1:6379> SDIFF set1 set2 //差集
 $ 127.0.0.1:6379> SSCARD s2
 $ 127.0.0.1:6379> SPOP s1
 ```
+
+#### zset (sorted set)
+sorted set是有序集合，它比set多了一个权重参数score，使得集合中的元素能够按 score 进行有序排列。
+```bash
+$ 127.0.0.1:6379> ZADD set3 12 abc
+$ 127.0.0.1:6379> ZADD set3 2 "cde 123"
+$ 127.0.0.1:6379> ZADD set3 24 "123-aaa"
+$ 127.0.0.1:6379> ZADD set3 4 "a123a"
+$ 127.0.0.1:6379> ZRANGE set3 0 -1
+$ 127.0.0.1:6379> ZREVRANGE set3 0 -1  //倒序
+$ 127.0.0.1:6379> ZSCORE
+```
