@@ -12,6 +12,32 @@ $ cd redis-5.0.4
 $ make && make install
 
 $ cp redis.conf /etc/
-$ vim /etc/redis.conf  #将daemonize no改为daemonize yes
+$ vim /etc/redis.conf
+136 daemonize yes //后台启动
 $ redis-server /etc/redis.conf
+```
+
+## systemd 管理 Redis 服务
+CentOS7下编写服务管理脚本
+```bash
+$ vim /usr/lib/systemd/system/redis.service ##内容如下
+[Unit]
+Description=Redis
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/redis_6379.pid
+ExecStart=/usr/local/bin/redis-server /etc/redis.conf
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+##到此结束
+
+$ ln -s /usr/lib/systemd/system/redis.service /etc/systemd/system/multi-user.target.wants/redis.service
+$ systemctl daemon-reload
+$ systemctl start redis
 ```
