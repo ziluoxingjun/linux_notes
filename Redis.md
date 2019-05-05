@@ -323,3 +323,61 @@ $ slowlog get //列出所有的慢查询日志
 $ slowlog get 2 //只列出2条
 $ slowlog len //查看慢查询日志条数
 ```
+
+## PHP 中使用 Redis
+#### php安装redis扩展模块
+1. 使用pecl安装
+```bash
+$ /usr/local/php-fpm/bin/pecl install redis
+$ vim  /usr/local/php/etc/php.ini
+925 extension = redis.so
+```
+2. 通过源码安装
+```bash
+$ wget https://github.com/phpredis/phpredis/archive/4.3.0.tar.gz
+$ mv 4.3.0.tar.gz  php-redis.tar.gz
+$ tar zxvf php-redis.tar.gz
+$ cd phpredis-4.3.0/
+$ /usr/local/php-fpm/bin/phpize
+$ ./configure --with-php-config=/usr/local/php-fpm/bin/php-config
+$ make && make install
+$ vim  /usr/local/php/etc/php.ini
+925 extension = redis.so
+```
+
+#### php 中使用 redis 存储 session
+```bash
+$ vim /usr/local/php-fpm/etc/php.ini//更改或增加
+1417 session.save_handler = "redis" 
+1446 session.save_path = "tcp://127.0.0.1:6379" 
+
+# 或者apache虚拟主机配置文件中也可以这样配置：
+php_value session.save_handler "redis" 
+php_value session.save_path "tcp://127.0.0.1:6379" 
+ 
+# 或者php-fpm配置文件对应的pool中增加：
+php_value[session.save_handler] = redis
+php_value[session.save_path] = "tcp://127.0.0.1:6379"
+
+# 创建测试文件
+$ wget http://study.lishiming.net/.mem_se.txt
+$ mv .mem_se.txt session.php
+$ /usr/local/php/bin/php session.php
+```
+
+## Redis 主从配置
+```bash
+# 为了节省资源，我们可以在一台机器上启动两个redis服务
+$ cp /etc/redis.conf  //etc/redis2.conf
+$ vim /etc/redis2.conf //需要修改port,dir,pidfile,logfile
+replicaof 127.0.0.1 6379 //增加一行
+
+# 如果主上设置了密码，还需要增加
+masterauth aminglinux>com //设置主的密码
+
+# 启动之前不要忘记创建新的dir目录
+redis-server /etc/redis2.conf
+
+# 测试：在主上创建新的key，在从上查看
+# 注意：redis主从和mysql主从不一样，redis主从不用事先同步数据，它会自动同步过去
+```
