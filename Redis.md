@@ -14,6 +14,8 @@ $ make && make install
 $ cp redis.conf /etc/
 $ vim /etc/redis.conf
 136 daemonize yes //后台启动
+171 logfile "/var/log/redis.log"
+
 $ redis-server /etc/redis.conf
 $ pkill redis-server
 ```
