@@ -15,6 +15,7 @@ $ cp redis.conf /etc/
 $ vim /etc/redis.conf
 136 daemonize yes //后台启动
 $ redis-server /etc/redis.conf
+$ pkill redis-server
 ```
 
 ## systemd 管理 Redis 服务
