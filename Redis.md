@@ -162,7 +162,7 @@ port 6379
 tcp-backlog 511
 # 关于backlog的理解，需要先搞清楚TCP三次握手。这个tcp-backlog定义了一个队列的长度。这个队列指的是， TCP三次握手中最后一次握手完成后的那个状态的连接（下图的accept queue）。
 # 该参数设定的值不能大于内核的somaxconn的值，要想设置的非常高，那么首先要将内核参数somaxconn的值提升。 somaxconn，定义了系统中每一个端口最大的监听队列的长度，这是个全局的参数,默认值为128. 限制了每个端口接收新tcp连接侦听队列的大小。对于一个经常处理新连接的高负载 web服务环境来说，默认的128太小了。大多数环境这个值建议增加到2048或者更多。
-# 调整内核参数： echo "net.core.somaxconn = 2048" >> /etc/sysctl.conf; sysctl -p
+# 调整内核参数： echo "net.core.somaxconn = 2048" >> /etc/sysctl.conf; sysctl -p;sysctl -a |grep somaxconn
 
 timeout 0
 # 当客户端处于空闲状态时，redis服务端会主动关闭连接，这个参数用来定义客户端空闲多少秒，服务端关闭连接，如果是0则不限制。
