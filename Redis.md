@@ -367,6 +367,8 @@ session.save_path => tcp://127.0.0.1:6379 => tcp://127.0.0.1:6379
 $ wget http://study.lishiming.net/.mem_se.txt
 $ mv .mem_se.txt session.php
 $ /usr/local/php/bin/php session.php
+$ redis-cli
+$ 127.0.0.1:6379> keys *
 ```
 ```php
 <?php 
