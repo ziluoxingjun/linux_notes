@@ -368,6 +368,20 @@ $ wget http://study.lishiming.net/.mem_se.txt
 $ mv .mem_se.txt session.php
 $ /usr/local/php/bin/php session.php
 ```
+```php
+<?php 
+    session_start(); 
+    if (!isset($_SESSION['TEST'])) { 
+        $_SESSION['TEST'] = time(); 
+    } 
+    $_SESSION['TEST3'] = time(); 
+    print $_SESSION['TEST']; 
+    print "<br><br>"; 
+    print $_SESSION['TEST3']; 
+    print "<br><br>"; 
+    print session_id(); 
+?> 
+```
 
 ## Redis 主从配置
 ```bash
