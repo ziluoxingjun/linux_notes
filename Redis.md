@@ -359,6 +359,10 @@ php_value session.save_path "tcp://127.0.0.1:6379"
 php_value[session.save_handler] = redis
 php_value[session.save_path] = "tcp://127.0.0.1:6379"
 
+$ /usr/loca/php-fpm/bin/php -i |grep session.save
+session.save_handler => redis => redis
+session.save_path => tcp://127.0.0.1:6379 => tcp://127.0.0.1:6379
+
 # 创建测试文件
 $ wget http://study.lishiming.net/.mem_se.txt
 $ mv .mem_se.txt session.php
