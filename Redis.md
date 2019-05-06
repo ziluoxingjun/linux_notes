@@ -508,6 +508,7 @@ sentinel deny-scripts-reconfig yes
 ```bash
 # Sentinel 启动命令
 $ redis-sentinel /etc/sentinel.conf
+$ redis-server --sentinel /etc/sentinel.conf
 ```
 
 #### Sentinel操作
