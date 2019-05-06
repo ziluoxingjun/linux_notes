@@ -513,6 +513,8 @@ $ redis-server --sentinel /etc/sentinel.conf
 
 #### Sentinel操作
 ```bash
+$ redis-cli -h 192.168.6.165 -p 6380 //连接 sentinel
+
 $ sentinel master mymaster
 # 输出被监控的主节点的状态信息
 
@@ -526,6 +528,10 @@ $ sentinel sentinels mymaster
 #### 测试
 - 停止Redis从
 - 停止Redis主
+```bash
+$ redis-cli -h 192.168.6.165
+$ 192.168.6.165:6379> shutdown
+```
 - 停止sentinel1
 
 #### 客户端连接问题
