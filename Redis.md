@@ -486,7 +486,7 @@ logfile "/var/log/sentinel.log"
 dir /tmp
 
 # 定义Redis主的别名, IP, 端口，这里的2指的是需要至少2个Sentinel认为主Redis挂了才最终会采取下一步行为
-sentinel monitor mymaster 127.0.0.1 6379 2
+sentinel monitor mymaster 192.168.6.165 6379 2
 
 # 如果mymaster 30秒内没有响应，则认为其主观失效
 sentinel down-after-milliseconds mymaster 30000
