@@ -412,13 +412,13 @@ Redis Sentinel 是 Redis 高可用的实现方案。Sentinel 是一个管理多�
 
 #### Redis Sentinel 的主要功能
 Sentinel 的主要功能包括主节点存活检测、主从运行情况检测、自动故障转移（failover）、主从切换。Redis 的 Sentinel 最小配置是一主一从。 Redis 的 Sentinel 系统可以用来管理多个 Redis 服务器，该系统可以执行以下四个任务：
-1. 监控
+1. 监控:
 Sentinel 会不断的检查主服务器和从服务器是否正常运行。
-2. 通知
+2. 通知:
 当被监控的某个Redis服务器出现问题，Sentinel通过API脚本向管理员或者其他的应用程序发送通知。
-3. 自动故障转移
+3. 自动故障转移:
 当主节点不能正常工作时，Sentinel会开始一次自动的故障转移操作，它会将与失效主节点是主从关系的其中一个从节点升级为新的主节点，并且将其他的从节点指向新的主节点。
-4. 配置提供者
+4. 配置提供者:
 在 Redis Sentinel 模式下，客户端应用在初始化时连接的是 Sentinel 节点集合，从中获取主节点的信息。
 
 #### Redis Sentinel 的工作流程
@@ -430,3 +430,10 @@ Sentinel负责监控集群中的所有主、从Redis，当发现主故障时，S
 和从切换角色这个过程还是蛮复杂的。
 
 > http://www.cnblogs.com/jifeng/p/5138961.html
+
+#### 相关概念
+- 主观失效:
+SDOWN（subjectively down）,直接翻译的为”主观”失效,即当前sentinel实例认为某个redis服务为”不可用”状态.
+
+- 客观失效:
+ODOWN（objectively down）,直接翻译为”客观”失效,即多个sentinel实例都认为master处于”SDOWN”状态,那么此时master将处于ODOWN,ODOWN可以简单理解为master已经被集群确定为”不可用”,将会开启failover
