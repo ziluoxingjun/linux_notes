@@ -452,7 +452,17 @@ ODOWN（objectively down），直接翻译为”客观”失效，即多个senti
 
 #### 部署
 1. 安装 Redis
+```bash
+$ vim /etc/redis.conf
+bind 192.168.6.165/166/167
+daemonize yes
+logfile "/var/log/redis.log"
+```
 2. 部署 Redis主从
+```bash
+$ vim /etc/redis.conf
+replicaof 192.168.6.165 6379 //在两个从上配置
+```
 3. 部署 Sentinel
 ```bash
 # 三台Sentinel配置文件是一样的，编辑配置文件
