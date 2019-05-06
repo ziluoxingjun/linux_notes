@@ -231,10 +231,8 @@ masterauth
 
 replica-serve-stale-data yes
 # 当从Redis失去了与主Redis的连接，或者主从同步正在进行中时，Redis该如何处理外部发来的访问请求呢？这里，从Redis可以有两种选择：
-replica-serve-stale-data yes
-# 即使主从断了，从依然响应客户端的请求。
-replica-serve-stale-data no
-# 主从断开了，则从会提示客户端"SYNC with master in progress"，但有些指令还可以使用 INFO, replicaOF, AUTH, PING, SHUTDOWN, REPLCONF, ROLE, CONFIG,SUBSCRIBE, UNSUBSCRIBE, PSUBSCRIBE, PUNSUBSCRIBE, PUBLISH, PUBSUB, COMMAND, POST, HOST: and LATENCY
+# yes,即使主从断了，从依然响应客户端的请求。
+# no,主从断开了，则从会提示客户端"SYNC with master in progress"，但有些指令还可以使用 INFO, replicaOF, AUTH, PING, SHUTDOWN, REPLCONF, ROLE, CONFIG,SUBSCRIBE, UNSUBSCRIBE, PSUBSCRIBE, PUNSUBSCRIBE, PUBLISH, PUBSUB, COMMAND, POST, HOST: and LATENCY
 
 replica-read-only yes
 # 定义从是否只读
