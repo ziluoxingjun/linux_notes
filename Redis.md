@@ -406,3 +406,27 @@ redis-server /etc/redis2.conf
 # 测试：在主上创建新的key，在从上查看
 # 注意：redis主从和mysql主从不一样，redis主从不用事先同步数据，它会自动同步过去
 ```
+
+## Redis sentinel
+Redis Sentinel 是 Redis 高可用的实现方案。Sentinel 是一个管理多个 Redis 实例的工具，它可以实现对 Redis 的监控、通知、自动故障转移。
+
+#### Redis Sentinel 的主要功能
+Sentinel 的主要功能包括主节点存活检测、主从运行情况检测、自动故障转移（failover）、主从切换。Redis 的 Sentinel 最小配置是一主一从。 Redis 的 Sentinel 系统可以用来管理多个 Redis 服务器，该系统可以执行以下四个任务：
+1. 监控
+Sentinel 会不断的检查主服务器和从服务器是否正常运行。
+2. 通知
+当被监控的某个Redis服务器出现问题，Sentinel通过API脚本向管理员或者其他的应用程序发送通知。
+3. 自动故障转移
+当主节点不能正常工作时，Sentinel会开始一次自动的故障转移操作，它会将与失效主节点是主从关系的其中一个从节点升级为新的主节点，并且将其他的从节点指向新的主节点。
+4. 配置提供者
+在 Redis Sentinel 模式下，客户端应用在初始化时连接的是 Sentinel 节点集合，从中获取主节点的信息。
+
+#### Redis Sentinel 的工作流程
+Sentinel负责监控集群中的所有主、从Redis，当发现主故障时，Sentinel会在所有的从中选一个成为新的主。
+并且会把其余的从变为新主的从。同时那台有问题的旧主也会变为新主的从，也就是说当旧的主即使恢复时，
+并不会恢复原来的主身份，而是作为新主的一个从。
+
+在Redis高可用架构中，Sentinel往往不是只有一个，而是有3个或者以上。目的是为了让其更加可靠，毕竟主
+和从切换角色这个过程还是蛮复杂的。
+
+> http://www.cnblogs.com/jifeng/p/5138961.html
