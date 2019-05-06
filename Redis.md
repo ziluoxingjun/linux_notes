@@ -433,7 +433,18 @@ Sentinel负责监控集群中的所有主、从Redis，当发现主故障时，S
 
 #### 相关概念
 - 主观失效:
-SDOWN（subjectively down）,直接翻译的为”主观”失效,即当前sentinel实例认为某个redis服务为”不可用”状态.
+SDOWN（subjectively down），直接翻译的为”主观”失效，即当前sentinel实例认为某个redis服务为”不可用”状态.
 
 - 客观失效:
-ODOWN（objectively down）,直接翻译为”客观”失效,即多个sentinel实例都认为master处于”SDOWN”状态,那么此时master将处于ODOWN,ODOWN可以简单理解为master已经被集群确定为”不可用”,将会开启failover
+ODOWN（objectively down），直接翻译为”客观”失效，即多个sentinel实例都认为master处于”SDOWN”状态,那么此时master将处于ODOWN,ODOWN可以简单理解为master已经被集群确定为”不可用”，将会开启failover
+
+#### 环境准备
+准备3台机器，其中每台机器上都有两个角色，分配如下：
+| 主机名 | IP:PORT             | 角色           |
+| ------ | ------------------- | -------------- |
+| test1  | 192.168.6.165:6379  | Redis Master   |
+| test1  | 192.168.6.165:26379 | Sentinel1      |
+| test2  | 192.168.6.166:6379  | Redis Replica1 |
+| test2  | 192.168.6.166:26379 | Sentinel2      |
+| test3  | 192.168.6.167:6379  | Redis Replica2 |
+| test3  | 192.168.6.167:26379 | Sentinel3      |
