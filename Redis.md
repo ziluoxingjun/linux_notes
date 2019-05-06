@@ -462,6 +462,9 @@ logfile "/var/log/redis.log"
 ```bash
 $ vim /etc/redis.conf
 replicaof 192.168.6.165 6379 //在两个从上配置
+
+$ firewalld-cmd --permanent --add 6379-6380/tcp
+$ firewalld-cmd --reload
 ```
 3. 部署 Sentinel
 ```bash
