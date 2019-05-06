@@ -388,8 +388,13 @@ $ 127.0.0.1:6379> keys *
 ## Redis 主从配置
 ```bash
 # 为了节省资源，我们可以在一台机器上启动两个redis服务
-$ cp /etc/redis.conf  //etc/redis2.conf
-$ vim /etc/redis2.conf //需要修改port,dir,pidfile,logfile
+$ cp /etc/redis.conf  /etc/redis2.conf
+$ vim /etc/redis2.conf
+port 6380
+pidfile /var/run/redis_6380.pid
+logfile "/var/log/redis2.log"
+dbfilename dump2.rdb
+dir ./
 replicaof 127.0.0.1 6379 //增加一行
 
 # 如果主上设置了密码，还需要增加
