@@ -444,11 +444,11 @@ ODOWN（objectively down），直接翻译为”客观”失效，即多个senti
 | 主机名 | IP:PORT             | 角色           |
 | ------ | ------------------- | -------------- |
 | test1  | 192.168.6.165:6379  | Redis Master   |
-| test1  | 192.168.6.165:26379 | Sentinel1      |
+| test1  | 192.168.6.165:6380  | Sentinel1      |
 | test2  | 192.168.6.166:6379  | Redis Repli1   |
-| test2  | 192.168.6.166:26379 | Sentinel2      |
+| test2  | 192.168.6.166:6380  | Sentinel2      |
 | test3  | 192.168.6.167:6379  | Redis Repli2   |
-| test3  | 192.168.6.167:26379 | Sentinel3      |
+| test3  | 192.168.6.167:6380  | Sentinel3      |
 
 #### 部署
 1. 安装 Redis
@@ -471,7 +471,7 @@ $ firewalld-cmd --reload
 # 三台Sentinel配置文件是一样的，编辑配置文件
 $ vim /etc/sentinel.conf
 # 端口
-port 26379
+port 6380
 
 # 是否后台启动
 daemonize yes
