@@ -605,32 +605,32 @@ $ 192.168.6.166:6380> set k1 'hello'
 #### 管理集群
 ```bash
 # 查看集群情况：
-$ redis-cli  --cluster check 192.168.222.128:6379
+$ redis-cli  --cluster check 192.168.6.165:6379
+
+# 删除集群节点
+$ redis-cli --cluster del-node 192.168.6.167:6380 nodeid
+# 这里必须是没有槽的节点，所以必须先移除槽，否则报错 被删除的node重启后，依然记得集群中的其它节点，这是需要执行cluster forget nodeid来忘记其它节点
+
+# 添加集群节点
+$ redis-cli --cluster add-node 192.168.6.166:6380 192.168.6.165:6379  #这样添加的节点为主
+$ redis-cli --cluster add-node 192.168.6.166:6380 192.168.6.165:6379 --cluster-slave  # 这样添加的节点为从
+$ redis-cli --cluster add-node 192.168.6.166:6380 192.168.6.165:6379 --cluster-slave --cluster-master-id 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e #添加从并指定主
+
+# 平衡各节点槽数量
+$ redis-cli --cluster rebalance --cluster-threshold 1 192.168.6.166:6379
 
 # 在线迁移槽
 $ redis-cli --cluster reshard 192.168.121.200:6001
 # 选择一个目标节点的id 源选择all
 
-# 平衡各节点槽数量
-$ redis-cli --cluster rebalance --cluster-threshold 1 192.168.222.128:6379
-
-# 删除集群节点
-$ redis-cli --cluster del-node 192.168.222.129:6380 nodeid
-# 这里必须是没有槽的节点，所以必须先移除槽，否则报错 被删除的node重启后，依然记得集群中的其它节点，这是需要执行cluster forget nodeid来忘记其它节点
-
-# 添加集群节点
-$ redis-cli --cluster add-node 192.168.222.129:6380 192.168.222.128:6379  #这样添加的节点为主
-$ redis-cli --cluster add-node 192.168.222.129:6380 192.168.222.128:6379 --cluster-slave  # 这样添加的节点为从
-$ redis-cli --cluster add-node 192.168.222.129:6380 192.168.222.128:6379 --cluster-slave --cluster-master-id 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e #添加从并指定主
-
 # 给添加的节点分配slot
-$ redis-cli --cluster reshard 192.168.222.129:6379
+$ redis-cli --cluster reshard 192.168.6.166:6379
 How many slots do you want to move (from 1 to 16384)? #定义要分配多少slot
 What is the receiving node ID? #定义接收slot的nodeid，即新的master id
 Source node #1: #定义第一个源master的id，如果想在所有master上拿slot，直接敲all
 Source node #2: #定义第二个源master的id，如果不再继续有新的源，直接敲done
 
 # 将集群外部redis实例中的数据导入到集群中去
-$ redis-cli --cluster import 192.168.222.130:6379 --cluster-from 192.168.222.200:6379 --cluster-copy
+$ redis-cli --cluster import 192.168.6.167:6379 --cluster-from 192.168.6.200:6379 --cluster-copy
 # Cluster-from后面跟外部redis的ip和port 如果只使用cluster-copy，则要导入集群中的key不能在，否则如下： 如果集群中已有同样的key，如果需要替换，可以cluster-copy和cluster-replace联用，这样集群中的key就会被替换为外部的
 ```
