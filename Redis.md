@@ -544,10 +544,21 @@ Redis Cluster为Redis官方提供的一种分布式集群解决方案。它支�
 
 Redis Cluster采用了分布式系统的分片（分区）的思路，每个主节点为一个分片，这样也就意味着 存储的数据是分散在所有分片中的。当增加节点或删除主节点时，原存储在某个主节点中的数据 会自动再次分配到其他主节点。
 
-![redis_cluster](https://raw.githubusercontent.com/ziluoxingjun/linux2019/master/images/redis_cluster.png])
+![redis_cluster](https://gitee.com/uploads/images/2019/0507/141811_c4e0da66_922657.png "redis_cluster.png")
 
 如图，各节点间是相互通信的，通信端口为各节点Redis服务端口+10000，这个端口是固定的，所以注意防火墙设置， 节点之间通过二进制协议通信，这样的目的是减少带宽消耗。
 
 在Redis Cluster中有一个概念slot，我们翻译为槽。Slot数量是固定的，为16384个。这些slot会均匀地分布到各个 节点上。另外Redis的键和值会根据hash算法存储在对应的slot中。简单讲，对于一个键值对，存的时候在哪里是通过 hash算法算出来的，那么取得时候也会算一下，知道值在哪个slot上。根据slot编号再到对应的节点上去取。
 
 Redis Cluster无法保证数据的强一致性，这是因为当数据存储时，只要在主节点上存好了，就会告诉客户端存好了， 如果等所有从节点上都同步完再跟客户端确认，那么会有很大的延迟，这个对于客户端来讲是无法容忍的。所以， 最终Redis Cluster只好放弃了数据强一致性，而把性能放在了首位。
+
+### Redis Cluster搭建
+#### 角色分配
+| 主机名 | IP:PORT             | 角色           |
+| ------ | ------------------- | -------------- |
+| test1  | 192.168.6.165:6379  | Redis Master   |
+| test2  | 192.168.6.166:6379  | Redis Master   |
+| test3  | 192.168.6.167:6379  | Redis Master   |
+| test1  | 192.168.6.165:6380  | Redis Repli    |
+| test2  | 192.168.6.166:6380  | Redis Repli    |
+| test3  | 192.168.6.167:6380  | Redis Repli    |
