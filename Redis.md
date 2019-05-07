@@ -569,7 +569,8 @@ $ vim /etc/redis_6379.conf
 bind 192.168.6.165
 port 6379
 daemonize yes
-pidfile /var/run/redis_6379.pid 
+pidfile /var/run/redis_6379.pid
+logfile "/var/log/redis_6379.log"
 dir /var/redis_6379
 appendonly yes 
 #开启集群
