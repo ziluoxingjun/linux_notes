@@ -563,9 +563,9 @@ Redis Cluster无法保证数据的强一致性，这是因为当数据存储时�
 | test2  | 192.168.6.166:6380  | Redis Repli    |
 | test3  | 192.168.6.167:6380  | Redis Repli    |
 
-#### 安装Redis
+#### 安装配置 Redis
 ```bash
-$ vim /etc/redis.conf
+$ vim /etc/redis_6379.conf
 bind 192.168.6.165
 port 6379
 daemonize yes
