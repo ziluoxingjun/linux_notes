@@ -57,7 +57,9 @@ $ ansible test -m command -a 'hostname'
 
 $ ansible 127.0.0.1 -m shell -a 'w' 
 #除了command模块外，也可以使用shell模块实现远程执行命令。shell还支持执行远程主机上的shell脚本。
-拷贝文件或目录
+```
+
+#### 拷贝文件或目录
 $ ansible aminglinux02 -m copy  -a "src=/etc/passwd dest=/tmp/test123 owner=root group=root mode=0755"
 #注意：源目录会放到目标目录下面去，如果目标指定的目录不存在，它会自动创建。如果拷贝的是文件，dest指定的名字和源如果不同，并且它不是已经存在的目录，相当于拷贝过去后又重命名。但相反，如果desc是目标机器上已经存在的目录，则会直接把文件拷贝到该目录下面。
  
