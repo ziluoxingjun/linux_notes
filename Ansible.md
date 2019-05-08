@@ -73,7 +73,8 @@ $ ansible test -m copy -a "src=/etc/passwd dest=/tmp/123"
 $ 首先创建一个shell脚本，/tmp/1.sh，内容如下
 $ vim /tmp/1.sh
 #!/bin/bash
-echo `date` > /tmp/ansible_test.txt
+echo $(date) > /tmp/ansible_test.txt
+cat ansible_test.txt
 
 # 然后把该脚本分发到各个机器上
 
