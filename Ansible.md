@@ -66,7 +66,10 @@ $ ansible aminglinux02 -m copy  -a "src=/etc/passwd dest=/tmp/test123 owner=root
  
 $ ansible test -m copy -a "src=/etc/passwd dest=/tmp/123"
 #这里的/tmp/123和源机器上的/etc/passwd是一致的，但如果目标机器上已经有/tmp/123目录，则会再/tmp/123目录下面建立passwd文件
-远程执行脚本
+```
+
+#### 远程执行脚本
+```bash
 $ 首先创建一个shell脚本，/tmp/1.sh，内容如下
 $ vim /tmp/1.sh
 #!/bin/bash
@@ -110,5 +113,5 @@ $ ansible test -m service -a "name=httpd state=started enabled=yes"
 #### Ansible文档的使用
 ```bash
 $ ansible-doc -l   #列出所有的模块
-$ ansible-doc cron  #查看指定模块的文档
+$ ansible-doc copy  #查看指定模块的文档
 ```
