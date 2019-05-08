@@ -118,7 +118,7 @@ $ ansible-doc copy  #查看指定模块的文档
 ```
 
 ## ansible playbook
-Ansible playbook是将要做的所有操作汇集到一个或者几个yaml文件中去，其实就跟我们写shell脚本一样，只不过这个playbook有它自己的语法和规则。
+Ansible playbook 是将要做的所有操作汇集到一个或者几个 yaml 文件中去，其实就跟我们写 shell 脚本一样，只不过这个 playbook 有它自己的语法和规则。
 
 好处很明显：方便维护、升级；可以反复使用；将复杂的步骤逻辑化。
 
@@ -126,16 +126,16 @@ Ansible playbook是将要做的所有操作汇集到一个或者几个yaml文件
 ```bash
 $ vim test.yml
 ---
-- hosts: aminglinux02
+- hosts: 192.168.6.166
   remote_user: root
   tasks:
-    - name: test_playbook
-      shell: touch /tmp/lishiming.txt
+  - name: test_playbook
+    shell: touch /tmp/violet.txt
 
-#说明：第一行需要有三个杠，hosts参数指定了对哪些主机进行参作，如果是多台机器可以用逗号作为分隔，
-#也可以使用主机组，在/etc/ansible/hosts里定义；
-#user参数指定了使用什么用户登录远程主机操作；
-#tasks指定了一个任务，其下面的name参数同样是对任务的描述，在执行过程中会打印出来，shell是ansible模块名字
+# 说明：第一行需要有三个杠，hosts 参数指定了对哪些主机进行参作，如果是多台机器可以用逗号作为分隔，
+# 也可以使用主机组，在 /etc/ansible/hosts 里定义；
+# user 参数指定了使用什么用户登录远程主机操作；
+# tasks 指定了一个任务，其下面的 name 参数同样是对任务的描述，在执行过程中会打印出来，shell 是 ansible 模块名字
 
 $ ansible-playbook test.yml
 ```
@@ -145,22 +145,23 @@ $ ansible-playbook test.yml
 $ vim create_user.yml
 ---
 - name: create_user
-  hosts: aminglinux02
+  hosts: 192.168.6.166
   user: root
   gather_facts: false
   vars:
-    - user: "test"
-  tasks:
-    - name: create user
-      user: name="{{ user }}"
+  - user: "test"
 
-#说明：name参数对该playbook实现的功能做一个概述，后面执行过程中，会打印 name变量的值 ，可以省略；
-#gather_facts参数指定了在以下任务部分执行前，是否先执行setup模块获取主机相关信息，这在后面的task会使用到setup获取的信息时用到<ansible 127.0.0.1 -m setup>；
-#vars参数，指定了变量，这里指字一个user变量，其值为test ，需要注意的是，变量值一定要用引号引住；
-#user提定了调用user模块，name是user模块里的一个参数，而增加的用户名字调用了上面user变量的值。
+  tasks:
+  - name: create user
+    user: name="{{ user }}"
+
+# 说明：name 参数对该 playbook 实现的功能做一个概述，后面执行过程中，会打印 name 变量的值，可以省略；
+# gather_facts 参数指定了在以下任务部分执行前，是否先执行 setup 模块获取主机相关信息，这在后面的 task 会使用到 setup 获取信息时用到  <ansible 127.0.0.1 -m setup>；
+# vars 参数指定了变量，这里指定一个 user 变量，其值为 test ，需要注意的是，变量值一定要用引号引住；
+# user 指定了调用 user 模块，name 是 user 模块里的一个参数，而增加的用户名字调用了上面 user 变量的值。
 ```
 
-#### playbook中的循环
+#### playbook 中的循环
 ```bash
 $ vim while.yml
 ---
@@ -177,7 +178,7 @@ $ vim while.yml
 #说明: with_items为循环的对象
 ```
 
-#### playbook中的条件判断
+#### playbook 中的条件判断
 ```bash
 $ vim when.yml
 ---
@@ -192,7 +193,7 @@ $ vim when.yml
 #说明：这里的ansible_ens33.ipv4.address就是通过setup模块查看到的facter信息
 ```
 
-#### playbook中的handlers
+#### playbook 中的 handlers
 ```bash
 # 执行task之后，服务器发生变化之后要执行的一些操作，比如我们修改了配置文件后，需要重启一下服务
 $ vim handlers.yml
