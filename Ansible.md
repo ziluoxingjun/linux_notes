@@ -167,15 +167,17 @@ $ vim while.yml
 ---
 - hosts: test
   user: root
+  gather_facts: false
   tasks:
-    - name: change mode for files
-      file: path=/tmp/{{ item }} mode=600
-      with_items:
-        - 1.txt
-        - 2.txt
-        - 3.txt
+  - name: change mode for files
+    file: path=/tmp/{{ item }} mode=600
+    with_items:
+    - 1.txt
+    - 2.txt
+    - 3.txt
 
-#说明: with_items为循环的对象
+
+#说明: with_items 为循环的对象
 ```
 
 #### playbook 中的条件判断
@@ -184,30 +186,31 @@ $ vim when.yml
 ---
 - hosts: test
   user: root
-  gather_facts: True
+  gather_facts: true
   tasks:
-    - name: use when
-      shell: touch /tmp/when.txt
-      when: ansible_ens33.ipv4.address == "192.168.222.128"
+  - name: use when
+    shell: touch /tmp/when.txt
+    when: ansible_ens33.ipv4.address == "192.168.6.166"
 
-#说明：这里的ansible_ens33.ipv4.address就是通过setup模块查看到的facter信息
+#说明：这里的 ansible_ens33.ipv4.address 就是通过 setup 模块查看到的 facter 信息
 ```
 
 #### playbook 中的 handlers
 ```bash
-# 执行task之后，服务器发生变化之后要执行的一些操作，比如我们修改了配置文件后，需要重启一下服务
+# 执行 task 之后，服务器发生变化之后要执行的一些操作，比如我们修改了配置文件后，需要重启一下服务
 $ vim handlers.yml
 ---
 - name: handlers test
-  hosts: aminglinux02
+  hosts: 192.168.6.166
   user: root
+  gather_facts: false
   tasks:
-    - name: copy file
-      copy: src=/etc/passwd dest=/tmp/aaa.txt
-      notify: test handlers
+  - name: copy file
+    copy: src=/etc/passwd dest=/tmp/a.txt
+    notify: test handlers
   handlers:
-    - name: test handlers
-      shell: echo "111111" >> /tmp/aaa.txt
+  - name: test handlers
+    shell: echo "hello world" >> /tmp/a.txt
 
-#说明，只有copy模块真正执行后，才会去调用下面的handlers相关的操作。这种比较适合配置文件发生更改后，重启服务的操作
+# 只有 copy 模块真正执行后，才会去调用下面的 handlers 相关的操作。这种比较适合配置文件发生更改后，重启服务的操作
 ```
