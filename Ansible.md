@@ -214,3 +214,6 @@ $ vim handlers.yml
 
 # 只有 copy 模块真正执行后，才会去调用下面的 handlers 相关的操作。这种比较适合配置文件发生更改后，重启服务的操作
 ```
+
+## ansible playbook 实战
+### 安装 Nginx
