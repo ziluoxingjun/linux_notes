@@ -217,5 +217,84 @@ $ vim handlers.yml
 
 ## ansible playbook 实战
 ### 1. 安装 Nginx
+思路：先在一台机器上编译安装好 nginx,打包，然后再用 ansible 去下发
+```bash
+$ cd /etc/ansible
+$ mkdir nginx_install   # 创建一个 nginx_install 目录，方便管理
+$ cd nginx_install
+$ mkdir -p roles/{common,install}/{handlers,files,meta,tasks,templates,vars}
+# 说明：roles 目录下有两个角色，common 为一些准备操作，install 为安装 nginx 的操作。
+# 每个角色下面又有几个目录，handlers 下面是当发生改变时要执行的操作，通常用在配置文件发生改变，重启服务。
+# files 为安装时用到的一些文件，meta 为说明信息，说明角色依赖等信息，tasks 里面是核心的配置文件，
+# templates 通常存一些配置文件，启动脚本等模板文件，vars 下为定义的变量
+```
+需要事先准备好安装用到的文件，具体如下：
+```bash
+# 在一台机器上事先编译安装好 nginx，配置好启动脚本，配置好配置文件
+# 安装好后，我们需要把 nginx 目录打包，并放到 /etc/ansible/nginx_install/roles/install/files/ 下面，名字为 nginx.tar.gz
+# 启动脚本、配置文件都要放到 /etc/ansible/nginx_install/roles/install/templates 下面
+$ cd /etc/ansible/nginx_install/roles
+```
+定义 common 的 tasks，nginx 是需要一些依赖包的
+```bash
+$ vim  ./common/tasks/main.yml #内容如下
+- name: Install initializtion require software
+  yum: name={{ item }} state=installed
+  with_items:
+  - zlib-devel
+  - pcre-devel
+```
+定义变量
+```bash
+$ vim /etc/ansible/nginx_install/roles/install/vars/main.yml //内容如下
+nginx_user: www
+nginx_port: 80
+nginx_basedir: /usr/local/nginx
+```
+首先要把所有用到的文档拷贝到目标机器
+```bash
+$ vim /etc/ansible/nginx_install/roles/install/tasks/copy.yml #内容如下
+- name: Copy Nginx Software
+  copy: src=nginx.tar.gz dest=/tmp/nginx.tar.gz owner=root group=root
+- name: Uncompression Nginx Software
+  shell: tar zxf /tmp/nginx.tar.gz -C /usr/local/
+- name: Copy Nginx Start Script
+  template: src=nginx dest=/etc/init.d/nginx owner=root group=root mode=0755
+- name: Copy Nginx Config
+  template: src=nginx.conf dest={{ nginx_basedir }}/conf/ owner=root group=root mode=0644
+```
+建立用户，启动服务，删除压缩包
+```bash
+$ vim /etc/ansible/nginx_install/roles/install/tasks/install.yml #内容如下
+- name: Create Nginx User
+  user: name={{ nginx_user }} state=present createhome=no shell=/sbin/nologin
+- name: Start Nginx Service
+  shell: /etc/init.d/nginx start
+- name: Add Boot Start Nginx Service
+  shell: chkconfig --level 345 nginx on
+- name: Delete Nginx compression files
+  shell: rm -rf /tmp/nginx.tar.gz
+```
+创建 main.yml 并且把 copy 和 install 调用
+```bash
+$ vim /etc/ansible/nginx_install/roles/install/tasks/main.yml #内容如下
+- include: copy.yml
+- include: install.yml
+```
+到此两个 roles,common 和 install 就定义完成了，接下来要定义一个入口配置文件
+```bash
+$ vim /etc/ansible/nginx_install/install.yml  #内容如下
+---
+- hosts: testhost
+  remote_user: root
+  gather_facts: True
+  roles:
+  - common
+  - install
+```
+执行
+```bash
+$ ansible-playbook /etc/ansible/nginx_install/install.yml
+```
 
 ### 2. 管理配置文件
