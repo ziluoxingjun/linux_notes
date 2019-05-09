@@ -298,3 +298,58 @@ $ ansible-playbook /etc/ansible/nginx_install/install.yml
 ```
 
 ### 2. 管理配置文件
+生产环境中大多时候是需要管理配置文件的，安装软件包只是在初始化环境的时候用一下。下面我们来写个管理 nginx 配置文件的 playbook
+创建几个关键目录
+```bash
+$ mkdir -p /etc/ansible/nginx_config/roles/{new,old}/{files,handlers,vars,tasks}
+# 其中 new 为更新时用到，old 为回滚时用到，files 下面为 nginx.conf 和 vhosts 目录，handlers 为重启 nginx 服务的命令
+```
+关于回滚，需要在执行 playbook 之前先备份一下旧的配置，所以对于老配置文件的管理一定要严格，千万不能随便去修改线上机器的配置，并且要保证 new/files 下面的配置和线上的配置一致
+
+先把 nginx.conf 和 vhosts 目录放到 files 目录下面
+```bash
+$ cd /usr/local/nginx/conf/
+$ cp -r nginx.conf vhost /etc/ansible/nginx_config/roles/new/files/
+```
+重载服务
+```bash
+$ vim /etc/ansible/nginx_config/roles/new/handlers/main.yml  //定义重新加载 nginx服务
+- name: restart nginx
+  shell: /etc/init.d/nginx reload
+```
+定义核心任务
+```bash
+$ vim /etc/ansible/nginx_config/roles/new/tasks/main.yml //这是核心的任务
+- name: copy conf file
+  copy: src={{ item.src }} dest={{ nginx_basedir }}/{{ item.dest }} backup=yes owner=root group=root mode=0644
+  with_items:
+  - { src: nginx.conf, dest: conf/nginx.conf }
+  - { src: vhosts, dest: conf/ }
+  notify: restart nginx
+```
+定义入口
+```bash
+$ vim /etc/ansible/nginx_config/update.yml // 最后是定义总入口配置
+---
+- hosts: testhost
+  user: root
+  roles:
+  - new
+```
+执行
+```bash
+$ ansible-playbook /etc/ansible/nginx_config/update.yml
+```
+而回滚的 backup.yml 对应的 roles 为 old
+```bash
+$ rsync -av /etc/ansible/nginx_config/roles/new/ /etc/ansible/nginx_config/roles/old/
+```
+回滚操作就是把旧的配置覆盖，然后重新加载 nginx 服务, 每次改动 nginx 配置文件之前先备份到 old 里，对应目录为 /etc/ansible/nginx_config/roles/old/files
+```bash
+$ vim /etc/ansible/nginx_config/rollback.yml // 最后是定义总入口配置
+---
+- hosts: testhost
+  user: root
+  roles:
+  - old 
+```
