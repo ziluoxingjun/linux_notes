@@ -216,4 +216,6 @@ $ vim handlers.yml
 ```
 
 ## ansible playbook 实战
-### 安装 Nginx
+### 1. 安装 Nginx
+
+### 2. 管理配置文件
