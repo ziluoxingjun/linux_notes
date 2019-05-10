@@ -44,4 +44,6 @@ $ git merge update_linux/master
 8、最后把最新的代码推送到你的 github 上
 ```bash
 $ git push -u origin master
+$ git push origin +master
+# 强制 push
 ```
