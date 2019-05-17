@@ -241,7 +241,8 @@ $ vim  ./common/tasks/main.yml #内容如下
 ---
 - name: Install initializtion require software
   yum: name={{ item }} state=installed
-  with_items:
+  #with_items:
+  loop:
   - gcc
   - zlib-devel
   - pcre-devel
@@ -259,8 +260,8 @@ $ vim /etc/ansible/nginx_install/roles/install/tasks/copy.yml #内容如下
 ---
 - name: Copy Nginx Software
   copy: src=nginx.tar.gz dest=/tmp/nginx.tar.gz owner=root group=root
-- name: Uncompression Nginx Software
-  shell: tar zxf /tmp/nginx.tar.gz -C /usr/local/
+- name: Unarchive Nginx Software
+  unarchive: src=nginx.tar.gz dest=/usr/local
 - name: Copy Nginx Start Script
   template: src=nginx dest=/etc/init.d/nginx owner=root group=root mode=0755
 - name: Copy Nginx Config
@@ -277,7 +278,7 @@ $ vim /etc/ansible/nginx_install/roles/install/tasks/install.yml #内容如下
 - name: Add Boot Start Nginx Service
   shell: chkconfig --level 345 nginx on
 - name: Delete Nginx compression files
-  shell: rm -rf /tmp/nginx.tar.gz
+  file: path=/tmp/nginx.tar.gz state=absent
 ```
 创建 main.yml 并且把 copy 和 install 调用
 ```bash
