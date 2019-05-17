@@ -241,6 +241,7 @@ $ vim  ./common/tasks/main.yml #内容如下
 - name: Install initializtion require software
   yum: name={{ item }} state=installed
   with_items:
+  - gcc
   - zlib-devel
   - pcre-devel
 ```
