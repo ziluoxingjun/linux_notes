@@ -238,6 +238,7 @@ $ cd /etc/ansible/nginx_install/roles
 定义 common 的 tasks，nginx 是需要一些依赖包的
 ```bash
 $ vim  ./common/tasks/main.yml #内容如下
+---
 - name: Install initializtion require software
   yum: name={{ item }} state=installed
   with_items:
@@ -255,6 +256,7 @@ nginx_basedir: /usr/local/nginx
 首先要把所有用到的文档拷贝到目标机器
 ```bash
 $ vim /etc/ansible/nginx_install/roles/install/tasks/copy.yml #内容如下
+---
 - name: Copy Nginx Software
   copy: src=nginx.tar.gz dest=/tmp/nginx.tar.gz owner=root group=root
 - name: Uncompression Nginx Software
@@ -267,6 +269,7 @@ $ vim /etc/ansible/nginx_install/roles/install/tasks/copy.yml #内容如下
 建立用户，启动服务，删除压缩包
 ```bash
 $ vim /etc/ansible/nginx_install/roles/install/tasks/install.yml #内容如下
+---
 - name: Create Nginx User
   user: name={{ nginx_user }} state=present createhome=no shell=/sbin/nologin
 - name: Start Nginx Service
@@ -279,6 +282,7 @@ $ vim /etc/ansible/nginx_install/roles/install/tasks/install.yml #内容如下
 创建 main.yml 并且把 copy 和 install 调用
 ```bash
 $ vim /etc/ansible/nginx_install/roles/install/tasks/main.yml #内容如下
+---
 - include: copy.yml
 - include: install.yml
 ```
@@ -315,12 +319,14 @@ $ cp -r nginx.conf vhost /etc/ansible/nginx_config/roles/new/files/
 重载服务
 ```bash
 $ vim /etc/ansible/nginx_config/roles/new/handlers/main.yml  //定义重新加载 nginx服务
+---
 - name: restart nginx
   shell: /etc/init.d/nginx reload
 ```
 定义核心任务
 ```bash
 $ vim /etc/ansible/nginx_config/roles/new/tasks/main.yml //这是核心的任务
+---
 - name: copy conf file
   copy: src={{ item.src }} dest={{ nginx_basedir }}/{{ item.dest }} backup=yes owner=root group=root mode=0644
   with_items:
