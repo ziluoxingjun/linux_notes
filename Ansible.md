@@ -228,6 +228,7 @@ $ mkdir -p roles/{common,install}/{handlers,files,meta,tasks,templates,vars}
 # files 为安装时用到的一些文件，meta 为说明信息，说明角色依赖等信息，tasks 里面是核心的配置文件，
 # templates 通常存一些配置文件，启动脚本等模板文件，vars 下为定义的变量
 ```
+
 需要事先准备好安装用到的文件，具体如下：
 ```bash
 # 在一台机器上事先编译安装好 nginx，配置好启动脚本，配置好配置文件
@@ -235,6 +236,7 @@ $ mkdir -p roles/{common,install}/{handlers,files,meta,tasks,templates,vars}
 # 启动脚本、配置文件都要放到 /etc/ansible/nginx_install/roles/install/templates 下面
 $ cd /etc/ansible/nginx_install/roles
 ```
+
 定义 common 的 tasks，nginx 是需要一些依赖包的
 ```bash
 $ vim  ./common/tasks/main.yml #内容如下
@@ -247,6 +249,7 @@ $ vim  ./common/tasks/main.yml #内容如下
   - zlib-devel
   - pcre-devel
 ```
+
 定义变量
 ```bash
 $ vim /etc/ansible/nginx_install/roles/install/vars/main.yml //内容如下
@@ -254,6 +257,7 @@ nginx_user: www
 nginx_port: 80
 nginx_basedir: /usr/local/nginx
 ```
+
 首先要把所有用到的文档拷贝到目标机器
 ```bash
 $ vim /etc/ansible/nginx_install/roles/install/tasks/copy.yml #内容如下
@@ -267,6 +271,7 @@ $ vim /etc/ansible/nginx_install/roles/install/tasks/copy.yml #内容如下
 - name: Copy Nginx Config
   template: src=nginx.conf dest={{ nginx_basedir }}/conf/ owner=root group=root mode=0644
 ```
+
 建立用户，启动服务，删除压缩包
 ```bash
 $ vim /etc/ansible/nginx_install/roles/install/tasks/install.yml #内容如下
@@ -280,6 +285,7 @@ $ vim /etc/ansible/nginx_install/roles/install/tasks/install.yml #内容如下
 - name: Delete Nginx compression files
   file: path=/tmp/nginx.tar.gz state=absent
 ```
+
 创建 main.yml 并且把 copy 和 install 调用
 ```bash
 $ vim /etc/ansible/nginx_install/roles/install/tasks/main.yml #内容如下
@@ -287,6 +293,7 @@ $ vim /etc/ansible/nginx_install/roles/install/tasks/main.yml #内容如下
 - include: copy.yml
 - include: install.yml
 ```
+
 到此两个 roles,common 和 install 就定义完成了，接下来要定义一个入口配置文件
 ```bash
 $ vim /etc/ansible/nginx_install/install.yml  #内容如下
@@ -298,6 +305,7 @@ $ vim /etc/ansible/nginx_install/install.yml  #内容如下
   - common
   - install
 ```
+
 执行
 ```bash
 $ ansible-playbook /etc/ansible/nginx_install/install.yml
@@ -310,12 +318,19 @@ $ ansible-playbook /etc/ansible/nginx_install/install.yml
 $ mkdir -p /etc/ansible/nginx_config/roles/{new,old}/{files,handlers,vars,tasks}
 # 其中 new 为更新时用到，old 为回滚时用到，files 下面为 nginx.conf 和 vhosts 目录，handlers 为重启 nginx 服务的命令
 ```
+
 关于回滚，需要在执行 playbook 之前先备份一下旧的配置，所以对于老配置文件的管理一定要严格，千万不能随便去修改线上机器的配置，并且要保证 new/files 下面的配置和线上的配置一致
 
 先把 nginx.conf 和 vhosts 目录放到 files 目录下面
 ```bash
 $ cd /usr/local/nginx/conf/
 $ cp -r nginx.conf vhost /etc/ansible/nginx_config/roles/new/files/
+```
+
+定义变量
+```bash
+$ vim /etc/ansible/nginx_config/roles/new/vars/main.yml
+nginx_basedir: /usr/local/nginx
 ```
 重载服务
 ```bash
@@ -324,6 +339,7 @@ $ vim /etc/ansible/nginx_config/roles/new/handlers/main.yml  //定义重新加�
 - name: restart nginx
   shell: /etc/init.d/nginx reload
 ```
+
 定义核心任务
 ```bash
 $ vim /etc/ansible/nginx_config/roles/new/tasks/main.yml //这是核心的任务
@@ -335,6 +351,7 @@ $ vim /etc/ansible/nginx_config/roles/new/tasks/main.yml //这是核心的任务
   - { src: vhosts, dest: conf/ }
   notify: restart nginx
 ```
+
 定义入口
 ```bash
 $ vim /etc/ansible/nginx_config/update.yml // 最后是定义总入口配置
@@ -344,6 +361,7 @@ $ vim /etc/ansible/nginx_config/update.yml // 最后是定义总入口配置
   roles:
   - new
 ```
+
 执行
 ```bash
 $ ansible-playbook /etc/ansible/nginx_config/update.yml
@@ -352,6 +370,7 @@ $ ansible-playbook /etc/ansible/nginx_config/update.yml
 ```bash
 $ rsync -av /etc/ansible/nginx_config/roles/new/ /etc/ansible/nginx_config/roles/old/
 ```
+
 回滚操作就是把旧的配置覆盖，然后重新加载 nginx 服务, 每次改动 nginx 配置文件之前先备份到 old 里，对应目录为 /etc/ansible/nginx_config/roles/old/files
 ```bash
 $ vim /etc/ansible/nginx_config/rollback.yml // 最后是定义总入口配置
